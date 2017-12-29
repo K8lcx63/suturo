@@ -4,3 +4,7 @@ devel/
 .catkin_tools/
 .idea
 cmake-build-debug
+*.aux
+*.log
+*.pdf
+*.synctex.gz
