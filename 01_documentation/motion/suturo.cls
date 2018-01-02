@@ -110,13 +110,13 @@
 
 \renewcommand{\maketitle}[8]
           {\@maketitle{#1}{#2}{#3}{#4}{#5}{#6}{#7}{#8}}
-\renewcommand\thesection{Aufgabe \arabic{section}}
+\renewcommand\thesection{\arabic{section}}
 \newcommand\skipsection{\stepcounter{section}}
 
 \newlength{\seclen}
-\settowidth{\seclen}{\textbf{Aufgabe }}
+\settowidth{\seclen}{\textbf{}}
 \newlength{\subseclen}
-\settowidth{\subseclen}{Aufgabe }
+\settowidth{\subseclen}{}
 \addtolength{\cftsecnumwidth}{\seclen}
 \addtolength{\cftsubsecnumwidth}{\subseclen}
 \addtolength{\cftsubsubsecnumwidth}{\subseclen}
@@ -139,7 +139,7 @@
              Meilenstein: {#4} \\
         \end{tabular} \vspace{5mm} \\
         {\Huge\sf {Dokumentation: } {#1} } \\[1.5ex]
-        {\Large Datum: {#2}} \\[1ex]
+        {\Large  Datum: {#2}} \\[1ex]
       \end{tabular}
       &
       \begin{tabular}[t]{l}
