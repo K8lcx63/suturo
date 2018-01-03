@@ -264,4 +264,61 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr objects_rotated_global(new
 geometry_msgs::PointStamped centroid_stamped;
 \end{verbatim}
 
+
+\section*{Schnittstellen}
+\chapterauthor{Alexander Link}
+
+\subsection*{Service Server vision\_main/objectPoint}
+\begin{verbatim}
+VisObjectInfo.srv
+@request: -
+@response: ObjectDetection msg (string error, geometry_msgs/PointStamped position)
+\end{verbatim}
+Gibt die Position des Eistees aus. Kann bei Problemen unterschiedliche Fehlermeldungen zurückgeben.
+\\ \\
+Wird in einem Durchgang zwei mal von Planning aufgerufen. Ein mal zur grundsätzlichen Feststellung der Position des Objekts, ein zweites mal zur Überprüfung, ob sich die Position des Objekts geändert hat.
+
+\subsection*{Service Server vision\_main/objectPose}
+\begin{verbatim}
+GetObjectInfo.srv
+@request: -
+@response: ObjectInformation msg (int32 isStanding, string information)
+\end{verbatim}
+Sollte ursprünglich ausgeben, ob der Eistee steht, oder liegt. Soll stattdessen aktuell ausgeben, ob der Eistee im Sichtfeld ist, oder nicht.
+\\ \\
+Wird aktuell nicht verwendet.
+
+\subsection*{Subscriber REAL\_KINECT\_POINTS\_FRAME}
+\begin{verbatim}
+@response: PointCloudXYZPtr kinect
+\end{verbatim}
+Gibt eine Punktwolke unseres Sichtfelds zurück.
+\\ \\
+Wird stetig immer wieder benutzt, um eine möglichst aktuelle Position des Objekts beizubehalten.
+
+\subsection*{Service Client gazebo/get\_model\_state}
+\begin{verbatim}
+gazebo_msgs/GetModelState.srv
+@request: -
+@response:  string model_name,
+            string relative_entity_name,
+            std_msgs/Header header (uint32 seq, time stamp, string frame_id),
+            geometry_msgs/Pose pose (...),
+            geometry_msgs/Twist twist (...),
+            bool success,
+            string status_message
+\end{verbatim}
+Gibt Informationen über das gesuchte Objekt direkt aus gazebo aus.
+\\ \\
+Wird benutzt, um bei Problemen in der Simulation anstelle der vom kinect erkannten Daten auf die direkten Daten aus gazebo ausweichen zu können, an denen der Kinect-Sensor unbeteiligt ist.
+
+\section*{Programmablauf}
+
+Ein Subscriber empfängt die zu verarbeitenden Punktwolken des Kinect-Sensors und führt jedes mal die Funktion findCluster in perception.h aus. Diese führt dann unter Verwendung der eingegangenen Daten unsere Filter und Segementierungsprozesse in einer festen Reihenfolge aus:
+\linebreak
+\begin{itemize} 
+\item Ein Stichpunkt 
+\item Noch ein Stichpunkt 
+\end{itemize}
+
 \end{document}
