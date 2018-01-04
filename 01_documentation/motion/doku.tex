@@ -89,9 +89,9 @@ Folgendes wird zurückgegeben:
 
 
 \begin{center}
-	\begin{tabular}{ l | l | p{7cm}}
+	\begin{tabular}{ l | l | p{10cm}}
 		Name & Type & Bedeutung \\ \hline
-		successfull & bool & true/false, je nachdem ob die Bewegung erfolgreich durchgeführt werden konnte oder nicht \\
+		successfull & bool & true/false, je nachdem ob die Bewegung erfolgreich durchgeführt werden konnte oder nicht. Im Falle eines Fehlers, werden die MoveIt Error-Codes mit einer entsprechenden Beschreibung auf der Konsole ausgegeben. \\
 	\end{tabular}
 \end{center}
 
@@ -119,6 +119,15 @@ Zum starten unserer Node stehen zwei launch-files zur Verfügung, eins für die 
 -Startet unsere Main Node \\
 -Ein Static Transformer wird nicht benötigt, da auf dem Roboter die Map von einem Service zur Verfügung gestellt wird \\
 -Die Simulation muss auf dem echten PR2 nicht gestartet werden \\
+
+Nach einem erfolgreichen Start, wird der \textit{kitchen\_ model\_ service (siehe Kapitel 1.2.3 - Serviceclient)} aufgerufen und die PlanningScene mit den Objekten der Küche befüllt. \\
+Im Falle eines Fehlers beendet sich der Node und es wird eine entsprechende Meldung auf der Konsole ausgegeben. \\
+War das Befüllen der PlanningScene erfolgreich wartet der ActionServer auf weitere Befehle in Form von \textit{MovingCommandAction-Messages}.
+Wird eine neue MovingCommandAction-Message gesendet, wird das \textit{Command} der Message geparst und die entsprechende Gruppe (\textit{linker Arm, rechter Arm, beide Arme}) bewegt. \\
+Es wird der Punkt (falls erforderlich) in das entsprechende Koordinatensystem der zu bewegenden Gruppe umgerechnet. Anschließend wird mit MoveIt ein entsprechender Bewegungsplan erstellt.\\ 
+Wenn ein entsprechender Bewegungsplan existiert und die Gruppe an den Punkt ohne Kollision mit der PlanningScene bewegt werden kann, wird die Bewegung ausgeführt und \textit{true} zurückgegeben.
+Existiert kein Bewegungsplan (z.B.: Gruppe kann rein technisch nicht an den Punkt gelangen) oder  wenn es keine Möglichkeit gibt an den Punkt ohne Kollision zu gelangen, wird \textit{false} zurückgegeben und der entsprechende MoveItErrorCode mit Beschreibung auf der Konsole ausgegeben und keine Bewegung durchgeführt. \\
+
 
 %UNTERSCHIED LAUNCHFILE FÜR SIMULATION UND ECHTER ROBOTER -> LADEN DER KONFIGURATIONSDATEIEN - SIMULATION ODER ECHTER ROBOTER
 %STARTEN DER NAVIGATIONSSACHEN -> AUCH HIER UNTERSCHIED SIMULATION UND ECHTER ROBOTER
