@@ -63,11 +63,63 @@ bool successful
 #feedback definition
 #bool finished
 \end{lstlisting}
+\newpage
+Über die MovingCommand Action ist es möglich Bewegungs-Anweisungen an unseren Actionserver zu senden. Die MovvingCommand Action besteht dabei aus folgenden Attributen:
+\begin{center}
+	\begin{tabular}{ l | l | p{7cm}}
+		Name & Type & Bedeutung \\ \hline
+		goal\_ point & geometry\_ msgs/PointStamped & Der Endpunkt der Bewegung als PointStamped mit definierter frameid im Header Teil des PointStamped \\ \hline
+		command & uint8 & Konstante, die die Art des Befehls definiert (siehe Tabelle weiter unten) \\
+	\end{tabular}
+\end{center}
 
-%HIER NOCH DIE BESCHREIBUNG DES ACTIONSERVERS
+Folgende Konstanten sind für die MovingCommand Action Message definiert:
+
+\begin{center}
+	\begin{tabular}{ l | l | p{7cm}}
+		Name & Int-Wert & Bedeutung \\ \hline
+		UNKNOWN & 0 & - \\ \hline
+		MOVE\_ STANDARD\_ POSE & 1 & Roboter Arme in die Initiale Pose bewegen (es wird kein PointStamped in der Message benötigt) \\ \hline
+		MOVE\_ RIGHT\_ ARM & 2 & Rechten Arm zu gegebenem PointStamped bewegen \\ \hline
+		MOVE\_ LEFT\_ ARM & 3 & Linken Arm zu gegebenem PointStamped bewegen \\
+	\end{tabular}
+\end{center}
+
+Folgendes wird zurückgegeben:
+
+
+\begin{center}
+	\begin{tabular}{ l | l | p{7cm}}
+		Name & Type & Bedeutung \\ \hline
+		successfull & bool & true/false, je nachdem ob die Bewegung erfolgreich durchgeführt werden konnte oder nicht \\
+	\end{tabular}
+\end{center}
+
+
 
 \subsubsection{Programmablauf}
 \chapterauthor{Maximilian Bertram}
+
+Folgendes ist beim starten unserer Node zu beachten:
+
+Es muss bereits der kitchen\_ model\_ export Service von knowledge gestartet sein, damit wir direkt beim starten der Node die PlanningScene richtig befüllen können.
+
+Zum starten unserer Node stehen zwei launch-files zur Verfügung, eins für die Simulation (\textit{motion\_ main\_ start.launch}) und eins für den echten PR2 (\textit{motion\_ main\_ start\_ real\_ pr2.launch}).
+\\
+
+'\textit{motion\_ main\_ start.launch}': \\
+-Startet leere Simulation (empty world) mit PR2 \\
+-Startet MoveIt Move\_ Group (es wird eine für die Simulation des PR2 generierte MoveIt Konfiguration genutzt)\\
+-Startet einen static transformer für das Umrechnen von Punkten in der Simulation \\
+-Startet unsere Main Node \\
+
+\newpage
+'\textit{motion\_ main\_ start\_ real\_ pr2.launch}': \\
+-Startet MoveIt Move\_ Group (es wird die MoveIt Konfiguration des iai\_ pr2 packages genutzt) \\
+-Startet unsere Main Node \\
+-Ein Static Transformer wird nicht benötigt, da auf dem Roboter die Map von einem Service zur Verfügung gestellt wird \\
+-Die Simulation muss auf dem echten PR2 nicht gestartet werden \\
+
 %UNTERSCHIED LAUNCHFILE FÜR SIMULATION UND ECHTER ROBOTER -> LADEN DER KONFIGURATIONSDATEIEN - SIMULATION ODER ECHTER ROBOTER
 %STARTEN DER NAVIGATIONSSACHEN -> AUCH HIER UNTERSCHIED SIMULATION UND ECHTER ROBOTER
 %INITIALISIEREN DER KÜCHE, WARTEN AUF CALL DES ACTIONSERVERS, AUSFÜHREN (FALLS MÖGLICH), RÜCKMELDUNG AN ACTIONCLIENTS (IN SIMULATION UND ECHT GLEICH)
