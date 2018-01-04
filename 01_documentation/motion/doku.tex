@@ -64,7 +64,7 @@ bool successful
 #bool finished
 \end{lstlisting}
 \newpage
-Über die MovingCommand Action ist es möglich Bewegungs-Anweisungen an unseren Actionserver zu senden. Die MovvingCommand Action besteht dabei aus folgenden Attributen:
+Über die MovingCommand Action ist es möglich Bewegungs-Anweisungen an unseren Actionserver zu senden. Die MovingCommand Action besteht dabei aus folgenden Attributen:
 \begin{center}
 	\begin{tabular}{ l | l | p{7cm}}
 		Name & Type & Bedeutung \\ \hline
@@ -129,12 +129,19 @@ Wenn ein entsprechender Bewegungsplan existiert und die Gruppe an den Punkt ohne
 Existiert kein Bewegungsplan (z.B.: Gruppe kann rein technisch nicht an den Punkt gelangen) oder  wenn es keine Möglichkeit gibt an den Punkt ohne Kollision zu gelangen, wird \textit{false} zurückgegeben und der entsprechende MoveItErrorCode mit Beschreibung auf der Konsole ausgegeben und keine Bewegung durchgeführt. \\
 
 
+
+
+
 %UNTERSCHIED LAUNCHFILE FÜR SIMULATION UND ECHTER ROBOTER -> LADEN DER KONFIGURATIONSDATEIEN - SIMULATION ODER ECHTER ROBOTER
 %STARTEN DER NAVIGATIONSSACHEN -> AUCH HIER UNTERSCHIED SIMULATION UND ECHTER ROBOTER
 %INITIALISIEREN DER KÜCHE, WARTEN AUF CALL DES ACTIONSERVERS, AUSFÜHREN (FALLS MÖGLICH), RÜCKMELDUNG AN ACTIONCLIENTS (IN SIMULATION UND ECHT GLEICH)
 \subsubsection{Besonderheiten/Besondere Algorithmen}
 \chapterauthor{Maximilian Bertram}
-%ÜBERHAUPT VORHANDEN? PARSEN DER MOVEITERRORCODES? VISUALIZATION-MARKER? ORIENTATION DES GRIPPERS?
 
+\textbf{VisualizationMarker}
+
+Wenn der linke/rechte Arm bewegt wird, werden dabei 2 VisualizationMarker gepublished, welche in RViz angezeigt werden können. Im Idealfall befinden sich diese beiden Punkte exakt an der gleichen Position. Der gelbe Marker zeigt den gewünschten Endpunkt der Bewegung vor dem umrechnen, der rote Marker zeigt den Punkt nach dem Umwandeln in das Koordinatensystem der zu bewegenden Gruppe.
+
+%ÜBERHAUPT VORHANDEN? PARSEN DER MOVEITERRORCODES? VISUALIZATION-MARKER? ORIENTATION DES GRIPPERS?
 
 \end{document}
