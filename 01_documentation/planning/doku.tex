@@ -39,6 +39,41 @@ Nimmt Pose (steht oder liegt) des Objektes wahr.
 \chapterauthor{Kevin Störmer}
 Die Node 'points' aus dem Paket 'planning\_vision' befasst sich ausschliesslich mit der Kommunikation mit Gruppe-Vision und Logiken auf Basis der wahrgenommenen Daten. Dabei werden Services zur Position und Pose des Objectes in Anspruch genommen und ausgewerten. Zudem wird eine Methode zur Validierung zweier Punkte angeboten.
 
+\subsubsection{check-points-is-equal (msg-one msg-two delta)}
+\chapterauthor{Kevin Störmer}
+\begin{lstlisting}
+(defun check-points-is-equal (msg-one msg-two delta)
+  "Compares two points with delta."
+  (roslisp::ros-info "check-points-is-equal" "Starting to check if point of object is still valid")
+  (roslisp:with-fields ((x1 (geometry_msgs-msg:x geometry_msgs-msg:point)) 
+                        (y1 (geometry_msgs-msg:y geometry_msgs-msg:point))
+                        (z1 (geometry_msgs-msg:z geometry_msgs-msg:point)))
+     (object_detection-msg:position (object_detection-srv:object msg-one))
+     (roslisp:with-fields ((x2 (geometry_msgs-msg:x geometry_msgs-msg:point)) 
+                           (y2 (geometry_msgs-msg:y geometry_msgs-msg:point))
+                           (z2 (geometry_msgs-msg:z geometry_msgs-msg:point)))
+                        (object_detection-msg:position (object_detection-srv:object msg-two))
+       (let (
+             (dx (abs (- x1 x2)))
+             (dy (abs (- y1 y2)))
+             (dz (abs (- z1 z2)))
+             )
+         (if (and
+              (<= dx delta)
+              (<= dy delta)
+              (<= dz delta)
+              )
+             (print t)
+             (print nil)
+             )
+         )
+       )
+    )
+  )
+\end{lstlisting}
+
+Die Funktion 'check-points-is-equal' bekommt die Parameter 'msg-one' und 'msg-two' \"ubergeben. Dabei handelt es sich um Messages vom Typ 'object\_detection-msg'. Diese enthalten Punke (x, y, z) die zu verschiedenen Zeiten von Vision über die Kinect wahrgenommen wurden. Sie stellen den Mittelpunkt des umzustossenden Objektes dar. Beim \"Ubergabeparameter delta, handelt es sich um die maximale erlaubte Tolleranz mit der die beiden Punkte von einander abweichen dürfen. \\
+Anf\"anglich werden die Koordinaten der beiden Messages aus den Wrappern extrahiert und in Variablen fortan verf\"ugbar gemacht. Danach werden die Koordinaten paarweise voneinander subtrahiert um die Differenz beider als vorzeichenlose Zahl zu errechnen. Diese Differenz wird dann mit dem vorgegebenen Delta verglichen. Wenn sich alle Differenzen innerhalb des Deltas befinden, wird 'true' zurückgegeben, sonst 'nil'. 
 \section{Node: ask (planning\_knowledge)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
@@ -52,8 +87,11 @@ Berechnet den zu stupsenden Punkt des Objektes
 \subsubsection{\"Ubersicht}
 \chapterauthor{Kevin Störmer}
 Die Node 'ask' im Paket 'planning\_knowledge' ist ausschliesslich für die Kommunikation mit Gruppe Knowledge zust\"andig.
+\subsubsection{ask-knowledge(point-center-of-object)}
+\chapterauthor{Kevin Störmer}
+Die Funktion 'ask-knowledge' bekommt als \"Ubergabeparameter eine 'object\_detection-msg' welche den, von Vision, wahrgenommenen Mittelpunkt des Objektes enthält. Knowledge gibt nach Aufruf des Services dann einen Punkt oberhalb des Mittelpunktes zur\"uck, welchen wir dann fortw\"ahrend in unserer Main weiterverwenden.
 
-\section{Node: actions (planning\_motion}
+\section{Node: actions (planning\_motion)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
 \begin{center} \includegraphics[width=0.6\textwidth]{img/diag_planning_motion.png} \end{center}
@@ -82,6 +120,44 @@ Bewegt die Basis des Pr2 in Richtung eines Punktes.
 \subsubsection{\"Ubersicht}
 \chapterauthor{Kevin Störmer}
 Die Node 'movement' im Paket 'planning\_move' behandelt alle Fälle in denen sich der Pr2 bewegen soll, welche nicht von Gruppe Motion abgehandelt werden. Dabei eine Methode zum Bewegen des Kopfes des Pr2 angeboten sowie eine Methode zum Bewegen der Basis des Pr2.
+\subsubsection{move-head (x y z)}
+\chapterauthor{Kevin Störmer}
+\begin{lstlisting}
+(defun move-head (x y z)
+   "Moving robot head via head_traj_controller/point_head_action. X Y Z are treated as coordinates."
+     (let ((actionclient 
+            (actionlib:make-action-client "head_traj_controller/point_head_action" "pr2_controllers_msgs/PointHeadAction")))
+       (loop until
+            (actionlib:wait-for-server actionclient))
+       (let ((point-to-look-at 
+            (cl-transforms-stamped:to-msg 
+            (cl-transforms-stamped:make-point-stamped "base_link" 0 
+                                                       (cl-transforms:make-3d-vector x y z)))))
+           (let ((actiongoal 
+               (actionlib:make-action-goal actionclient target point-to-look-at)))
+               (actionlib:call-goal actionclient actiongoal)))))
+\end{lstlisting}
+Die Funktion 'move-head' bekommt als \"Ubergabeparameter Koordinaten (x y z) welche vorgeben sollen, in welche Richtung der Kopf des Pr2 bewegt wird.\\
+Zuerst wird ein neuer Actionclient, für die 'head\_traj\_controller/point\_head\_action' Action erstellt. Anschliessend soll in einem Loop solange gewartet werden, bis der Actionsserver gestartet wurde. Ist dies der Fall, wird eine neue Message erstellt, welche einen Punkt auf Basis der \"ubergebenen Koordinaten, in Relation zum Frame 'base\_link', enth\"alt. Diese wird dann in ein neues Actiongoal gefasst und an den Actionserver geschickt, welcher den Kopf des Pr2 dann in Richtung der Koordinaten bewegen wird.
 
 
+\subsubsection{move-Base-To-Point (x y z w)}
+\chapterauthor{Kevin Störmer}
+\begin{lstlisting}
+(defun move-Base-To-Point (x y z w)
+  "Moving robot base via nav_pcontroller/move_base. X Y Z are treated as coordinates. W for Orientation."
+  (let ((actionclient 
+         (actionlib:make-action-client "nav_pcontroller/move_base" "move_base_msgs/MoveBaseAction")))
+     (loop until
+             (actionlib:wait-for-server actionclient))
+     (let ((pose-to-drive-to 
+            (cl-transforms-stamped:to-msg 
+            (cl-transforms-stamped:make-pose-stamped "base_link" 0 
+                                                 (cl-transforms:make-3d-vector x y z) (cl-tf:make-quaternion x y z w)))))
+         (let ((actiongoal 
+                 (actionlib:make-action-goal actionclient target_pose pose-to-drive-to)))
+                 (actionlib:call-goal actionclient actiongoal)))))
+\end{lstlisting}
+Die Funktion 'move-Base-To-Point' hat es nicht auf den Roboter geschafft, und ist momentan auch nicht korrekt. Sie konnte aus Zeitmangel nicht weiterentwickelt werden.\\
+Angedacht war es, dass eine Pose anhand von Übergabeparametern erstellt wird, und über den Actionserver des Navp-controllers den Roboter in die vorgesehene Pose zu bewegen. Dabei traten allerdings Probleme auf, die wir zeitlich nicht mehr reparieren konnten.
 \end{document}
