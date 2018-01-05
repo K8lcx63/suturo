@@ -313,12 +313,22 @@ Gibt Informationen über das gesuchte Objekt direkt aus gazebo aus.
 Wird benutzt, um bei Problemen in der Simulation anstelle der vom kinect erkannten Daten auf die direkten Daten aus gazebo ausweichen zu können, an denen der Kinect-Sensor unbeteiligt ist.
 
 \section*{Programmablauf}
+\chapterauthor{Alexander Link}
 
 Ein Subscriber empfängt die zu verarbeitenden Punktwolken des Kinect-Sensors und führt jedes mal die Funktion findCluster in perception.h aus. Diese führt dann unter Verwendung der eingegangenen Daten unsere Filter und Segementierungsprozesse in einer festen Reihenfolge aus:
-\linebreak
+
 \begin{itemize} 
-\item Ein Stichpunkt 
-\item Noch ein Stichpunkt 
+\item Ein PassThrough Filter, der den Sichtbereich begrenzt.
+\item Ein VoxelGrid Filter zum Downsampling der eingehenden Punktwolke, indem für viele kleine 3-dimensionale Boxen der Mittelpunkte aller enthaltenden Punkte berechnet wird.
+\item Ein MovingLeastSquares Filter, der Flächen begradigt, um Ungenauigkeiten der Daten vorzubeugen.
+\item Das Entfernen von Flächen, die zu groß sind, um zum gesuchten Objekt gehören zu können. Dies passiert mehrmals, wenn es mehrere solcher Flächen im Sichtfeld gibt.
+\item Ein OutlierRemoval Filter, der die durchschnittliche Distanz jedes Punktes zu einer festen Anzahl seiner nächsten Nachbarn errechnet. Damit können Punkte extrahiert werden, die zu weit von ihren Nachbarn entfernt sind und daher nicht zum Objekt gehören können.
 \end{itemize}
+
+Sollte es zu irgendeinem Zeitpunkt beim Filtern oder der Segmentierung zu Problemen kommen, weil beispielsweise die resultierende Punktwolke leer ist, wird auf die direkten Daten des Zielobjekts aus gazebo ausgewichen, wenn möglich.
+\\
+Abschließend können wir Zwischenergebnisse zum Debugging als .pcd-Dateien speichern.
+\\
+Während neue Punkte berechnet werden, werden diese zusätzlich zum Debugging für die anderen Teams als Visualization Marker ausgegeben.
 
 \end{document}
