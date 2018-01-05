@@ -47,7 +47,7 @@ typedef pcl::PointIndices::Ptr PointIndices;
 findCluster(const PointCloudXYZPtr kinect)
 @params: kinect Die Punktwolke der Kinect
 
-Description: Filtert und extrahiert einen Cluster (das gesuchte Objekt).
+Beschreibung: Filtert und extrahiert einen Cluster (das gesuchte Objekt).
 \end{verbatim}\label{func:findcluster}
 
 \subsubsection{findCenterGazebo}
@@ -55,7 +55,7 @@ Description: Filtert und extrahiert einen Cluster (das gesuchte Objekt).
 geometry_msgs::PointStamped findCenterGazebo()
 @return: Künstlicher 3D-Mittelpunkt
 
-Description: Gibt einen künstlichen Punkt zurück (Den Mittelpunkt des Modells, 
+Beschreibung: Gibt einen künstlichen Punkt zurück (Den Mittelpunkt des Modells, 
 das an Gazebo übergeben wurde).
 \end{verbatim}\label{func:findcentergazebo}
 
@@ -66,7 +66,7 @@ geometry_msgs::PointStamped findCenter(const PointCloudXYZPtr object_cloud)
 @param: object_cloud Eine Punktwolke (der zuvor extrahierte Cluster)
 @return: 3D-Mittelpunkt der übergebenen Punktwolke
 
-Description: Errechnet den 3D-Mittelpunkt der übergebenen Punktwolke.
+Beschreibung: Errechnet den 3D-Mittelpunkt der übergebenen Punktwolke.
 \end{verbatim}\label{func:findcenter}
 
 \subsubsection{estimateSurfaceNormals}
@@ -75,7 +75,7 @@ PointCloudNormalPtr estimateSurfaceNormals(PointCloudXYZPtr input)
 @param: input Punktwolke, zu der die Normalen berechnet werden sollen
 @return: Normalen der übergebenen Punktwolke
 
-Description: Schätzt die Normalen einer Punktwolke ab.
+Beschreibung: Schätzt die Normalen einer Punktwolke ab.
 \end{verbatim}\label{func:estimatesurfacenormals}
 
 \subsubsection{createPointNormals}
@@ -85,7 +85,7 @@ createPointNormals(PointCloudXYZPtr input, PointCloudNormalPtr normals)
 @param: input, normals Punktwolke mit zugehörigen Normalen
 @return Punktwolke des Punkt-Typs pcl::PointNormal
 
-Description: Erstellt aus einer Punktwolke (pcl::PointXYZ) und den zugörigen
+Beschreibung: Erstellt aus einer Punktwolke (pcl::PointXYZ) und den zugörigen
 Normalen (pcl::Normal) eine Punktwolke mit Punkt-Typ pcl::PointNormal.
 \end{verbatim}\label{func:createpointnormals}
 
@@ -95,7 +95,7 @@ PointCloudXYZPtr rotatePointCloud(PointCloudXYZPtr cloud)
 @param: cloud Die zu rotierende Punktwolke
 @return Rotierte Punktwolke
 
-Description: Rotiert die übergebene Punktwolke.
+Beschreibung: Rotiert die übergebene Punktwolke.
 \end{verbatim}\label{func:rotatepointcloud}
 
 
@@ -106,7 +106,7 @@ PointCloudXYZPtr apply3DFilter(PointCloudXYZPtr input, float x, float y, float z
 		x,y,z Bereiche der Achsen für den Filter
 @return Rotierte Punktwolke
 
-Description: Filtert eine Punktwolke, indem sie nur die Punkte in einem bestimmten
+Beschreibung: Filtert eine Punktwolke, indem sie nur die Punkte in einem bestimmten
 Bereich ((-x,x), (-y,y), (0.0,z)) erhält.
 \end{verbatim}\label{func:apply3dfilter}
 
@@ -115,7 +115,7 @@ Bereich ((-x,x), (-y,y), (0.0,z)) erhält.
 \begin{verbatim}
 Nicht benutzt (legacy)
 
-Description: Berechnet, ob ein Objekt steht oder liegt.
+Beschreibung: Berechnet, ob ein Objekt steht oder liegt.
 \end{verbatim}\label{func:isstanding}
 
 \subsubsection{estimatePlaneIndices}
@@ -125,7 +125,7 @@ PointIndices estimatePlaneIndices(PointCloudXYZPtr input)
 werden sollen
 @return Indices des Planar, das in der Punktwolke enthalten ist (wenn eins enthalten ist).
 
-Description: Errechnet die Indices eines Planars einer Punktwolke.
+Beschreibung: Errechnet die Indices eines Planars einer Punktwolke.
 \end{verbatim}\label{func:estimateplaneindices}
 
 \subsubsection{extractCluster}
@@ -138,7 +138,7 @@ bool negative);
 		alle Punkte, außer den in indices angegebenen (true).
 @return Objekt-Cluster aus input
 
-Description: Extrahiert Objekt-Cluster anhand übergebener Punktwolke und
+Beschreibung: Extrahiert Objekt-Cluster anhand übergebener Punktwolke und
 übergebenen Indices.
 \end{verbatim}\label{func:extractcluster}
 
@@ -149,7 +149,7 @@ PointIndices prismSegmentation(PointCloudXYZPtr input_cloud, PointCloudXYZPtr pl
 		plane Planar zur Bestimmung des Prismas zur Segmentation
 @return Indizes von Objekten
 
-Description: Errechnet Indizes zur Extraktion eines Clusters von Objekten via
+Beschreibung: Errechnet Indizes zur Extraktion eines Clusters von Objekten via
 Prisma-Segmentation.
 \end{verbatim}\label{func:prismsegmentation}
 
@@ -160,7 +160,7 @@ void createCovarianceMatrix(PointCloudXYZ input, Eigen::Matrix3f covariance_matr
 		covariance_matrix Die zu errechnende Kovarianz-Matrix
 @return Kovarianz-Matrix einer Punktwolke.
 
-Description: Errechnet Kovarianz-Matrix einer Punktwolke.
+Beschreibung: Errechnet Kovarianz-Matrix einer Punktwolke.
 \end{verbatim}\label{func:createcovariancematrix}
 
 \subsubsection{mlsFilter}
@@ -169,7 +169,7 @@ PointCloudXYZPtr mlsFilter(PointCloudXYZPtr input);
 @param: input Punktwolke, die mittels Moving-Least-Squares-Algorithmus geglättet wird
 @return Geglättete Punktwolke
 
-Description: Glättet Punktwolke mit MLS-Algorithmus.
+Beschreibung: Glättet Punktwolke mit MLS-Algorithmus.
 \end{verbatim}\label{func:mlsfilter}
 
 \subsubsection{voxelGridFilter}
@@ -178,7 +178,7 @@ PointCloudXYZPtr voxelGridFilter(PointCloudXYZPtr input)
 @param: input Zu filternde Punktwolke
 @return Mit einem Voxel-Gitter gefilterterte (und damit gedownsamplete) Punktwolke
 
-Description: Filtert eine Punktwolke mit dem Voxel-Gitter-Filter.
+Beschreibung: Filtert eine Punktwolke mit dem Voxel-Gitter-Filter.
 \end{verbatim}\label{func:voxelgridfilter}
 
 \subsubsection{outlierRemoval}
@@ -187,7 +187,7 @@ PointCloudXYZPtr outlierRemoval(PointCloudXYZPtr input)
 @param: input Punktwolke, die von Rauschen befreit werden soll
 @return Gefilterte Punktwolke
 
-Description: Entfernt Punkte aus Punktwolke, die als zu weit außen liegend
+Beschreibung: Entfernt Punkte aus Punktwolke, die als zu weit außen liegend
 (outlier) oder als Rauschen erkannt werden.
 \end{verbatim}\label{func:outlierremoval}
 
@@ -197,14 +197,14 @@ int checkModelPresence(PointCloudXYZPtr scene);
 @param: scene Punktwolke, in der ein Objekt gefunden werden soll
 @return 0 Wenn Objekt gefunden, 1 wenn nicht
 
-Description: Überprüft, ob ein gewisses Model in einer Punktwolke (Szene) existiert.
+Beschreibung: Überprüft, ob ein gewisses Model in einer Punktwolke (Szene) existiert.
 \end{verbatim}\label{func:checkmodelpresence}
 
 \subsubsection{initialAlignmentAndICP}
 \begin{verbatim}
 int initialAlignmentAndICP();
 @return: 0 wenn Objekt in einer Szene liegt, 1 sonst
-Description: Errechnet mit Initial Alignment und dem
+Beschreibung: Errechnet mit Initial Alignment und dem
 Iterative-Closest-Point-Algorithmus, ob ein Objekt in einer Szene steht oder liegt.
 \end{verbatim}\label{func:initialalignmentandicp}
 
