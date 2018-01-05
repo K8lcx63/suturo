@@ -17,7 +17,7 @@
 \chapterauthor{Roman Haak}
 \begin{center} \includegraphics[width=0.8\textwidth]{img/Architekturbild.png} \end{center}
 
-\subsection{API}
+\subsection{Beschreibung des Teilsystems}
 \subsubsection{Übersicht}
 \chapterauthor{Roman Haak}
 Dieser Teil des Systems ist für das Bewegen des PR2 in eine bestimmte Position, bzw. zu einem bestimmten Punkt hin verantwortlich.\\
@@ -37,6 +37,7 @@ Es wird von dem \textit{MoveGroup}-Objekt eine entsprechende Rückmeldung in For
 \textit{\textbf{tf}} vom Typ \textit{\textbf{TransformListener}}:\\
 Mit Hilfe des \textit{TransformListeners} können Transformationen zwischen Koordinatensystemen zu einem bestimmten Zeitpunkt durchgeführt werden. Das ist in unserem Fall z.B. nötig, wenn der Arm zu einem bestimmten Punkt bewegt werden soll, der aber in einem anderen Koordinatensystem angegeben ist, als unser \textit{MoveGroup}-Objekt zum Planen verwendet.\\
 
+\subsection{API}
 \subsubsection{Serviceclient}
 \chapterauthor{Roman Haak}
 '\textit{/kitchen\_model\_service/get\_fixed\_kitchen\_objects}': \\
