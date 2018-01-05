@@ -1,4 +1,5 @@
 \documentclass{suturo}
+\usepackage{spverbatim}
 
 \begin{document}
     \maketitle{Knowledge}{05.01.2018}{}{1}{}{}{}{}
@@ -20,71 +21,113 @@ Das Kitchen\_Model\_Export-Paket dient dazu der Manipulation die Umgebung bekann
 \begin{figure}[!htb]
         \center{\includegraphics[width=\textwidth]
         {figures/kitchen_model_service.png}
-        \caption{\label{fig:vision_node} Architektur der kitchen\_model\_service-node}}
+        \caption{\label{fig:kitchen_model_export_node} Architektur der kitchen\_model\_service-node}}
 \end{figure}
       
-\section{API}
+\section{Methodenbeschreibung}
 \subsection{kitchen\_model\_export}
 \chapterauthor{Alexander Haar}
 
-\subsubsection{prologValueToDouble}
-\begin{verbatim}
+\subsubsection{prologValueToDouble - C++}
+\begin{spverbatim}
 double prologValueToDouble(PrologValue value)
-@params: PrologValue welcher zu einem Double konvertiert werden soll
+@param value: PrologValue welcher zu einem Double konvertiert werden soll
 @return: Der aus der Konvertierung resultierende Double 
 
 Description: Konvertiert ein PrologValue zu einem Double
-\end{verbatim}\label{func:findcluster}
+\end{spverbatim}
 
-\subsubsection{prologBindingToQuaternion}
-\begin{verbatim}
+\subsubsection{prologBindingToQuaternion - C++}
+\begin{spverbatim}
 tf::Quaternion prologBindingToQuaternion(PrologBindings bdg)
-@param: Die zu verarbeitenden PrologBindings(bdg["Quaternion"])
+@param bdg: Die zu verarbeitenden PrologBindings(bdg["Quaternion"])
 @return: Das aus den PrologBindings extrahierte Quaternion
 
 Description: Extrahiert aus PrologBindings(bdg["Quaternion"]) das Quaternion und gibt es
 als tf::Quaternion zurück
-\end{verbatim}\label{func:findcentergazebo}
+\end{spverbatim}
 
 
-\subsubsection{prologBindingToPosition}
-\begin{verbatim}
+\subsubsection{prologBindingToPosition - C++}
+\begin{spverbatim}
 tf::Vector3 prologBindingToPosition(PrologBindings bdg)
-@param: Die zu verarbeitenden PrologBindings(bdg["Translation"])
+@param bdg: Die zu verarbeitenden PrologBindings(bdg["Translation"])
 @return: Die aus den PrologBindings extrahierte Position
 
 Description: Extrahiert aus PrologBindings(bdg["Translation"]) die Position und gibt es als tf::Vector3 zurück
-\end{verbatim}\label{func:findcenter}
+\end{spverbatim}
 
-\subsubsection{toPoseMsgs}
-\begin{verbatim}
+\subsubsection{toPoseMsgs - C++}
+\begin{spverbatim}
 geometry_msgs::Pose toPoseMsgs(PrologBindings bdg)
-@param: Die zu verarbeitenden PrologBindings(bdg["Translation"] & bdg["Quaternion"])
+@param bdg: Die zu verarbeitenden PrologBindings(bdg["Translation"] & bdg["Quaternion"])
 @return: Die aus den PrologBindings extrahierte Pose
 
 Description: Extrahiert aus PrologBindings(bdg["Translation"] & bdg["Quaternion"]) die Pose und gibt diese als geometry_msgs::Pose zurück
-\end{verbatim}\label{func:estimatesurfacenormals}
+\end{spverbatim}
 
-\subsubsection{toBoundingBoxMsgs}
-\begin{verbatim}
+\subsubsection{toBoundingBoxMsgs - C++}
+\begin{spverbatim}
 geometry_msgs::Vector3 toBoundingBoxMsgs(PrologBindings bdg)
-@param: Die zu verarbeitenden PrologBindings(bdg["BoundingBox"])
-@return Die aus den PrologBindings extrahierte BoundingBox
+@param bdg: Die zu verarbeitenden PrologBindings(bdg["BoundingBox"])
+@return: Die aus den PrologBindings extrahierte BoundingBox
 
 Description: Extrahiert aus PrologBindings(bdg["BoundingBox"]) die BoundingBox und gibt diese als geometry_msgs::Vector3 zurück
-\end{verbatim}\label{func:createpointnormals}
-\section*{Schnittstellen}
+\end{spverbatim}
+
+\subsubsection{get\_fixed\_kitchen\_objects - C++}
+\begin{spverbatim}
+bool get_fixed_kitchen_objects(knowledge_msgs::GetFixedKitchenObjects::Request &req, knowledge_msgs::GetFixedKitchenObjects::Response &res)
+@param req: Die Anfrage des Servicecalls
+@param res: Die Antwort des Servicecalls
+@return: true, falls der Servicecall erfolgreich ist und false sonst
+
+Description: Bearbeitet die Servicecalls der Clients und gibt in der Antwort alle Kollisionsobjekte in der room.owl als Antwort zurück.
+\end{spverbatim}
+
+\subsubsection{get\_fixed\_kitchen\_objects - Prolog}
+\begin{spverbatim}
+get_fixed_kitchen_objects(ObjectName, Translation, Quaternion, [Width, Height, Depth])
+@param ObjectName:  Der Name des Kollisionsobjekts
+@param Translation: Die Position des Kollisionsobjekts
+@param Quaternion:  Die Orientierung des Kollisionsobjekts
+@param []:          Die Kollisionsbox des Kollisionsobjekts in der Angegebenen Reihenfolge
+
+Description: List aus der room.owl alle knowrob:SemanticMapPerceptions aus und ermittelt über knowrob:eventOccursAt die Rotationsmatrix aus der die Translation und Rotation berechnet wird. Außerdem wird über knowrob:objectActedOn die Größe der Kollisionsbox ausgelesen.
+\end{spverbatim}
+
+\subsubsection{rotation\_matrix\_to\_list - Prolog}
+\begin{spverbatim}
+rotation_matrix_to_list(RotationMatrix, [M00, M01, M02, M03, M10, M11, M12, M13, M20, M21, M22, M23, M30, M31, M32, M33])
+@param RotationMatrix: Instanz der Rotationsmatrix
+@param []:             Rotationsmatrix als Liste
+
+Description: Konvertiert eine knowrob:RotationMatrix3D in ene Liste
+\end{spverbatim}
+
+\subsubsection{get\_rotation\_matrix\_value - Prolog}
+\begin{spverbatim}
+get_rotation_matrix_value(RotationMatrix, Property, Value)
+@param RotationMatrix: Instanz der Rotationsmatrix
+@param Property:       Der auszulesende Wert der Rotationsmatrix
+@param Value:          Der resultierende Wert
+
+Description: List aus einer Rotationsmatrix den gewünschten Wert aus und gibt diesen als float zurück
+\end{spverbatim}
+
+
+\section{Schnittstellen}
 \chapterauthor{Alexander Haar}
 
-\subsection*{Service Server kitchen\_model\_export/get\_fixed\_kitchen\_objects}
-\begin{verbatim}
+\subsection{Service Server kitchen\_model\_export/get\_fixed\_kitchen\_objects}
+\begin{spverbatim}
 GetFixedKitchenObjects.srv
 @request: -
 @response: string frame_id
            string[] names
            geometry_msgs/Vector3[] bounding_boxes
            geometry_msgs/Pose[] poses
-\end{verbatim}
+\end{spverbatim}
 Gibt im map- Frame alle Kollisionsobjekte für die Planning- Scene auf Anfrage zurück. Ein Kollisionsobjekt wird durch eine Box und eine Pose beschrieben, sowie einem Namen zur Identifizierung.
 
 \section{Programmablauf}
