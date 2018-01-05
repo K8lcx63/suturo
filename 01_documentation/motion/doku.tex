@@ -26,7 +26,7 @@ Wie wir dieses Framework benutzen, wird im Folgenden vorgestellt.
 
 \subsubsection{Klassenvariablen}
 \chapterauthor{Roman Haak}
-Im Folgenden werden kurz die wichtigsten Variablen der Klasse '\textit{main}' vorgestellt, um die Funktionsweise des \textit{MoveGrop-Interfaces} zu verdeutlichen:\\\\
+Im Folgenden werden kurz die wichtigsten Variablen der Klasse '\textit{main}' vorgestellt, um die Funktionsweise des \textit{MoveGroup-Interfaces} zu verdeutlichen:\\\\
 \textit{\textbf{planning\_scene}} vom Typ \textit{\textbf{PlanningSceneInterface}}:\\
 Über diese Variable ist es uns möglich die sogenannte '\textit{PlanningScene}' des PR2 zu befüllen. Über die \textit{PlanningScene} wird dem PR2 signalisiert, an welcher Stelle sich Objekte befinden, damit Kollisionen mit diesen Vermieden werden können. Wird von dem Benutzer versucht, über das \textit{MoveIt\_Framework} eine Bewegung auszuführen, prüft das Framework zunächst, ob diese Bewegung kollisionsfrei ausgeführt werden kann und bricht mit entsprechender Fehlermeldung ab, falls es in der \textit{PlanningScene} ein Objekt gibt, mit dem der PR2 kollidieren würde. \\
 Die Objekte der PlanningScene sind in unserem Fall die Küchenobjekte der IAI-Küche und werden definiert durch einen '\textit{Box-Collider}' mit gewisser Höhe, Breite und Länge.\\\\
@@ -97,7 +97,7 @@ Folgendes wird zurückgegeben:
 
 
 
-\subsubsection{Programmablauf}
+\subsection{Programmablauf}
 \chapterauthor{Maximilian Bertram}
 
 Folgendes ist beim starten unserer Node zu beachten:
@@ -110,7 +110,7 @@ Zum starten unserer Node stehen zwei launch-files zur Verfügung, eins für die 
 '\textit{motion\_ main\_ start.launch}': \\
 -Startet leere Simulation (empty world) mit PR2 \\
 -Startet MoveIt Move\_ Group (es wird eine für die Simulation des PR2 generierte MoveIt Konfiguration genutzt)\\
--Startet einen static transformer für das Umrechnen von Punkten in der Simulation \\
+-Startet einen static transformer für das Umrechnen von Punkten in der Simulation, da hier die gefakte Lokalisierung/Navigation des PR2 noch nicht funktioniert \\
 -Startet unsere Main Node \\
 
 \newpage
