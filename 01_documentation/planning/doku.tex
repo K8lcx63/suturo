@@ -99,6 +99,9 @@ Nimmt Pose (steht oder liegt) des Objektes wahr.
 Die Die Quellcode-Datei 'points' aus dem Paket 'planning\_vision' befasst sich ausschliesslich mit der Kommunikation mit Gruppe-Vision und Logiken auf Basis der wahrgenommenen Daten. Dabei werden Services zur Position und Pose des Objectes in Anspruch genommen und ausgewerten. Zudem wird eine Methode zur Validierung zweier Punkte angeboten.
 \subsubsection{check-points-is-equal (msg-one msg-two delta)}
 \chapterauthor{Kevin Störmer}
+
+\noindent
+\begin{minipage}{\linewidth}
 \begin{lstlisting}
 (defun check-points-is-equal (msg-one msg-two delta)
   "Compares two points with delta."
@@ -129,6 +132,7 @@ Die Die Quellcode-Datei 'points' aus dem Paket 'planning\_vision' befasst sich a
     )
   )
 \end{lstlisting}
+\end{minipage}
 
 Die Funktion 'check-points-is-equal' bekommt die Parameter 'msg-one' und 'msg-two' \"ubergeben. Dabei handelt es sich um Messages vom Typ 'object\_detection-msg'. Diese enthalten Punke (x, y, z) die zu verschiedenen Zeiten von Vision über die Kinect wahrgenommen wurden. Sie stellen den Mittelpunkt des umzustossenden Objektes dar. Beim \"Ubergabeparameter delta, handelt es sich um die maximale erlaubte Tolleranz mit der die beiden Punkte von einander abweichen dürfen. \\
 Anf\"anglich werden die Koordinaten der beiden Messages aus den Wrappern extrahiert und in Variablen fortan verf\"ugbar gemacht. Danach werden die Koordinaten paarweise voneinander subtrahiert um die Differenz beider als vorzeichenlose Zahl zu errechnen. Diese Differenz wird dann mit dem vorgegebenen Delta verglichen. Wenn sich alle Differenzen innerhalb des Deltas befinden, wird 'true' zurückgegeben, sonst 'nil'. 
@@ -303,6 +307,9 @@ Die Quellcode-Datei actions.lisp im Paket 'planning\_motion'  ist ausschliesslic
 
 \subsubsection{move-head (x y z)}
 \chapterauthor{Kevin Störmer}
+
+\noindent
+\begin{minipage}{\linewidth}
 \begin{lstlisting}
 (defun move-head (x y z)
    "Moving robot head via head_traj_controller/point_head_action. X Y Z are treated as coordinates."
@@ -318,12 +325,17 @@ Die Quellcode-Datei actions.lisp im Paket 'planning\_motion'  ist ausschliesslic
                (actionlib:make-action-goal actionclient target point-to-look-at)))
                (actionlib:call-goal actionclient actiongoal)))))
 \end{lstlisting}
+\end{minipage}
+
 Die Funktion 'move-head' bekommt als \"Ubergabeparameter Koordinaten (x y z) welche vorgeben sollen, in welche Richtung der Kopf des Pr2 bewegt wird.\\
 Zuerst wird ein neuer Actionclient, für die 'head\_traj\_controller/point\_head\_action' Action erstellt. Anschliessend soll in einem Loop solange gewartet werden, bis der Actionsserver gestartet wurde. Ist dies der Fall, wird eine neue Message erstellt, welche einen Punkt auf Basis der \"ubergebenen Koordinaten, in Relation zum Frame 'base\_link', enth\"alt. Diese wird dann in ein neues Actiongoal gefasst und an den Actionserver geschickt, welcher den Kopf des Pr2 dann in Richtung der Koordinaten bewegen wird.
 
 
 \subsubsection{move-Base-To-Point (x y z w)}
 \chapterauthor{Kevin Störmer}
+
+\noindent
+\begin{minipage}{\linewidth}
 \begin{lstlisting}
 (defun move-Base-To-Point (x y z w)
   "Moving robot base via nav_pcontroller/move_base. X Y Z are treated as coordinates. W for Orientation."
@@ -339,6 +351,8 @@ Zuerst wird ein neuer Actionclient, für die 'head\_traj\_controller/point\_head
                  (actionlib:make-action-goal actionclient target_pose pose-to-drive-to)))
                  (actionlib:call-goal actionclient actiongoal)))))
 \end{lstlisting}
+\end{minipage}
+
 Die Funktion 'move-Base-To-Point' hat es nicht auf den Roboter geschafft, und ist momentan auch nicht korrekt. Sie konnte aus Zeitmangel nicht weiterentwickelt werden.\\
 Angedacht war es, dass eine Pose anhand von Übergabeparametern erstellt wird, und über den Actionserver des Navp-controllers den Roboter in die vorgesehene Pose zu bewegen. Dabei traten allerdings Probleme auf, die wir zeitlich nicht mehr reparieren konnten.
 
