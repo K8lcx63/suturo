@@ -20,12 +20,30 @@
 \section{Die Quellcode-Datei: main.lisp (planning\_main\_programm)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
-\begin{center} \includegraphics[width=0.4\textwidth]{img/diag_planning_main_programm.png} \end{center}
+
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=0.4\textwidth]
+        {img/diag_planning_main_programm.png}
+        \caption{} Architektur der Quellcode-Datei main.lisp}
+\end{figure}
+      
+
+
 \subsection{Beschreibung des Teilsystems}
 \subsubsection{\"Ubersicht}\label{sec:main}
 \chapterauthor{Kevin Störmer}
 Die Die Quellcode-Datei 'main' im Paket 'planning\_main\_programm' soll ausschliesslich auf höchster Ebene den internen Ablauf des PR2 modellieren. Dabei wird der folgende Ablauf sequenziell ausgef\"uhrt:\\
-\begin{center} \includegraphics[width=1.0\textwidth]{img/diagramm.jpg} \end{center}
+
+
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=1.0\textwidth]
+        {img/diagramm.jpg}
+        \caption{} Ablauf der Funktion main() }
+\end{figure}
+
+
 Alle dafür notwendigen Logiken, die auf Basis externer Daten entschieden werden, wurden dabei basierend auf der Quelle der Daten in andere Die Quellcode-Dateien ausgelagert. Dabei wurde z.b der Vergleich zweier Punkte aus Vision in die Die Quellcode-Datei 'points' (Paket: planning\_vision) ausgelagert.
 
 
@@ -85,7 +103,16 @@ Wird kein Objekt gefunden, welches alle Anforderungen der Main erfüllt, wird di
 \section{Die Quellcode-Datei: points.lisp (planning\_vision)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
-\begin{center} \includegraphics[width=0.6\textwidth]{img/diag_planning_vision.png} \end{center}
+
+
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=0.6\textwidth]
+        {img/diag_planning_vision.png}
+        \caption{} Architektur der Quellcode-Datei points.lisp}
+\end{figure}
+
+
 \subsection{API}
 \chapterauthor{Kevin Störmer}
 \subsubsection{Serviceclients}
@@ -198,7 +225,18 @@ In Gazebo gibt dieser Service manchmal ein 'not a number' zurück, daher wird de
 \section{Die Quellcode-Datei: ask.lisp (planning\_knowledge)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
+
 \begin{center} \includegraphics[width=0.8\textwidth]{img/diag_planning_knowledge.png} \end{center}
+
+
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=0.8\textwidth]
+        {img/diag_planning_knowledge.png}
+        \caption{} Architektur der Quellcode-Datei ask.lisp}
+\end{figure}
+
+
 \subsection{API}
 \chapterauthor{Kevin Störmer}
 \subsubsection{Serviceclients}
@@ -215,7 +253,15 @@ Die Funktion 'ask-knowledge' bekommt als \"Ubergabeparameter eine 'object\_detec
 \section{Die Quellcode-Datei: actions.lisp (planning\_motion)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
-\begin{center} \includegraphics[width=0.6\textwidth]{img/diag_planning_motion.png} \end{center}
+
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=0.6\textwidth]
+        {img/diag_planning_motion.png}
+        \caption{} Architektur der Quellcode-Datei actions.lisp}
+\end{figure}
+
+
 \subsection{API}
 \chapterauthor{Kevin Störmer}
 \subsubsection{Actionclients}
@@ -285,11 +331,19 @@ Als Parameter wird eine Nachricht mit dem Namen \textbf{point-center-of-object} 
  Der Unterschied der beiden Funktionen ist, dass an dieser Stelle keine Nachricht konstruiert werden muss, da diese als Parameter übergeben wird. Lediglich muss innerhalb der Nachricht auf ein Feld mit dem Namen \textbf{poke\_position} zugegriffen werden. Dieses Feld ist eine 'point\_stamped' Nachricht und wird als Wert dem \textit{actiongoal} übergeben.
 
 
-
+\newpage
 \section{Die Quellcode-Datei: movement.lisp (planning\_move)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
-\begin{center} \includegraphics[width=0.8\textwidth]{img/diag_planning_move.png} \end{center}
+
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=0.8\textwidth]
+        {img/diag_planning_move.png}
+        \caption{} Architektur der Quellcode-Datei movement.lisp}
+\end{figure}
+
+
 \subsection{API}
 \chapterauthor{Kevin Störmer}
 \subsubsection{Actionclients}
@@ -415,7 +469,7 @@ Die Funktion find-Object im Paket 'planning\_move' lässt den Pr2 genau \textbf{
  Wenn also ein Objekt gefunden wurde wird eine positive Nachricht ausgegeben und ebenso eine negative für den gegenteiligen Fall.
   Wurden alle Zustände erfolglos angenommen liefert die Methode ein \textbf{false} zurück.
   
-
+\newpage
 \section{Nutzungsbeschreibung}
 
 \subsection{Installation und Ausführung von Planning}
