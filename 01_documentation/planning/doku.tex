@@ -133,6 +133,8 @@ Die Die Quellcode-Datei 'points' aus dem Paket 'planning\_vision' befasst sich a
 Die Funktion 'check-points-is-equal' bekommt die Parameter 'msg-one' und 'msg-two' \"ubergeben. Dabei handelt es sich um Messages vom Typ 'object\_detection-msg'. Diese enthalten Punke (x, y, z) die zu verschiedenen Zeiten von Vision über die Kinect wahrgenommen wurden. Sie stellen den Mittelpunkt des umzustossenden Objektes dar. Beim \"Ubergabeparameter delta, handelt es sich um die maximale erlaubte Tolleranz mit der die beiden Punkte von einander abweichen dürfen. \\
 Anf\"anglich werden die Koordinaten der beiden Messages aus den Wrappern extrahiert und in Variablen fortan verf\"ugbar gemacht. Danach werden die Koordinaten paarweise voneinander subtrahiert um die Differenz beider als vorzeichenlose Zahl zu errechnen. Diese Differenz wird dann mit dem vorgegebenen Delta verglichen. Wenn sich alle Differenzen innerhalb des Deltas befinden, wird 'true' zurückgegeben, sonst 'nil'. 
 
+\noindent
+\begin{minipage}{\linewidth}
 \subsubsection{call-vision-point ()}
 \chapterauthor{Hauke Tietjen}
 \begin{lstlisting}
@@ -180,6 +182,7 @@ Anf\"anglich werden die Koordinaten der beiden Messages aus den Wrappern extrahi
                           (return-from call-vision-point
                             (roslisp:call-service "/vision_main/objectPoint" 'object_detection-srv:VisObjectInfo))))))))))))
 \end{lstlisting}
+\end{minipage}
 
 Die Funktion 'call-vision-point' ruft den Service '/vision\_main/objectPoint' von Vision auf. Dieser Service gibt den Mittelpunkt des gesehenen Objekts zurück welcher dann nach einer Fehlerüberpüfung als 'object\_detection-msg' zurückgegeben wird. 
 
