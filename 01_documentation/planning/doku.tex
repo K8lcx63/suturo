@@ -500,5 +500,87 @@ Die Funktion find-Object im Paket 'planning\_move' lässt den Pr2 genau \textbf{
 \item Zum Schluss wird noch in dem cl-user Fenster \textbf{(planning-main-programm::main)} eingegeben und mit \textbf{enter} bestätigt (die Klammern gehören auch dazu).
 \end{itemize}
 
+\subsection{Installation und Ausführung von Vision}
+
+\subsubsection{Installation}
+\chapterauthor{Alexander Link}
+
+\textbf{Voraussetzungen}
+
+\begin{itemize}
+\item Ubuntu 14.04
+\item ROS Indigo
+\item Catkin tools
+\item Gazebo 2.2.x
+\end{itemize}
+
+\textbf{.bashrc}
+
+Folgendes muss zur .bashrc (oder zshrc) hinzugefügt werden:
+\begin{itemize}
+\item \textit{export KINECT1=true}
+\item \textit{export GAZEBO\_MODEL\_PATH= \$HOME/catkin\_ws/vision\_suturo\_1718/vision/models}
+\item \textit{export GAZEBO\_RESOURCE\_PATH= \$HOME/catkin\_ws/vision\_suturo\_1718/vision/worlds}
+\end{itemize}
+
+\textbf{Setup}
+
+\begin{itemize}
+\item gazebo installieren: \textit{sudo apt-get install ros-indigo-pr2-simulator}
+
+\item Sollten Probleme auftreten, könnte dies durch ein Update von gazebo auf v2.2.6 gelöst werden:
+\\
+\textit{sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu trusty main" > /etc/apt/sources.list.d/gazebo-latest.list'}
+\\
+\textit{wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -}
+\\
+\textit{sudo apt-get update}
+
+\item Folgende Pakete in den src-Ordner eines catkin workspaces klonen:\\
+        \textbf{vision\_suturo\_1718} (this package) \\
+        \textbf{msgs\_suturo\_1718}
+\item Erst "\textit{catkin build object\_detection}" nutzen, um die messages zu bauen.
+\item Dann "\textit{catkin build}" benutzen, um alles andere zu bauen.
+
+\end{itemize}
+
+\textbf{Kinect benutzen}
+\begin{itemize}
+\item \textit{sudo apt install ros-indigo-freenect-launch freenect libfreenect-bin}
+\item \textit{roslaunch freenect\_launch freenect-registered-xyzrgb.launch}
+\item (Optional) \textit{roslaunch vision vision\_kinect.launch}
+\end{itemize}
+
+\textbf{Dateien speichern}
+
+    \textit{rosrun pcl\_ros pointcloud\_to\_pcd input:=/camera/depth\_registered/point}
+
+
+\subsubsection{Ausf\"uhrung}
+\chapterauthor{Alexander Link}
+
+\textbf{vision\_main/objectPoint}
+\begin{itemize}
+\item Liefer einen PointStamped und einen Fehlercode zurück
+\item Nimmt keine Argumente
+\item Benutzt VisObjectInfo.srv
+\end{itemize}
+\textbf{vision\_main/objectPose (WIP)}
+\begin{itemize}
+\item Gibt einen bool zur\"uck, der angibt, ob ein Objekt steht oder liegt, zusammen mit einem String f\"ur weitere Informationen.
+\item Nimmt keine Argumente
+\item Benutzt GetObjectInfo.srv 
+\end{itemize}
+
+\textbf{rosservice}
+
+Unsere Services k\"onnen auch manuell abgerufen werden: \\
+
+\textit{rosservice call vision\_main/objectPoint} \\
+
+oder \\
+
+\textit{rosservice call vision\_main/objectPose}
+
 \end{document}
 
