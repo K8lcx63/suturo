@@ -1,5 +1,5 @@
 \documentclass{suturo}
-
+\usepackage{caption}
 \begin{document}
     \maketitle{Motion}{29.12.2017}{}{1}{}{}{}{}
 
@@ -15,7 +15,75 @@
 \section{Node: main (motion\_suturo\_1718)}
 \subsection{Architekturbild}
 \chapterauthor{Roman Haak}
-\begin{center} \includegraphics[width=0.8\textwidth]{img/Architekturbild.png} \end{center}
+\begin{figure}[!htb]
+        \center{\includegraphics[width=\textwidth]
+        {img/Architekturbild.png}
+        \caption{\label{fig:motion_node} Architektur der motion-node}}
+\end{figure}
+
+\subsection{API}
+\subsubsection{Serviceclient}
+\chapterauthor{Roman Haak}
+'\textit{/kitchen\_model\_service/get\_fixed\_kitchen\_objects}': \\
+Dieser Service wird beim Initialisieren unseres Programms aufgerufen. Hierüber werden die Abmessungen der Objekte der IAI-Küche in die \textit{PlanningScene} geladen, damit der Roboter sich nur kollisionsfrei bewegt(siehe \textit{Kapitel 1.2.2}, Abschnitt zur '\textit{planning\_scene}').\\
+Die Objekte sind dabei durch eine Höhe, Breite und Länge als \textit{Box-Collider} definiert.
+
+
+\subsubsection{ActionServer}
+\chapterauthor{Maximilian Bertram}
+'\textit{/motion/moving}': \\
+Vom Typ '\textit{motion\_msgs/MovingCommand}': \\
+\begin{lstlisting}[caption={Definition der MovingCommandAction},captionpos=b]
+#goal definition
+geometry_msgs/PointStamped point_stamped
+uint8 command
+uint8 UNKNOWN=0
+uint8 MOVE_STANDARD_POSE=1
+uint8 MOVE_RIGHT_ARM=2
+uint8 MOVE_LEFT_ARM=3
+---
+#result definition
+bool successful
+---
+#feedback definition
+#bool finished
+\end{lstlisting}
+
+\newpage
+Über die MovingCommand Action ist es möglich Bewegungs-Anweisungen an unseren Actionserver zu senden. Die MovingCommand Action besteht dabei aus folgenden Attributen:
+\begin{center}
+	\begin{tabular}{ l | l | p{7cm}}
+		Name & Type & Bedeutung \\ \hline
+		goal\_ point & geometry\_ msgs/PointStamped & Der Endpunkt der Bewegung als PointStamped mit definierter frameid im Header Teil des PointStamped \\ \hline
+		command & uint8 & Konstante, die die Art des Befehls definiert (siehe Tabelle weiter unten) \\
+	\end{tabular}
+\captionof{table}{Felder des Goals der MovingCommandAction}
+\end{center}
+  
+Folgende Konstanten sind für die MovingCommand Action Message definiert:
+
+\begin{center}
+	\begin{tabular}{ l | l | p{7cm}}
+		Name & Int-Wert & Bedeutung \\ \hline
+		UNKNOWN & 0 & - \\ \hline
+		MOVE\_ STANDARD\_ POSE & 1 & Roboter Arme in die Initiale Pose bewegen (es wird kein PointStamped in der Message benötigt) \\ \hline
+		MOVE\_ RIGHT\_ ARM & 2 & Rechten Arm zu gegebenem PointStamped bewegen \\ \hline
+		MOVE\_ LEFT\_ ARM & 3 & Linken Arm zu gegebenem PointStamped bewegen \\
+	\end{tabular}
+	\captionof{table}{Konstanten der MovingCommandAction}
+\end{center}
+
+Folgendes wird zurückgegeben:
+
+
+\begin{center}
+	\begin{tabular}{ l | l | p{10cm}}
+		Name & Type & Bedeutung \\ \hline
+		successfull & bool & true/false, je nachdem ob die Bewegung erfolgreich durchgeführt werden konnte oder nicht. Im Falle eines Fehlers, werden die MoveIt Error-Codes mit einer entsprechenden Beschreibung auf der Konsole ausgegeben. \\
+	\end{tabular}
+	\captionof{table}{Rückgabe der MovingCommandAction}
+\end{center}
+
 
 \subsection{Beschreibung des Teilsystems}
 \subsubsection{Übersicht}
@@ -36,66 +104,6 @@ So können wir den Endpunkt der jeweiligen kinematischen Kette zu einem bestimmt
 Es wird von dem \textit{MoveGroup}-Objekt eine entsprechende Rückmeldung in Form eines \textit{MoveItErrorCodes} über den Erfolg der Ausführung gegeben.\\\\
 \textit{\textbf{tf}} vom Typ \textit{\textbf{TransformListener}}:\\
 Mit Hilfe des \textit{TransformListeners} können Transformationen zwischen Koordinatensystemen zu einem bestimmten Zeitpunkt durchgeführt werden. Das ist in unserem Fall z.B. nötig, wenn der Arm zu einem bestimmten Punkt bewegt werden soll, der aber in einem anderen Koordinatensystem angegeben ist, als unser \textit{MoveGroup}-Objekt zum Planen verwendet.\\
-
-\subsection{API}
-\subsubsection{Serviceclient}
-\chapterauthor{Roman Haak}
-'\textit{/kitchen\_model\_service/get\_fixed\_kitchen\_objects}': \\
-Dieser Service wird beim Initialisieren unseres Programms aufgerufen. Hierüber werden die Abmessungen der Objekte der IAI-Küche in die \textit{PlanningScene} geladen, damit der Roboter sich nur kollisionsfrei bewegt(siehe \textit{Kapitel 1.2.2}, Abschnitt zur '\textit{planning\_scene}').\\
-Die Objekte sind dabei durch eine Höhe, Breite und Länge als \textit{Box-Collider} definiert.
-
-
-\subsubsection{ActionServer}
-\chapterauthor{Maximilian Bertram}
-'\textit{/motion/moving}': \\
-Vom Typ '\textit{motion\_msgs/MovingCommand}': \\
-\begin{lstlisting}
-#goal definition
-geometry_msgs/PointStamped point_stamped
-uint8 command
-uint8 UNKNOWN=0
-uint8 MOVE_STANDARD_POSE=1
-uint8 MOVE_RIGHT_ARM=2
-uint8 MOVE_LEFT_ARM=3
----
-#result definition
-bool successful
----
-#feedback definition
-#bool finished
-\end{lstlisting}
-\newpage
-Über die MovingCommand Action ist es möglich Bewegungs-Anweisungen an unseren Actionserver zu senden. Die MovingCommand Action besteht dabei aus folgenden Attributen:
-\begin{center}
-	\begin{tabular}{ l | l | p{7cm}}
-		Name & Type & Bedeutung \\ \hline
-		goal\_ point & geometry\_ msgs/PointStamped & Der Endpunkt der Bewegung als PointStamped mit definierter frameid im Header Teil des PointStamped \\ \hline
-		command & uint8 & Konstante, die die Art des Befehls definiert (siehe Tabelle weiter unten) \\
-	\end{tabular}
-\end{center}
-
-Folgende Konstanten sind für die MovingCommand Action Message definiert:
-
-\begin{center}
-	\begin{tabular}{ l | l | p{7cm}}
-		Name & Int-Wert & Bedeutung \\ \hline
-		UNKNOWN & 0 & - \\ \hline
-		MOVE\_ STANDARD\_ POSE & 1 & Roboter Arme in die Initiale Pose bewegen (es wird kein PointStamped in der Message benötigt) \\ \hline
-		MOVE\_ RIGHT\_ ARM & 2 & Rechten Arm zu gegebenem PointStamped bewegen \\ \hline
-		MOVE\_ LEFT\_ ARM & 3 & Linken Arm zu gegebenem PointStamped bewegen \\
-	\end{tabular}
-\end{center}
-
-Folgendes wird zurückgegeben:
-
-
-\begin{center}
-	\begin{tabular}{ l | l | p{10cm}}
-		Name & Type & Bedeutung \\ \hline
-		successfull & bool & true/false, je nachdem ob die Bewegung erfolgreich durchgeführt werden konnte oder nicht. Im Falle eines Fehlers, werden die MoveIt Error-Codes mit einer entsprechenden Beschreibung auf der Konsole ausgegeben. \\
-	\end{tabular}
-\end{center}
-
 
 
 \subsection{Programmablauf}
