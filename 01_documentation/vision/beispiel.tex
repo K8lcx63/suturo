@@ -30,6 +30,7 @@ Für bessere Lesbarkeit haben wir typedef Kürzel verwendet:
 \begin{verbatim}
 typedef pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloudXYZPtr;
 typedef pcl::PointCloud<pcl::Normal>::Ptr PointCloudNormalPtr;
+typedef pcl::PointCloud<pcl::PointNormal>::Ptr PointCloudPointNormalPtr;
 typedef pcl::PointCloud<pcl::PointXYZ> PointCloudXYZ;
 typedef pcl::PointCloud<pcl::Normal> PointCloudNormal;
 typedef pcl::PointIndices::Ptr PointIndices;
@@ -80,12 +81,12 @@ Beschreibung: Schätzt die Normalen einer Punktwolke ab.
 
 \subsubsection{createPointNormals}
 \begin{verbatim}
-PointCloudNormalPtr
+PointCloudPointNormalPtr
 createPointNormals(PointCloudXYZPtr input, PointCloudNormalPtr normals)
 @param: input, normals Punktwolke mit zugehörigen Normalen
 @return Punktwolke des Punkt-Typs pcl::PointNormal
 
-Beschreibung: Erstellt aus einer Punktwolke (pcl::PointXYZ) und den zugörigen
+Beschreibung: Erstellt aus einer Punktwolke (pcl::PointXYZ) und den zugehörigen
 Normalen (pcl::Normal) eine Punktwolke mit Punkt-Typ pcl::PointNormal.
 \end{verbatim}\label{func:createpointnormals}
 
@@ -276,7 +277,7 @@ VisObjectInfo.srv
 \end{verbatim}
 Gibt die Position des Eistees aus. Kann bei Problemen unterschiedliche Fehlermeldungen zurückgeben.
 \\ \\
-Wird in einem Durchgang zwei mal von Planning aufgerufen. Ein mal zur grundsätzlichen Feststellung der Position des Objekts, ein zweites mal zur Überprüfung, ob sich die Position des Objekts geändert hat.
+Wird in einem Durchgang zwei mal von Planning aufgerufen. Ein Mal zur grundsätzlichen Feststellung der Position des Objekts, ein zweites Mal zur Überprüfung, ob sich die Position des Objekts geändert hat.
 
 \subsection*{Service Server vision\_main/objectPose}
 \begin{verbatim}
