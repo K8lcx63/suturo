@@ -291,9 +291,9 @@ Da die Länge der Features für ein Objekt immer gleich ist, kann durch die Anza
 \begin{verbatim}
 @response: PointCloudRGBPtr kinect
 \end{verbatim}
-Gibt eine Punktwolke unseres Sichtfelds zurück.
+Gibt eine Punktwolke unseres Sichtfelds (Szene oder Scene) zurück. Dabei wird auf das Topic \textit{/kinect\_head/depth\_registered/points} horcht. Alternativ kann mit \textit{SIM\_KINECT\_POINTS\_FRAME} auf \textit{/head\_mount\_kinect/depth\_registered/points} auf Simulationsdaten gehorcht werden.
 \\ \\
-Wird stetig immer wieder benutzt, um eine möglichst aktuelle Position des Objekts beizubehalten.
+Die Callback-Funktion wird im loop immer wieder aufgerufen, solange die Node noch aktiv ist bzw. der roscore-server besteht.
 
 \subsection*{Service Client gazebo/get\_model\_state}
 \begin{verbatim}
@@ -313,21 +313,36 @@ Wird benutzt, um bei Problemen in der Simulation anstelle der vom kinect erkannt
 
 \section*{Programmablauf}
 \chapterauthor{Alexander Link, Update: Tammo Wübbena}
-
-Ein Subscriber empfängt die zu verarbeitenden Punktwolken des Kinect-Sensors und führt jedes mal die Funktion findCluster in perception.h aus. Diese führt dann unter Verwendung der eingegangenen Daten unsere Filter und Segementierungsprozesse in einer festen Reihenfolge aus:
+\subsection*{Schritt 1: Erkennen der Punktwolke}
+Ein Subscriber empfängt die zu verarbeitenden Punktwolken des Kinect-Sensors und hält die wahrgenommene Szene aktuell.
+\subsection*{Schritt 2: Service-Aufruf \textit{/vision\_suturo/objects\_information}}
+Jedes mal, wenn der Service \textit{/vision\_suturo/objects\_information} durch Planning aufgerufen wird, wird die Funktion \textit{findCluster} in perception.h ausgeführt. 
+\subsection*{Schritt 3: Vorbereiten auf die Extraktion} 
+In \textit{findCluster} wird die Punktwolke zunächst folgendermaßen vorbearbeitet:
 
 \begin{itemize} 
 \item Ein PassThrough Filter, der den Sichtbereich begrenzt.
 \item Ein VoxelGrid Filter zum Downsampling der eingehenden Punktwolke, indem für viele kleine 3-dimensionale Boxen der Mittelpunkte aller enthaltenden Punkte berechnet wird.
 \item Ein MovingLeastSquares Filter, der Flächen begradigt, um Ungenauigkeiten der Daten vorzubeugen.
 \item Das Entfernen von Flächen, die zu groß sind, um zum gesuchten Objekt gehören zu können. Dies passiert mehrmals, wenn es mehrere solcher Flächen im Sichtfeld gibt.
-\item Ein OutlierRemoval Filter, der die durchschnittliche Distanz jedes Punktes zu einer festen Anzahl seiner nächsten Nachbarn errechnet. Damit können Punkte extrahiert werden, die zu weit von ihren Nachbarn entfernt sind und daher nicht zum Objekt gehören können.
 \end{itemize}
-
+Eine Outlier-Removal wird nicht mehr benötigt, da die folgende Euclidean Cluster Extraction ''Ausreißer'', also weit von den Clustern entfernte Punkte nicht extrahiert.\\
+\subsection*{Schritt 3b: Ausweichen auf Simulationsdaten}
 Sollte es zu irgendeinem Zeitpunkt beim Filtern oder der Segmentierung zu Problemen kommen, weil beispielsweise die resultierende Punktwolke leer ist, wird auf die direkten Daten des Zielobjekts aus gazebo ausgewichen, wenn möglich.
 \\
-Abschließend können wir Zwischenergebnisse zum Debugging als .pcd-Dateien speichern.
+\subsection*{Schritt 4: Cluster Extraktion}
+Mit \textit{EuclideanClusterExtracion} werden die nun segmentierten Objekte (alle noch in einer Punktwolke zusammengefasst) extrahiert und in einzelne Cluster gespeichert.
 \\
-Während neue Punkte berechnet werden, werden diese zusätzlich zum Debugging für die anderen Teams als Visualization Marker ausgegeben.
+\subsection*{Schritt 5: Berechnen von Features und Posen}
+Es werden die Normal-Features, Color-Features für die Klassifikation durch Knowledge und die Posen der einzelnen Objekte berechnet.
+ 
+\subsection*{Schritt 6: Befüllen der MSG}
+Die einzelnen Features und Posen (letzteres aktuell noch nicht getestet) werden in der Message (ObjectsInfo.msg) gespeichert und zur weiteren Bearbeitung an Planning weitergegeben.
+
+\subsection*{Visualization Marker}
+Der Visualization Marker gibt den Mittelpunkt von Objekten aus. Dieser kann den anderen Gruppen beim debuggen helfen.
+
+\section*{TODO: Zielsetzung, Probleme, Ausblick}
+\chapterauthor{Tammo Wübbena}
 
 \end{document}
