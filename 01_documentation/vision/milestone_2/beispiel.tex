@@ -13,7 +13,7 @@
 \makeatother
 
 \section*{Architektur und Funktion}
-\chapterauthor{Tammo Wübbena}
+\chapterauthor{Tammo Wübbena, Update: Alexander Link}
 Das Vision-Paket \footnote{im weiteren Verlauf auch Vision-Package, vision-node oder einfach Paket oder vision genannt} dient zur Akquirierung und Verarbeitung visueller Informationen durch die Kinect-Kamera des PR2-Roboters.
 
 \begin{figure}[!htb]
@@ -25,197 +25,250 @@ Das Vision-Paket \footnote{im weiteren Verlauf auch Vision-Package, vision-node 
 \section*{Methodendokumentation}
 \chapterauthor{Tammo Wübbena}
 
-\subsection{Abkürzungen}
+\subsection{Abkürzungen durch short\_types.h}
 Für bessere Lesbarkeit haben wir typedef Kürzel verwendet:
 \begin{verbatim}
 typedef pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloudXYZPtr;
+typedef pcl::PointCloud<pcl::PointXYZRGB>::Ptr PointCloudRGBPtr;
 typedef pcl::PointCloud<pcl::Normal>::Ptr PointCloudNormalPtr;
 typedef pcl::PointCloud<pcl::PointNormal>::Ptr PointCloudPointNormalPtr;
 typedef pcl::PointCloud<pcl::PointXYZ> PointCloudXYZ;
+typedef pcl::PointCloud<pcl::PointXYZRGB> PointCloudRGB;
 typedef pcl::PointCloud<pcl::Normal> PointCloudNormal;
 typedef pcl::PointIndices::Ptr PointIndices;
+typedef std::vector<pcl::PointIndices> PointIndicesVector;
+typedef std::vector<pcl::PointIndices::Ptr> PointIndicesVectorPtr;
+
+typedef geometry_msgs::PointStamped PointStamped;
+typedef pcl::PointCloud<pcl::VFHSignature308>::Ptr PointCloudVFHS308Ptr;
+typedef sensor_msgs::PointCloud2 SMSGSPointCloud2;
+typedef std::vector<pcl::PointCloud<pcl::PointXYZ>::Ptr> PointCloudXYZPtrVector;
 \end{verbatim}
 
 \subsection{Perception}
 
+\subsubsection{preprocessCloud}
 \begin{verbatim}
-#include <perception.h>
-\end{verbatim}
+findCluster(const PointCloudXYZPtr kinect)
+Beschreibung: Wendet unsere Filter auf eine Punktwolke an.
+@param: kinect Punktwolke
+@return: Vorprozessierte Punktwolke
+\end{verbatim}\label{func:preprocesscloud}
 
+\subsubsection{segmentPlanes}
+\begin{verbatim}
+void segmentPlanes(PointCloudRGBPtr cloud_cluster)
+Beschreibung: Segmentiert Flächen, die nicht für die gesuchten Objekte relevant sind.
+@param: PointCloud, aus der Flächen entfernt werden sollen.
+\end{verbatim}\label{func:segmentplanes}
 
 \subsubsection{findCluster}
 \begin{verbatim}
-findCluster(const PointCloudXYZPtr kinect)
-@params: kinect Die Punktwolke der Kinect
-
-Beschreibung: Filtert und extrahiert einen Cluster (das gesuchte Objekt).
+std::vector<PointCloudRGBPtr> findCluster(PointCloudRGBPtr kinect)
+Findet die Objekte und gibt eine Punktwolke pro Objekt zurück.
+@param: Punktwolke der Kinect
+@return: Punktwolken der Objekte
 \end{verbatim}\label{func:findcluster}
 
 \subsubsection{findCenterGazebo}
 \begin{verbatim}
 geometry_msgs::PointStamped findCenterGazebo()
-@return: Künstlicher 3D-Mittelpunkt
-
 Beschreibung: Gibt einen künstlichen Punkt zurück (Den Mittelpunkt des Modells, 
 das an Gazebo übergeben wurde).
+@return: Künstlicher 3D-Mittelpunkt
 \end{verbatim}\label{func:findcentergazebo}
 
 
-\subsubsection{findCenter}
+\subsubsection{findPoses}
 \begin{verbatim}
-geometry_msgs::PointStamped findCenter(const PointCloudXYZPtr object_cloud)
-@param: object_cloud Eine Punktwolke (der zuvor extrahierte Cluster)
-@return: 3D-Mittelpunkt der übergebenen Punktwolke
-
-Beschreibung: Errechnet den 3D-Mittelpunkt der übergebenen Punktwolke.
-\end{verbatim}\label{func:findcenter}
+std::vector<geometry_msgs::PoseStamped> findPoses(const std::vector<PointCloudRGBPtr> clouds_in)
+Beschreibung: Errechnet Position und Rotation der Objekte in den übergebenen Punktwolken.
+@param: Punktwolken der Objekte
+@return: Posen der Objekte
+\end{verbatim}\label{func:findposes}
 
 \subsubsection{estimateSurfaceNormals}
 \begin{verbatim}
-PointCloudNormalPtr estimateSurfaceNormals(PointCloudXYZPtr input)
-@param: input Punktwolke, zu der die Normalen berechnet werden sollen
+PointCloudNormalPtr estimateSurfaceNormals(PointCloudRGBPtr input)
+Beschreibung: Schätzt die Normalen einer Punktwolke.
+@param: Punktwolke, zu der die Normalen berechnet werden sollen
 @return: Normalen der übergebenen Punktwolke
-
-Beschreibung: Schätzt die Normalen einer Punktwolke ab.
 \end{verbatim}\label{func:estimatesurfacenormals}
-
-\subsubsection{createPointNormals}
-\begin{verbatim}
-PointCloudPointNormalPtr
-createPointNormals(PointCloudXYZPtr input, PointCloudNormalPtr normals)
-@param: input, normals Punktwolke mit zugehörigen Normalen
-@return Punktwolke des Punkt-Typs pcl::PointNormal
-
-Beschreibung: Erstellt aus einer Punktwolke (pcl::PointXYZ) und den zugehörigen
-Normalen (pcl::Normal) eine Punktwolke mit Punkt-Typ pcl::PointNormal.
-\end{verbatim}\label{func:createpointnormals}
-
-\subsubsection{rotatePointCloud}
-\begin{verbatim}
-PointCloudXYZPtr rotatePointCloud(PointCloudXYZPtr cloud) 
-@param: cloud Die zu rotierende Punktwolke
-@return Rotierte Punktwolke
-
-Beschreibung: Rotiert die übergebene Punktwolke.
-\end{verbatim}\label{func:rotatepointcloud}
-
 
 \subsubsection{apply3DFilter}
 \begin{verbatim}
-PointCloudXYZPtr apply3DFilter(PointCloudXYZPtr input, float x, float y, float z)
-@param: input Punktwolke, die gefiltert werden soll
-		x,y,z Bereiche der Achsen für den Filter
-@return Rotierte Punktwolke
-
+PointCloudRGBPtr apply3DFilter(PointCloudRGBPtr input, float x, float y, float z)
 Beschreibung: Filtert eine Punktwolke, indem sie nur die Punkte in einem bestimmten
 Bereich ((-x,x), (-y,y), (0.0,z)) erhält.
+@param: Punktwolke, die gefiltert werden soll
+		x,y,z Bereiche der Achsen für den Filter
+@return Gefilterte Punktwolke
 \end{verbatim}\label{func:apply3dfilter}
-
-
-\subsubsection{isStanding}
-\begin{verbatim}
-Nicht benutzt (legacy)
-
-Beschreibung: Berechnet, ob ein Objekt steht oder liegt.
-\end{verbatim}\label{func:isstanding}
 
 \subsubsection{estimatePlaneIndices}
 \begin{verbatim}
-PointIndices estimatePlaneIndices(PointCloudXYZPtr input)
-@param: input Punktwolke, deren Planare ermittelt und deren Indices gespeichert
-werden sollen
-@return Indices des Planar, das in der Punktwolke enthalten ist (wenn eins enthalten ist).
-
-Beschreibung: Errechnet die Indices eines Planars einer Punktwolke.
+PointIndices estimatePlaneIndices(PointCloudRGBPtr input)
+Beschreibung: Errechnet die Indizes einer Fläche einer Punktwolke.
+@param: Punktwolke, dessen Fläche ermittelt werden soll
+@return Indizes der Fläche, wenn eine gefunden wurde
 \end{verbatim}\label{func:estimateplaneindices}
 
 \subsubsection{extractCluster}
 \begin{verbatim}
-PointCloudXYZPtr extractCluster(PointCloudXYZPtr input, PointIndices indices, 
+PointCloudRGBPtr extractCluster(PointCloudRGBPtr input, PointIndices indices, 
 bool negative);
+Beschreibung: Extrahiert Objekt-Cluster anhand übergebener Punktwolke und Indizes.
 @param: input Punktwolke, aus der ein Cluster extrahiert werden soll
 		indices Indizes der Punkte in input, die extrahiert werden sollen
-		negative Setzt die flag, ob indices extrahiert werden soll (false) oder
-		alle Punkte, außer den in indices angegebenen (true).
-@return Objekt-Cluster aus input
-
-Beschreibung: Extrahiert Objekt-Cluster anhand übergebener Punktwolke und
-übergebenen Indices.
+		negative Entscheidet, ob Indizes extrahiert werden sollen (false) oder
+		alle Punkte, außer den in Indizes angegebenen (true).
+@return Objekt-Cluster Punktwolke
 \end{verbatim}\label{func:extractcluster}
-
-\subsubsection{prismSegmentation}
-\begin{verbatim}
-PointIndices prismSegmentation(PointCloudXYZPtr input_cloud, PointCloudXYZPtr plane)
-@param: input_cloud Punktwolke, auf der Prisma-Segmentation ausgeführt werden soll
-		plane Planar zur Bestimmung des Prismas zur Segmentation
-@return Indizes von Objekten
-
-Beschreibung: Errechnet Indizes zur Extraktion eines Clusters von Objekten via
-Prisma-Segmentation.
-\end{verbatim}\label{func:prismsegmentation}
-
-\subsubsection{createCovarianceMatrix}
-\begin{verbatim}
-void createCovarianceMatrix(PointCloudXYZ input, Eigen::Matrix3f covariance_matrix);
-@param: input Punktwolke, für die eine Kovarianz-Matrix erstellt wird
-		covariance_matrix Die zu errechnende Kovarianz-Matrix
-@return Kovarianz-Matrix einer Punktwolke.
-
-Beschreibung: Errechnet Kovarianz-Matrix einer Punktwolke.
-\end{verbatim}\label{func:createcovariancematrix}
 
 \subsubsection{mlsFilter}
 \begin{verbatim}
-PointCloudXYZPtr mlsFilter(PointCloudXYZPtr input);
-@param: input Punktwolke, die mittels Moving-Least-Squares-Algorithmus geglättet wird
+PointCloudRGBPtr mlsFilter(PointCloudXYZPtr input);
+Beschreibung: Glättet Punktwolke unter Verwendung eines Moving-Least-Squares-Algorithmus.
+@param: Punktwolke, die mittels MLS-Algorithmus geglättet wird
 @return Geglättete Punktwolke
-
-Beschreibung: Glättet Punktwolke mit MLS-Algorithmus.
 \end{verbatim}\label{func:mlsfilter}
 
 \subsubsection{voxelGridFilter}
 \begin{verbatim}
-PointCloudXYZPtr voxelGridFilter(PointCloudXYZPtr input)
-@param: input Zu filternde Punktwolke
-@return Mit einem Voxel-Gitter gefilterterte (und damit gedownsamplete) Punktwolke
-
+PointCloudRGBPtr voxelGridFilter(PointCloudRGBPtr input)
 Beschreibung: Filtert eine Punktwolke mit dem Voxel-Gitter-Filter.
+@param: Zu filternde Punktwolke
+@return Mit einem Voxel-Gitter gefilterterte (und damit gedownsamplete) Punktwolke
 \end{verbatim}\label{func:voxelgridfilter}
 
 \subsubsection{outlierRemoval}
 \begin{verbatim}
-PointCloudXYZPtr outlierRemoval(PointCloudXYZPtr input)
-@param: input Punktwolke, die von Rauschen befreit werden soll
-@return Gefilterte Punktwolke
-
+PointCloudRGBPtr outlierRemoval(PointCloudRGBPtr input)
 Beschreibung: Entfernt Punkte aus Punktwolke, die als zu weit außen liegend
 (outlier) oder als Rauschen erkannt werden.
+@param: Punktwolke, die von Rauschen befreit werden soll
+@return Gefilterte Punktwolke
 \end{verbatim}\label{func:outlierremoval}
 
-\subsubsection{checkModelPresence}
+\subsubsection{cvfhRecognition}
 \begin{verbatim}
-int checkModelPresence(PointCloudXYZPtr scene);
-@param: scene Punktwolke, in der ein Objekt gefunden werden soll
-@return 0 Wenn Objekt gefunden, 1 wenn nicht
+PointCloudVFHS308Ptr cvfhRecognition(PointCloudRGBPtr input)
+Beschreibung: Errechnet features eines Objekts in einer Punktwolke als VFHSignature308
+@param: Punktwolke, dessen features berechnet werden sollen
+@return Features als VFHSignature308
+\end{verbatim}\label{func:cvfhRecognition}
 
-Beschreibung: Überprüft, ob ein gewisses Model in einer Punktwolke (Szene) existiert.
-\end{verbatim}\label{func:checkmodelpresence}
-
-\subsubsection{initialAlignmentAndICP}
+\subsubsection{euclideanClusterExtraction}
 \begin{verbatim}
-int initialAlignmentAndICP();
-@return: 0 wenn Objekt in einer Szene liegt, 1 sonst
-Beschreibung: Errechnet mit Initial Alignment und dem
-Iterative-Closest-Point-Algorithmus, ob ein Objekt in einer Szene steht oder liegt.
-\end{verbatim}\label{func:initialalignmentandicp}
+std::vector<PointCloudRGBPtr> euclideanClusterExtraction(PointCloudRGBPtr input)
+Beschreibung: Trennt cluster einer Punktwolke voneinander.
+@param: Punktwolke
+@return Eine Punktwolke pro cluster/Objekt
+\end{verbatim}\label{func:euclideanClusterExtraction}
 
+\subsubsection{SACInitialAlignment}
+\begin{verbatim}
+PointCloudRGBPtr SACInitialAlignment(std::vector<PointCloudRGBPtr> objects,
+                                     std::vector<PointCloudVFHS308Ptr> features,
+                                     PointCloudRGBPtr target)
+Beschreibung: Errechnet Ausrichtung von Objekten bezüglich Zielen per sample consensus
+@param: objects Punktwolken, features als VFHSignature308, target PointCloud
+@return Punktwolke
+\end{verbatim}\label{func:sacinitialalignment}
+
+\subsubsection{iterativeClosestPoint}
+\begin{verbatim}
+PointCloudRGBPtr iterativeClosestPoint(PointCloudRGBPtr input,
+                                       PointCloudRGBPtr target)
+Beschreibung: Errechnet Ausrichtung eines Objekts zu einem Ziel anhand eines iterativen 
+			  Closest-Point-Algorithmus.
+@param: input Punktwolke, target Punktwolke
+@return Punktwolke
+\end{verbatim}\label{func:iterativeClosestPoint}
+
+\subsubsection{produceColorHist}
+\begin{verbatim}
+std::vector<uint64_t> produceColorHist(pcl::PointCloud<pcl::PointXYZRGB>::Ptr  cloud)
+Beschreibung: Errechnet ein Farbhistogramm einer Punktwolke.
+@param: input Punktwolke eines Objekts, dessen Farbhistogramm errechnet werden soll
+@return Farbhistogramm als floats (r,g,b)
+\end{verbatim}\label{func:produceColorHist}
+
+\subsubsection{getAllFeatures}
+\begin{verbatim}
+void getAllFeatures(std::vector<PointCloudRGBPtr> all_clusters, std::vector<float> vfhs_vector,
+                    std::vector<uint64_t> color_features_vector)ud)
+Beschreibung: Errechnet CVFH- und Farb-features für alle übergebenen Objekte.
+@param: Punktwolken der Objekte, deren features errechnet werden sollen
+\end{verbatim}\label{func:getallfeatures}
+
+\subsubsection{getCVFHFeatures}
+\begin{verbatim}
+void getCVFHFeatures(std::vector<PointCloudRGBPtr> all_clusters, std::vector<float> current_features_vector)
+Beschreibung: Errechnet CVFH-features von Punktwolken
+@param: Punktwolken der Objekte, deren CVFH-features errechnet werden sollen
+@return: CVFH features (Histogramme der Winkel zwischen einer zentralen viewpoint direction und jeder Normalen
+\end{verbatim}\label{func:getcvfhfeatures}
+
+\subsubsection{getColorFeatures}
+\begin{verbatim}
+void getColorFeatures(std::vector<PointCloudRGBPtr> all_clusters, std::vector<uint64_t> color_features_vector)
+Beschreibung: Errechnet Farbfeatures von Punktwolken
+@param: Punktwolken der Objekte, deren Farbfeatures errechnet werden sollen
+	    Vektor für Farbfeatures, der befüllt wird
+\end{verbatim}\label{func:getcolorfeatures}
+
+
+\subsection{vision\_node}
+\subsubsection{sub\_kinect\_callback}
+\begin{verbatim}
+void sub_kinect_callback(PointCloudRGBPtr kinect)
+Beschreibung: Callback-Funktion für das kinect topic. Speichert die PointCloud ab,
+sodass sie bereitsteht, wenn sie zur Prozessierung benötigt wird.
+@param: Punktwolke des kinects
+\end{verbatim}\label{func:subkinectcallback}
+\subsubsection{start\_node}
+\begin{verbatim}
+void start_node(int argc, char **argv)
+Beschreibung: Startet die Node zur Prozessierung von Punktwolken und der Kommunikation mit anderen Nodes.
+@param: argc und argv ungenutzt
+\end{verbatim}\label{func:startnode}
+\subsubsection{getObjects}
+\begin{verbatim}
+bool getObjects(	vision_suturo_msgs::objects::Request &req, 
+			    vision_suturo_msgs::objects::Response &res)
+Beschreibung: Service zum Extrahieren von Objekten und deren Informationen aus einer Szene.
+@param: req leere request, res Antwort mit den extrahierten Objekten nach ObjectsInfo.msg
+@return true wenn service call erfolgreich, ansonsten false
+\end{verbatim}\label{func:getobjects}
+
+
+\subsection{CloudTransformer}
+
+\subsubsection{extractAbovePlane}
+\begin{verbatim}
+PointCloudRGBPtr CloudTransformer::extractAbovePlane(PointCloudRGBPtr input)
+Beschreibung: Findet die Hauptfläche (-> Tisch, etc.) und extrahiert nur die Punkte über dieser Fläche.
+@param: Punktwolke
+@return Extrahierte Punktwolke (ohne die Hauptfläche)
+\end{verbatim}\label{func:extractaboveplane}
+\subsubsection{transform}
+\begin{verbatim}
+PointCloudRGBPtr CloudTransformer::transform(const PointCloudRGBPtr cloud, std::string target_frame,
+                 std::string source_frame)
+Beschreibung: Transformiert eine Punktwolke in einen anderen frame.
+@param: cloud Punktwolke, target_frame, source_frame
+@return Transformierte Punktwolke
+\end{verbatim}\label{func:transform}
 
 \subsection{saving}
 Hilfsfunktionen zum Speichern von Punktwolken als .PCD-Dateien.
 
 \begin{verbatim}
+void savePointCloudRGBNamed(pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud,
+                            std::string filename);
 void savePointCloudXYZ(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
-void savePointCloudXYZNamed(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, char *filename);
+void savePointCloudXYZNamed(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, std::string filename);
 void savePointCloudNormal(pcl::PointCloud<pcl::Normal>::Ptr cloud);
 void savePointCloudPointNormal(pcl::PointCloud<pcl::PointNormal>::Ptr cloud);
 void savePointCloud(pcl::PointCloud<pcl::PointXYZ>::Ptr objects,
@@ -225,44 +278,12 @@ void savePointCloud(pcl::PointCloud<pcl::PointXYZ>::Ptr objects,
 
 \subsection{viewer}
 Hilfsfunktionen zur Darstellung von Punktwolken.
+Enthält auch den momentan ungenutzten Visualization Marker.
 
 \begin{verbatim}
 void visualizePointCloud(pcl::PointCloud<pcl::PointXYZ> cloud);
-void visualizeNormals(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, 			 	
-									pcl::PointCloud<pcl::Normal>::ConstPtr normals);
-\end{verbatim}
-
-\subsection{conversion}
-Hilfsfunktionen zur Konvertierung von Punktwolken (Matrizen, andere Punktwolken-Formate, ...).
-
-\begin{verbatim}
-cv::Mat PointCloud2cvMat(pycl::PointCloud<pcl::PointXYZ>::Ptr input)
-\end{verbatim}
-\subsection{globals}
-Globale Variablen und Konstanten für den leichteren Zugriff.
-
-\begin{verbatim}
-const char* SIM_KINECT_POINTS_FRAME = "/head_mount_kinect/depth_registered/points";
-const char* REAL_KINECT_POINTS_FRAME = "/kinect_head/depth_registered/points";
-
-const char* GREEN_MSG_COL = "\x1B[32m";
-
-
-gazebo_msgs::GetModelState getmodelstate;
-ros::ServiceClient client;
-std::string
-        error_message; // Wird durch den Object Position Service mit ausgegeben
-
-pcl::PointCloud<pcl::PointXYZ>::Ptr kinect_global(new pcl::PointCloud<pcl::PointXYZ>);
-pcl::PointCloud<pcl::PointXYZ>::Ptr objects_global(new pcl::PointCloud<pcl::PointXYZ>);
-pcl::PointCloud<pcl::Normal>::Ptr normals_global(new pcl::PointCloud<pcl::Normal>);
-pcl::PointCloud<pcl::PointNormal>::Ptr pointnormals_global(new
-												pcl::PointCloud<pcl::PointNormal>);
-pcl::PointCloud<pcl::PointXYZ>::Ptr mesh_global(new pcl::PointCloud<pcl::PointXYZ>);
-pcl::PointCloud<pcl::PointXYZ>::Ptr objects_rotated_global(new 	
-											 	pcl::PointCloud<pcl::PointXYZ>);
-
-geometry_msgs::PointStamped centroid_stamped;
+void visualizeNormals(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud, pcl::PointCloud<pcl::Normal>::ConstPtrnormals);
+visualization_msgs::Marker publishVisualizationMarker(geometry_msgs::PointStamped point);
 \end{verbatim}
 
 
