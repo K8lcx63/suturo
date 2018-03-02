@@ -12,6 +12,22 @@
 }
 \makeatother
 
+\section*{Zielsetzung}
+Das Ziel von Vision im zweiten Meilenstein ist das Erkennen und Segmentieren mehrerer Objekte in einer wahrgenommenen Szene. Diese Objekte sollen extrahiert werden und die Posen der einzelnen Cluster zur weiteren Verarbeitung übergeben werden. 
+
+\section*{Probleme}
+\subsection*{Segmentieren und Extrahieren von mehreren Objekten}
+Die Objekte müssen klar von der restlichen wahrgenommenen Szene extrahiert und in einzelne Cluster aufgeteilt werden.\\
+\textbf{Lösung}: Die Planare werden so lange segmentiert, bis nur noch eine Fläche (der Tisch) übrig ist. Es werden dann nur die Punkte oberhalb der Tischfläche extrahiert. Dann werden die Objekte mit einer euclidean cluster extraction voneinander getrennt und als einzelne Objekte zwischengespeichert.
+
+\subsection*{Features zur Klassifizierung ermitteln}
+Normal- und Farb-Features werden zur Klassifizierung der ermittelten Objekte benötigt. \\
+\textbf{Lösung}: Bestimmung von VFH-Features und aufteilen von RGB-Daten in Achter-Bins.
+
+\subsection*{Posen der Objekte bestimmen}
+Für eine sinnvolle Greifpose müssen die Punkt im Koordinatensystem sowie Rotation und Translation der Objekte bestimmt werden. 
+\textbf{Lösung}: Vision erhält von Knowledge die klassifizierten Labels und Nummern der Objekte, deren Pose dann mit einem Alignment-Algorithmus und einer Verfeinerung durch den Iterative Closest Point ermittelt werden.
+
 \section*{Architektur und Funktion}
 \chapterauthor{Tammo Wübbena, Update: Alexander Link}
 Das Vision-Paket \footnote{im weiteren Verlauf auch Vision-Package, vision-node oder einfach Paket oder vision genannt} dient zur Akquirierung und Verarbeitung visueller Informationen durch die Kinect-Kamera des PR2-Roboters.
