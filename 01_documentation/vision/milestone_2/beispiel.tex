@@ -39,7 +39,7 @@ Das Vision-Paket \footnote{im weiteren Verlauf auch Vision-Package, vision-node 
 \end{figure}
       
 \section*{Methodendokumentation}
-\chapterauthor{Tammo Wübbena}
+\chapterauthor{Tammo Wübbena, Update: Alexander Link}
 
 \subsection{Abkürzungen durch short\_types.h}
 Für bessere Lesbarkeit haben wir typedef Kürzel verwendet:
@@ -314,15 +314,24 @@ objects.srv
 							normal_features (VHFSignature308 as array)
 							color_features (Color Histogram as array)
 							object_amount (Number of objects in scene)
-							object_poses (PoseStamped of objects in scene)
 							object_information (additional information)
 							object_errors (errors while extracting)
 							)
 \end{verbatim}
-Gibt Anzahl, Features und Posen von den in einer Szene erkannten Objekten (Clustern) zurück. Die Pose wird für diesen Meilenstein noch nicht ermittelt. Der Service kann weitere Informationen und bei Problemen unterschiedliche Fehlermeldungen zurückgeben.
+Gibt Anzahl, Features von den in einer Szene erkannten Objekten (Clustern) zurück. Die Pose wird für diesen Meilenstein noch nicht ermittelt. Der Service kann weitere Informationen und bei Problemen unterschiedliche Fehlermeldungen zurückgeben.
 \\ \\
 Die \textit{normal\_features} vom Typ VFHSignature308 und \textit{color\_features} (acht bins) aller Objekte werden konkateniert in Arrays festgehalten. 
 Da die Länge der Features für ein Objekt immer gleich ist, kann durch die Anzahl der erkannten Objekte die Länge insgesamt ermittelt werden.
+
+\subsection*{Service Server /vision\_suturo/objects\_poses}
+\begin{verbatim}
+poses.srv
+@request: string, uint8 (label of classified (recognized) object and its number in the array given by the ObjectsInfo.msg)
+@response: ObjectsInfo msg (
+							poses (the pose of the requested object)
+							)
+\end{verbatim}
+After the objects\_information service is called, it is processed by knowledge and planning. The estimated object classified by knowledge is labeled. Its index is calculated by planning (this is done by checking the seperated feature-array) and then send to vision. In our package the buffered object is then aligned with a mesh, so we can calculate the pose of it and send it back.
 
 \subsection*{Subscriber REAL\_KINECT\_POINTS\_FRAME}
 \begin{verbatim}
