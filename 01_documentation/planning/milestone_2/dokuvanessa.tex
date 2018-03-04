@@ -34,17 +34,13 @@ Bei dem Erhalt von Vision über die Informationen der gesehenen Objekte kommt ei
 \chapterauthor{Vanessa Hassouna}
 Für eine sinnvolle Logik der Main ist eine gute Übersicht zu schaffen. Da die Logik der Main jedoch immer fulminanter wird passiere hier schnell Fehler.\\
 
-\textbf{Lösung}: Die Logik der Main wurde in mehrere Teilabschnitte getrennt und in neue Funktionen geschachtelt. Eine weitere Schnittstelle \textbf{planning\_logic} dient zur Extraktion von Logischen zwischen Abschnitten.
+\textbf{Lösung}: Die Logik der Main wurde in mehrere Teilabschnitte getrennt und in neue Funktionen geschachtelt. Eine weitere Schnittstelle \textbf{planning\_logic} dient zur Extraktion von Logischen zwischen Abschnitten.\\
 
-\section*{Architektur und Funktion}
-\chapterauthor{Tammo Wübbena, Update: Alexander Link}
-Das Vision-Paket \footnote{im weiteren Verlauf auch Vision-Package, vision-node oder einfach Paket oder vision genannt} dient zur Akquirierung und Verarbeitung visueller Informationen durch die Kinect-Kamera des PR2-Roboters.
+\subsection*{Ein Gripper ist unerwartet leer}
+\chapterauthor{Kevin Störmer}
+Greift der Pr2 daneben, oder verliert er während der Fahrt ein Objekt aus dem Gripper, so könnte der Pr2 ein dieses überfahren oder fälschlicherweise ein Objekt ablegen, welches sich nicht in seinem Gripper befindet.\\
 
-%\begin{figure}[!htb]
-   %     \center{\includegraphics[width=\textwidth]
-  %      {figures/vision_suturo_node_diagram_demo2.png}
- %       \caption{\label{fig:vision_node} Architektur der vision-node}}
-%\end{figure}
+\textbf{Lösung}: Algorithmus stellt zur Laufzeit anhand der Joints des Gripper fest, ob diese Gripper gefüllt sind, oder nicht. Es können so beliebig im Code kritische Abschnitte definiert werden, in denen eine Laufzeitkontrolle notwendig ist. Sollte nun ein Gripper fälschlicherweise leer sein, kann eine Notfallroutine etabliert werden.
       
 \section*{Methodendokumentation}
 
@@ -55,6 +51,18 @@ Das Vision-Paket \footnote{im weiteren Verlauf auch Vision-Package, vision-node 
 \begin{verbatim}
 main()
 Beschreibung: Ablauf des Roboters
+\end{verbatim}
+
+\subsubsection{find-Object(x z)}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+find-Object()
+Beschreibung: Sucht anhand variabler x und z-Achse sowie fest eingestellter
+y-Koordinaten nach sichtbaren Objekten. Sollte ein Objekt gefunden werden,
+oder die maximale Anzahl an Suchläufen überschritten werden,
+terminiert die Funktion. Die Funktion beginnt immer beim zuletzt gesehenen Punkt.
+@param: x-axis z-axis
+@return: T wenn Objekt gefunden, nil falls nichts zu finden
 \end{verbatim}
 
 
@@ -157,6 +165,26 @@ Beschreibung: Berechnet von der aktuellen Position des Roboters um wie viel Grad
 @return: angle 
 \end{verbatim}
 
+\subsubsection{init-gripper-states ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+init-gripper-states ()
+Beschreibung: Subscribed das Topic '/joint_states' und gibt als Callback-Funktion
+'is-gripper-filled (msg)' an.
+\end{verbatim}
+
+\subsubsection{is-gripper-filled (msg)}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+is-gripper-filled (msg)
+Beschreibung: Aktualisiert alle 0.01 Sekunden die Fluents *gripper-righ-state-fluent* 
+und *gripper-left-state-fluent* um T oder nil. Dabei wird anhand der Joint-States der
+Gripper-Joints 'r_gripper_joint' und 'l_gripper_joint' entschieden
+ob jeder Gripper des Pr2 gefüllt ist, oder nicht. Diese werte werden
+aus den Joint-States geparsed.
+@param: sensor_msgs/JointState msg 
+\end{verbatim}
+
 \subsection{planning\_motion}
 
 \subsubsection{call-Motion-\\
@@ -188,7 +216,7 @@ Beschreibung: Ruft den Actionserver von Motion auf und gibt ihnen den Befehl den
 
 \subsubsection{move-Head (x y z))
 }
-\chapterauthor{Vanessa Hassouna und Kevin}
+\chapterauthor{Vanessa Hassouna und Kevin Störmer}
 \begin{verbatim}
 move-Head (x y z)
 Beschreibung: Lässt den Rr2-Kopf bewegen, dabei wird der Service "head\_traj\_controller/point\_head\_action" angesprochen.
@@ -266,6 +294,19 @@ Beschreibung: Eine Hilfsfunktion die dazu dient, den Action-Client zu erhalten.
 call-Vision-Object-Clouds ()
 Beschreibung: Der Service von Vision  "/vision\_suturo/objects\_information" wird aufgerufen.
 @return: Succesfull oder Aborted
+\end{verbatim}
+
+\subsubsection{check-Points-Is-Equal (msg-one msg-two delta))}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+check-Points-Is-Equal (msg-one msg-two delta)
+Beschreibung: Vergleicht 2 object_detection-srv:object in
+ihren x, y, z Koordinaten anhand eines übergebenen Deltas.
+Überschreitet die Differenz der beiden Messages das Delta
+wird nil zurückgegeben.
+@param: object_detection-srv:object msg-one 
+object_detection-srv:object msg-two int delta
+@return: T or nil
 \end{verbatim}
 
 
