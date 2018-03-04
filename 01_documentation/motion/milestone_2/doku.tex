@@ -30,7 +30,7 @@ Voraussetzungen: \\
 Das Repositorie in den \textit{src}-Ordner des catkin workspaces clonen. \\
 Mit \textit{catkin build} den workspace bauen
 
-
+\newpage
 \section{Node: main (motion\_suturo\_1718)}
 \subsection{Architekturbild}
 \chapterauthor{Roman Haak}
@@ -47,7 +47,7 @@ Mit \textit{catkin build} den workspace bauen
 Dieser Service wird beim Initialisieren unseres Programms aufgerufen. Hierüber werden die Abmessungen der Objekte der IAI-Küche in die \textit{PlanningScene} geladen, damit der Roboter sich nur kollisionsfrei bewegt(siehe \textit{Kapitel 1.2.2}, Abschnitt zur '\textit{planning\_scene}').\\
 Die Objekte sind dabei durch eine Höhe, Breite und Länge als \textit{Box-Collider} definiert.
 
-
+\newpage
 \subsubsection{ActionServer}
 \chapterauthor{Maximilian Bertram}
 '\textit{/motion/moving}': \\
@@ -56,10 +56,41 @@ Vom Typ '\textit{motion\_msgs/MovingCommand}': \\
 #goal definition
 geometry_msgs/PointStamped point_stamped
 uint8 command
+#Constants for command value
 uint8 UNKNOWN=0
 uint8 MOVE_STANDARD_POSE=1
 uint8 MOVE_RIGHT_ARM=2
 uint8 MOVE_LEFT_ARM=3
+uint8 MOVE_RIGHT_GRIPPER=4
+uint8 MOVE_LEFT_GRIPPER=5
+---
+#result definition
+bool successful
+uint8 status
+#Constants for status value
+uint8 SUCCESS=0
+uint8 OUT_OF_RANGE=1
+uint8 COLLISION=2
+uint8 UNMANAGEBLE_ERROR=3
+---
+#feedback definition
+#bool finished
+\end{lstlisting}
+TODO: Namen?\\
+'\textit{/motion/moving}': \\
+Vom Typ '\textit{motion\_msgs/MovingCommand}': \\
+\begin{lstlisting}[caption={Definition der GripperAction},captionpos=b]
+#goal definition
+#position of the space between the grippers in meters
+float64 position
+#force in newton (default =  20)
+float64 effort
+#which grpper to open/closed
+uint8 gripper
+#Constants for the gripper value
+uint8 UNKNOWN=0
+uint8 LEFT=1
+uint8 RIGHT=2
 ---
 #result definition
 bool successful
@@ -68,40 +99,7 @@ bool successful
 #bool finished
 \end{lstlisting}
 
-\newpage
-Über die MovingCommand Action ist es möglich Bewegungs-Anweisungen an unseren Actionserver zu senden. Die MovingCommand Action besteht dabei aus folgenden Attributen:
-\begin{center}
-	\begin{tabular}{ l | l | p{7cm}}
-		Name & Type & Bedeutung \\ \hline
-		goal\_ point & geometry\_ msgs/PointStamped & Der Endpunkt der Bewegung als PointStamped mit definierter frameid im Header Teil des PointStamped \\ \hline
-		command & uint8 & Konstante, die die Art des Befehls definiert (siehe Tabelle weiter unten) \\
-	\end{tabular}
-\captionof{table}{Felder des Goals der MovingCommandAction}
-\end{center}
-  
-Folgende Konstanten sind für die MovingCommand Action Message definiert:
 
-\begin{center}
-	\begin{tabular}{ l | l | p{7cm}}
-		Name & Int-Wert & Bedeutung \\ \hline
-		UNKNOWN & 0 & - \\ \hline
-		MOVE\_ STANDARD\_ POSE & 1 & Roboter Arme in die Initiale Pose bewegen (es wird kein PointStamped in der Message benötigt) \\ \hline
-		MOVE\_ RIGHT\_ ARM & 2 & Rechten Arm zu gegebenem PointStamped bewegen \\ \hline
-		MOVE\_ LEFT\_ ARM & 3 & Linken Arm zu gegebenem PointStamped bewegen \\
-	\end{tabular}
-	\captionof{table}{Konstanten der MovingCommandAction}
-\end{center}
-
-Folgendes wird zurückgegeben:
-
-
-\begin{center}
-	\begin{tabular}{ l | l | p{10cm}}
-		Name & Type & Bedeutung \\ \hline
-		successfull & bool & true/false, je nachdem ob die Bewegung erfolgreich durchgeführt werden konnte oder nicht. Im Falle eines Fehlers, werden die MoveIt Error-Codes mit einer entsprechenden Beschreibung auf der Konsole ausgegeben. \\
-	\end{tabular}
-	\captionof{table}{Rückgabe der MovingCommandAction}
-\end{center}
 
 
 \subsection{Beschreibung des Teilsystems}
