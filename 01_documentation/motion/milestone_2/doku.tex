@@ -3,6 +3,8 @@
 \usepackage{titlesec}
 \begin{document}
 
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+
 \titleformat{\paragraph}
 {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 \titlespacing*{\paragraph}
@@ -124,7 +126,53 @@ bool successful
 \chapterauthor{}
 
 \subsection{Besonderheiten/Besondere Algorithmen}
-\chapterauthor{}
+\chapterauthor{Roman Haak}
+In diesem Abschnitt werden kurz erwähnenswerte Algorithmen beschrieben.
+Dabei wird zuerst der Algorithmus für das Umstoßen eines Objektes und anschließend der Algorithmus für das Greifen, bzw. Abstellen eines Objektes beschrieben.\\
+
+\subsubsection{Algorithmus für das Umstoßen eines Objektes}
+Über die von unserem Teilsystem angebotene Action '\textit{moving}' kann das Kommando zum Umstoßen eines Objektes mit dem rechten oder mit dem linken \textit{Gripper} abgesetzt werden. Beim Aufruf wird dabei eine Pose übergeben, welche die Position des Mittelpunktes des umzustoßenden Objektes und die beabsichtigte Orientierung des \textit{Grippers} beinhaltet. \\Der Algorithmus, der das Umstoßen dann realisiert, arbeitet wie folgt:\\
+
+1. \textit{Berechne die Pose, zu der der Arm als erstes gefahren werden soll. Diese Pose wird folgendermaßen ermittelt:}\\
+\tab - die Orientierung wird von der beim Aufruf des Kommandos übergebenen Pose übernommen\\
+\tab - die Position ist die Position des Objektmittelpunkts, von der noch die Distanz\\ \tab   'DISTANCE\_BEFORE\_POKING' und 'GRIPPER\_LENGTH\_LEFT'\\ \tab bzw. 'GRIPPER\_LENGTH\_RIGHT' von der X-Koordinate im 'base\_footprint'-Frame \\ \tab abgezogen wird, wobei 'DISTANCE\_BEFORE\_POKING', 'GRIPPER\_LENGTH\_LEFT' \tab und 'GRIPPER\_LENGTH\_RIGHT' definierte Konstanten sind.\\
+
+Der so errechnete Zielpunkt befindet sich also 'DISTANCE\_BEFORE\_POKING' plus 'GRIPPER\_LENGTH\_LEFT' bzw. 'GRIPPER\_LENGTH\_RIGHT' vor dem Objekt, aus Sicht des Roboters.\\
+
+2. \textit{Fahre mit dem rechten bzw. linken Arm zu der errechneten Pose.}\\
+
+3. \textit{Errechne nun einen Punkt, der etwas über dem Objektmittelpunkt liegt und falls der linke Arm benutzt wird, noch um 'GRIPPER\_LENGTH\_LEFT' minus 'GRIPPER\_LENGTH\_RIGHT' näher am Roboter liegt, damit immer auf dieselbe Weise umgestoßen wird, egal ob der linke (längere) oder rechte Arm benutzt wird.}\\
+
+4. \textit{Berrechne eine 10-Punkte Trajektorie zwischen dem in Schritt 3 errechneten Punkt und der aktuellen Position des Armes.}\\
+\tab - Dies hat den Sinn, dass sichergestellt ist, dass das Objekt von\\ \tab vorne umgestoßen wird.\\
+
+5. \textit{Fahre den Arm entlang der gewünschten Trajektorie.}\\
+\tab - Das Objekt sollte nun umgestoßen worden sein.
+
+
+\subsubsection{Algorithmus für das Greifen/Abstellen eines Objektes}
+Über die von unserem Teilsystem angebotene Action '\textit{moving}' kann das Kommando zum Greifen/Abstellen eines Objektes mit dem rechten oder mit dem linken \textit{Gripper} abgesetzt werden. Beim Aufruf wird dabei eine Pose übergeben, welche die Position des Greifpunktes des zu greifenden Objektes, bzw. die Position, zu der der \textit{Gripper} hingefahren werden soll, um das Objekt abzustellen beinhaltet. Zusätzlich ist noch die beabsichtigte Orientierung des \textit{Grippers} beinhaltet. \\Der Algorithmus, der das Greifen bzw. Abstellen dann realisiert, ist dabei derselbe. Denn die beiden Aktionen Greifen und Abstellen unterscheiden sich bei uns momentan nur daran, dass beim Greifen der \textit{Gripper} erst geöffnet und dann zum Greifen geschloßen wird und beim Abstellen der \textit{Gripper} zuerst bereits geschloßen ist und beim Abstellen des Objektes dann geöffnet werden muss. Zu dieser Unterscheidung reichen also Fallunterscheidungen innerhalb des Algorithmus. \\Der Algorithmus arbeitet dabei wie folgt:\\
+
+1. \textit{Hebe den gewünschten Arm auf die Höhe 'TABLE\_HEIGHT' + 'MAXIMUM\_OBJECT\_HEIGHT' + 'GRIPPER\_LENGTH\_LEFT' + 'DISTANCE\_BEFORE\_GRASPING'.}\\
+\tab - Da wir es in unserem aktuellen Stand des Gesamtsystems noch nicht geschafft haben, \\ \tab beim Greifen die Kollisionsfreiheit sicherzustellen, haben wir uns entschieden das Greifen\\ \tab aus einer Höhe zu realisieren, auf der sich sicher kein Objekt befindet.\\
+
+2. \textit{Bewege den Arm auf dieser Höhe über das zu greifende/abzustellende Objekt.}\\
+
+3. \textit{Ändere die Orientierung des Armes zu der Orientierung, die in der übergebenen Pose beinhaltet ist.}\\
+\tab - Die übergebene Orientierung ist in dem aktuellen Stand die, bei der der \textit{Gripper} nach \\ \tab unten orientiert ist, damit das Objekt so gegriffen werden kann.\\
+
+4. \textit{Hier findet eine Fallunterscheidung statt.}\\
+\tab - Soll ein Objekt gegriffen werden, öffne den \textit{Gripper}.\\
+\tab - Soll ein Objekt abgestellt werden, lass den \textit{Gripper}, wie er ist.\\
+
+5. \textit{Fahre mit dem Arm zu der in der übergebenen Pose angegebenen Position.}\\
+
+6. \textit{Hier findet wieder eine Fallunterscheidung statt.}\\
+\tab - Soll ein Objekt gegriffen werden, schließe den \textit{Gripper}.\\
+\tab - Soll ein Objekt abgestellt werden, öffne den \textit{Gripper}.\\
+
+7. \textit{Hebe den Arm wieder auf die am Anfang errechnete Höhe an, um das Objekt zu heben, bzw. "vom Objekt wegzufahren".}\\
+\tab - Das Objekt sollte nun entweder an dem gewünschten Platz stehen, bzw. sich in dem\\ \tab \textit{Gripper} des Roboters befinden.\\
 
 \subsection{Installationsanleitung}
 \chapterauthor{}
