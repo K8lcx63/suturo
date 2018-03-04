@@ -1,0 +1,25 @@
+\documentclass{suturo}
+
+\begin{document}
+    \maketitle{Knowledge}{13.05.2017}{}{2}{}{}{}{}
+
+\makeatletter
+\newcommand{\chapterauthor}[1]{%
+  {\parindent0pt\vspace*{-27pt}%
+  \linespread{0}\small\begin{flushright}von: #1\end{flushright}%
+  \par\nobreak\vspace*{0pt}}
+  \@afterheading%
+}
+\makeatother
+
+\section*{Zielsetzung}
+\chapterauthor{Max-Phillip Bahr}
+Das Ziel von Knowledge im zweiten Meilenstein ist das Klassifizieren und abspeichern von erkannten Gegenständen im Beliefstate sowie das bestimmen einer geeigneten GraspPose für jeden Gegenstand.
+
+\section*{Probleme}
+\chapterauthor{Max-Phillip Bahr}
+\subsection*{Bestimmen der GraspPose vom Objekt}
+Jedes Objekt muss mindestens eine GraspPose besitzen, an der es vom Roboter gegriffen werden kann.\\
+\textbf{Lösung}: In unserer OWL-Ontologie haben wir für jedes Objekt manuell eine GraspPose eingespeichert. Diese wird dann von einer Node ausgelesen und weitergegeben.
+
+\end{document}
