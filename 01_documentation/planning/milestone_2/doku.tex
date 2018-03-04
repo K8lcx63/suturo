@@ -70,6 +70,39 @@ Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentatio
 \subsection{Probleme}
 \chapterauthor{Kevin Störmer}
 
+
+
+%drinlassen?
+\newpage
+    \maketitle{Planning}{03.03.2018}{}{1}{}{}{}{}
+
+
+
+\section*{Zielsetzung}
+Das Ziel von Gruppe Planning im zweiten Meilenstein ist zu einem die Kommunikationsschnittelle zwischen den anderen Gruppen zu sein, aber auch eigene wichtige Funktionalitäten hinzuzufügen. Planning selber ist für das Fahren zwischen den Tischen, das Errorhandling wenn ein Objekt nicht gegriffen werden kann oder runterfällt, sowie das Entscheiden wo ein Objekt genau hingestellt werden soll zuständig.
+ 
+
+\section*{Probleme}
+\subsection*{Routen können nicht richtig geplant werden}
+\chapterauthor{Vanessa Hassouna}
+Beim fahren fährt der Roboter schnell mit seinen Armen gegen Küchenobjekte und dreht sich in einem Winkel der problematisch mit seinem verletzbaren Rücken ist.\\
+
+
+\textbf{Lösung}: Bevor er zu dem gegeben Punkt fährt, fährt er in eine von uns ausgewählte sichere Position. Bis dahin sollte er sich um 90 Grad gedreht haben.
+
+\subsection*{Extrahieren von wichtigen Information}
+\chapterauthor{Vanessa Hassouna}
+Bei dem Erhalt von Vision über die Informationen der gesehenen Objekte kommt eine sehr unübersichtliche \textbf{msg} die zerlegt werden muss. Hier kann es schnell zu Fehlern kommen, wenn man die Information als globale Variablen speichert. \\
+
+\textbf{Lösung}: Alle erhaltenen Informationen werden zwischengespeichert auf dem Param-Server, danach werden dieses erst miteinander konkateniert.
+
+\subsection*{Logik der Main wird zu groß und unübersichtlich}
+\chapterauthor{Vanessa Hassouna}
+Für eine sinnvolle Logik der Main ist eine gute Übersicht zu schaffen. Da die Logik der Main jedoch immer fulminanter wird passieren hier schnell Fehler.\\
+
+\textbf{Lösung}: Die Logik der Main wurde in mehrere Teilabschnitte getrennt und in neue Funktionen geschachtelt. Eine weitere Schnittstelle \textbf{planning\_logic} dient zur Extraktion von logischen Zwischenabschnitten.
+
+
 \section{Die Quellcode-Datei: main.lisp (planning\_main\_programm)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
@@ -84,27 +117,15 @@ Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentatio
 
 
 \subsection{Beschreibung des Teilsystems}
-\subsubsection{\"Ubersicht}\label{sec:main}
+\subsubsection{\"Ubersicht}
 \chapterauthor{Kevin Störmer}
-Die Die Quellcode-Datei 'main' im Paket 'planning\_main\_programm' soll ausschliesslich auf höchster Ebene den internen Ablauf des PR2 modellieren. Dabei wird der folgende Ablauf sequenziell ausgef\"uhrt:\\
-
-
-
-\begin{figure}[!htb]
-        \center{\includegraphics[width=1.0\textwidth]
-        {img/diagramm.jpg}
-        \caption{} Ablauf der Funktion main() }
-\end{figure}
-
+Die Die Quellcode-Datei 'main' im Paket 'planning\_main\_programm' soll ausschliesslich auf höchster Ebene den internen Ablauf des PR2 modellieren. 
 
 Alle dafür notwendigen Logiken, die auf Basis externer Daten entschieden werden, wurden dabei basierend auf der Quelle der Daten in andere Die Quellcode-Dateien ausgelagert. Dabei wurde z.b der Vergleich zweier Punkte aus Vision in die Die Quellcode-Datei 'points' (Paket: planning\_vision) ausgelagert.
 
 
 \subsubsection{main()}
-\chapterauthor{Kevin Störmer und Vanessa Hassouna}
-
-Der Ablauf der Main wurde in \ref{sec:main} schon durch ein Schaubild dargestellt. Hier wird nun näher auf einige funktionalen Abschnitte eingegangen.
-
+\chapterauthor{Vanessa Hassouna}
 
 
 \noindent
@@ -120,63 +141,114 @@ Der Ablauf der Main wurde in \ref{sec:main} schon durch ein Schaubild dargestell
 
 Die Main startet eine 'ros-nod' mit dem Namen \textit{planning\_main}. Diese node läuft solange, komplette Main einmalig durchlaufen wurde.
 
-\noindent             
-\begin{minipage}{\linewidth}
-\begin{lstlisting}
-[...]
-(if (planning-move::find-Object 1.0 0.5)
-        (progn
-          (planning-motion::call-Motion-Move-Arm)
-          (let ((counter 10))
-            (block check-for-valid-point 
-             [...]
-                                                   
-\end{lstlisting}
-\end{minipage}             
+\section*{Programmablauf}
+\chapterauthor{Vanessa Hassouna}
+\subsection*{Schritt 1: Vorbereiten des Roboters}
+Der Pr2 begibt sich in die Homeposition von der aus er Objekte sehen soll. 
 
-Da die Main die Ablauf-Logik darstellt wird hier sehr oft mit dem Abfragen von Verhältnissen gearbeitet. In dem Codeabschnitt sind die Aufrufe \textbf{find-Object} sowie \textbf{call-Motion-Move-Arm} gezeigt. Die verweise auf die unteren Packete erfolgt durch \textit{Name\_des\_Packets::Name\_der\_Funktion}. \\
-Darauf folgend wird eine lokale Variable \textbf{counter} erstellt die dafür zuständig ist, dass der gesamte restliche Vorgang in der Main genau 10-mal ausgeführt wird. \\
-Der Block \textbf{check-for-valid-point} ist dafür da, dass innerhalb der Main gesprungen werden kann.\\
+\subsection*{Schritt 2: Suche nach Objekten}
+Jedes mal, wenn der Kopf in einer Position ist wird der Service \textit{/vision\_suturo/objects\_information} aufgerufen. Die gegeben Information werden wie folgt bearbeitet:
 
-Innerhalb dieses Blocks werden alle Funktionen aufgerufen, die im nachfolgendem erklärt werden.
-           
-\noindent
-\begin{minipage}{\linewidth}
-\begin{lstlisting}
-    [...]
-    (return-from main  (roslisp::ros-info "Main" "Sorry i couldnt find any object :c")))))                         
-    
-\end{lstlisting}
-\end{minipage}    
+\begin{itemize} 
+\item Die Informationen werden extrahiert.
+\item Die beiden Arrays normal\_features und color\_features werden auseinander genommen und mithilfe von object\_amount auf dem Param-Server gespeichert mit der Nummer des Objektes zu der Identifikation.
+\item Die normal\_features und color\_features werden konkateniert auf dem Param-Server gespeichert als "featuresX", wobei X hier die Nummer des Objektes darstellt.
+\item Die Posen werden als Array global gespeichert.
+\end{itemize}
 
-Wird kein Objekt gefunden, welches alle Anforderungen der Main erfüllt, wird die main damit unterbrochen und eine 'ros-info' ausgegeben.
+
+\subsection*{Schritt 3: Weitergabe} 
+
+\begin{itemize} 
+\item Jetzt werden die gesehenen Objekte weitergeben an Knowledge, hier bekommen wir für jedes gegebene Objekt ein Label als String zurück.
+\item Mit hilfe des erhaltenen Labels rufen wir einen anderen Service von Vision auf der Anhand von Objekt-Nummer und Label uns eine Pose zurück gibt.  
+\item Wenn die Pose bei uns angekommen ist publishen wir auf ein Topic von Knowledge damit das gesehene Objekt in der Wissensbasis gespeichert wird.
+\end{itemize}
 
 
 
-\section{Die Quellcode-Datei: points.lisp (planning\_vision)}
+\subsection*{Schritt 4: Welches Objekt soll ich greifen und wo soll es hin}
+Wir erfragen bei Knowledge welche Objekte wir greifen sollen.
+Mit der Funktion X kriegen wir dann einen Standpunkt raus wo das Objekt hin soll. %X=Haukesfunktion Name muss hier noch ergäntzt werden
+Des weiteren wird noch abgefragt wie das Objekt gegriffen werden, soll. Die Information wird dann weiter an Motion gegeben.
+
+\subsection*{Schritt 5: Hinfahren zum gegebenen Ort}
+Mit Hilfe des Punktes wird berechnet wo der Roboter hinfahren muss. 
+ 
+\subsection*{Schritt 6: Abstellen und weiter}
+Das Objekt wird abgestellt.
+Danach fährt der Pr2 wieder zu seiner Homeposition und sucht die nächsten Objekte.
+
+
+
+
+
+
+%
+%
+%\subsubsection{find-Object (x z)}
+%\chapterauthor{Vanessa Hassouna}
+%Die Funktion find-Object im Paket 'planning\_move' lässt den Pr2 genau \textbf{8} verschiedene Zustände durchlaufen. Dieses Vorgehen endet entweder wenn ein Objekt gefunden wurde, oder gegebenenfalls alle 8 Zustände erfolglos durchlaufen wurden.
+%
+%\noindent
+%\begin{minipage}{\linewidth}
+%\begin{lstlisting}
+%(defun find-Object (x z)
+% "Looking around from 2 to -2 to find an object"
+%(let ((positions (make-array '(8) 
+%   :initial-contents '(0.0 0.5 1 1.5 2.0 -0.5 -1.5 -2.0))))
+%  (loop for i across positions do
+%    (progn
+%      (let ((y i))
+%        (move-Head x y z))
+%      (if (planning-move::ask-For)
+%          (progn
+%            (roslisp::ros-info "find-Object" "I found an object, lets move on ")
+%            (return-from find-Object T))
+%          (roslisp::ros-info "find-Object" "I can't find any object, let me try it again")))))
+%(return-from find-Object nil))
+%\end{lstlisting}
+%\end{minipage}
+%
+% Die als Parameter übergebenen \textbf{X-} und \textbf{Z-Werte} sind festgelegt und ändern sich nicht mehr in der Funktion. Der Kopf wird hier mit der oberen Funktion move-Head bewegt. Der einzige Wert der also verändert wird ist der \textbf{Y-Wert}.\\
+%
+% Dieser führt dazu, dass der Punkt sich im Koordinatensystem (ausgehend von dem \textit{base\_link} 'frame') so verändert, dass der Pr2 nach links und rechts guckt. Die Zustände werden hier in einem Array gespeichert. Dieses Array wird durchlaufen und der jeweilige gespeicherte Wert in einer Zelle wird der Funktion move-Head (planning\_move) als \textbf{Y-Wert} übergeben (mit den Parametern die find-Object selber übermittelt bekommt).Dann wird die Funktion askFor aus dem Paket 'planning\_move' aufgerufen, jene liefert true oder false zurück wie oben beschrieben.\\
+% 
+% Wenn also ein Objekt gefunden wurde wird eine positive Nachricht ausgegeben und ebenso eine negative für den gegenteiligen Fall.
+%  Wurden alle Zustände erfolglos angenommen liefert die Methode ein \textbf{false} zurück.
+  
+
+
+
+\newpage
+\section{Die Quellcode-Datei: vision\_communicate.lisp (planning\_vision)}
+
 \subsection{Architekturbild}
-\chapterauthor{Kevin Störmer}
+
+\chapterauthor{Vanessa Hassouna}
 
 
 
 \begin{figure}[!htb]
         \center{\includegraphics[width=0.6\textwidth]
-        {img/diag_planning_vision.png}
-        \caption{} Architektur der Quellcode-Datei points.lisp}
+        {img/vision.png}
+        \caption{} Architektur der Quellcode-Datei vision\_communicate.lisp}
 \end{figure}
 
 
 \subsection{API}
-\chapterauthor{Kevin Störmer}
+\chapterauthor{Vanessa Hassouna}
 \subsubsection{Serviceclients}
-1. '/vision\_main/objectPoint' \\
-Nimmt Objekt über Kinect wahr, und gibt Mittelpunkt des Objektes zur\"uck.\\ \\
-2. '/vision\_main/objectPose' \\
-Nimmt Pose (steht oder liegt) des Objektes wahr.
+1. '/vision\_suturo/Object\_information' \\
+Nimmt Objekt über Kinect wahr, und gibt eine "msg" zurück die Colorfeatures, Normalfeatures, Objectamount und Pose beinhaltet.\\ \\
+2. '/vision\_suturo/objects\_pose' \\
+Gibt zu einem Objekt (übergeben als Nummer) und einem Label (übergeben als String) die Pose mit Rotation zurück.
+
 \subsection{Beschreibung des Teilsystems}
-\subsubsection{\"Ubersicht}
-\chapterauthor{Kevin Störmer}
-Die Die Quellcode-Datei 'points' aus dem Paket 'planning\_vision' befasst sich ausschliesslich mit der Kommunikation mit Gruppe-Vision und Logiken auf Basis der wahrgenommenen Daten. Dabei werden Services zur Position und Pose des Objectes in Anspruch genommen und ausgewerten. Zudem wird eine Methode zur Validierung zweier Punkte angeboten.
+
+
+%willst du die noch einmal überarbeiten?
+%In der aktuellen Version funktoniert sie nicht.
 \subsubsection{check-points-is-equal (msg-one msg-two delta)}
 \chapterauthor{Kevin Störmer}
 
@@ -219,6 +291,8 @@ Anf\"anglich werden die Koordinaten der beiden Messages aus den Wrappern extrahi
 
 \noindent
 \begin{minipage}{\linewidth}
+
+%Rausschmeisen? In der aktuellen Version wird diese Methode nicht verwendet und funktoniert auch nicht mehr.
 \subsubsection{call-vision-point ()}
 \chapterauthor{Hauke Tietjen}
 \begin{lstlisting}
@@ -273,45 +347,71 @@ Die Funktion 'call-vision-point' ruft den Service '/vision\_main/objectPoint' vo
 In Gazebo gibt dieser Service manchmal ein 'not a number' zurück, daher wird der Rückgabewert daraufhin überprüft. Es ist noch nicht klar ob 'NaN' als String oder float übergeben wird, daher wird beides überprüft. Zu 'sb-ext:float-nan-p' muss man sagen das es überprüft ob die nachfolgende Variable ein 'NaN' enthält und falls ja 't' zurückgibt, weil dazu keine Dokumentation auffindbar ist. Dann werden noch die bereitgestellten Fehlermeldungen von Vision abgefragt, z.B. ob überhaupt ein Objekt gesehen wurde. Falls mindestens eine dieser Abfragen zutrifft wird der Service-Call und die Fehlerüberprüfung neu gestartet. Dadurch kann die Funktion bis zu zehn mal neu gestartet werden bis sie endgültig aufgibt. Hier könnte in Zukunft eine Funktion auf höherem Level anknüpfen und den Kopf oder den ganzen Roboter bewegen um das Objekt doch noch zu erkennen.
 
 
+\subsubsection{call-Vision-Object-Clouds ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+call-Vision-Object-Clouds ()
+
+Beschreibung: Der Service von Vision  "/vision\_suturo/objects\_information" wird
+aufgerufen.
+
+@return: Succesfull oder Aborted
+\end{verbatim}
 
 
-\section{Die Quellcode-Datei: ask.lisp (planning\_knowledge)}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Die Quellcode-Datei: knowledge-communicate.lisp\\
+ (planning\_knowledge)}
 \subsection{Architekturbild}
-\chapterauthor{Kevin Störmer}
-
-\begin{center} \includegraphics[width=0.8\textwidth]{img/diag_planning_knowledge.png} \end{center}
-
-
+\chapterauthor{Vanessa Hassouna}
 
 \begin{figure}[!htb]
-        \center{\includegraphics[width=0.8\textwidth]
-        {img/diag_planning_knowledge.png}
-        \caption{} Architektur der Quellcode-Datei ask.lisp}
+        \center{\includegraphics[width=0.6\textwidth]
+        {img/knowledge.png}
+        \caption{} Architektur der Quellcode-Datei knowledge-communicate.lisp}
 \end{figure}
 
-
 \subsection{API}
-\chapterauthor{Kevin Störmer}
+\chapterauthor{Vanessa Hassouna}
 \subsubsection{Serviceclients}
-1. '/poke\_position\_service/calculation\_poke\_position' \\
-Berechnet den zu stupsenden Punkt des Objektes
+1. 'svm\_classifier/classify' \\
+Gibt uns ein Label als String für ein Objekt zurück.\\
+
+2. 'beliefstate/objects\_to\_pick'\\
+Gibt uns eine 0-2 Strings zurück, welche Objekte gegriffen werden sollen.\\
+
+3. 'beliefstate/gripper\_empty'\\
+Wir können erfragen welcher Gripper frei ist.\\
+
+4. 'kitchen\_mode\_service/get\_fixed\_kitchen\_objects'\\
+
+\subsubsection{Topics}
+1. 'beliefstate/perceive\_action'\\
+Wenn ein Objekt wahrgenommen wurde, geben wir die Information weiter.
+
+
 \subsection{Beschreibung des Teilsystems}
 \subsubsection{\"Ubersicht}
 \chapterauthor{Kevin Störmer}
-Die Die Quellcode-Datei 'ask' im Paket 'planning\_knowledge' ist ausschliesslich für die Kommunikation mit Gruppe Knowledge zust\"andig.
-\subsubsection{ask-knowledge(point-center-of-object)}
-\chapterauthor{Kevin Störmer}
-Die Funktion 'ask-knowledge' bekommt als \"Ubergabeparameter eine 'object\_detection-msg' welche den, von Vision, wahrgenommenen Mittelpunkt des Objektes enthält. Knowledge gibt nach Aufruf des Services dann einen Punkt oberhalb des Mittelpunktes zur\"uck, welchen wir dann fortw\"ahrend in unserer Main weiterverwenden.
+Die Die Quellcode-Datei 'knowledge-communicate' im Paket 'planning\_knowledge' ist ausschliesslich für die Kommunikation mit Gruppe Knowledge zust\"andig.
 
-\section{Die Quellcode-Datei: actions.lisp (planning\_motion)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Die Quellcode-Datei: motion-actions.lisp (planning\_motion)}
 \subsection{Architekturbild}
-\chapterauthor{Kevin Störmer}
+\chapterauthor{Vanessa Hassouna}
 
 
 \begin{figure}[!htb]
         \center{\includegraphics[width=0.6\textwidth]
-        {img/diag_planning_motion.png}
-        \caption{} Architektur der Quellcode-Datei actions.lisp}
+        {img/motion.png}
+        \caption{} Architektur der Quellcode-Datei motion-actions.lisp}
 \end{figure}
 
 
@@ -323,66 +423,37 @@ Bewegt die Arme des Pr2 entweder in die Home-Position oder zu einem bestimmten P
 \subsection{Beschreibung des Teilsystems}
 \subsubsection{\"Ubersicht}
 \chapterauthor{Kevin Störmer}
-Die Die Quellcode-Datei 'actions' im Paket 'planning\_motion'  ist ausschliesslich für die Kommunikation mit Gruppe Motion zuständig. Dabei wird die Action '/motion' einmal für die Home-Position des Pr2 und zum Bewegen des Armes zu einem bestimmten Punkt genutzt.
+Die Die Quellcode-Datei 'motion-actions' im Paket 'planning\_motion'  ist ausschliesslich für die Kommunikation mit Gruppe Motion zuständig. Dabei wird die Action '/motion' einmal für die Home-Position des Pr2 und zum Bewegen des Armes zu einem bestimmten Punkt und zum greifen genutzt.
 
 
-\subsubsection{call-Motion-Move-Arm ()}
-\chapterauthor{Vanessa Hassouna}
+\subsubsection{call-Motion-\\
+Move-Arm-Homeposition()}
+\chapterauthor{Vanessa Hassouna und Hauke Tietjen}
+\begin{verbatim}
+call-Motion-Move-Arm-Homeposition()
 
-Die Funktion call-Motion-Move-Arm im Paket 'planning\_motion' dient dazu Motion einen Befehl zu übermitteln, dass die Arme in die Standardposition (home position) gefahren werden sollen.
+Beschreibung: Ruft den Actionserver von Motion auf und gibt 
+ihnen den Befehl die Arme in die Homeposition zu fahren.
 
-
-\noindent
-\begin{minipage}{\linewidth}
-\begin{lstlisting}
-(defun call-Motion-Move-Arm ()
-  "Moves robot-arms into home position"
-  (let ((actionclient 
-          (actionlib:make-action-client "/moving" "motion_msgs/MovingCommandAction")))
-    (loop until
-          (actionlib:wait-for-server actionclient))
-    (let ((xtrans
-            (cl-transforms-stamped:to-msg
-             (cl-tf:make-point-stamped "base_link" 0 
-                                       (cl-transforms:make-3d-vector 5.0 3.0 1.2)))))
-          (let ((actiongoal 
-                  (actionlib:make-action-goal actionclient point_stamped xtrans command 1)))
-            (actionlib:call-goal actionclient actiongoal)))))
-\end{lstlisting}
-\end{minipage}
-
-Ein \textit{actionclient} wird konstruiert auf der \textbf{action} \textit{/moving} von dem Typ \\
- \textit{motion\_msgs/MovingCommandAction}. Innerhalb der Funktion wird darauf gewartet, dass der \textit{actionclient} erstellt wird, ansonsten würde es hier zu asynchronen Abläufen kommen die zu Fehlern führen. 
-Des weiteren wird aus einer konstruierten 'point-stamped' (die nur für die richtigen Übergabeparameter sorgt und keinerlei Funktionalität in diesem Beispiel hat) eine Nachricht transformiert. \\
-
-Nun wird ein \textit{actiongoal} konstruiert, welches aus dem \textit{actionclient}, der vorherigen transformierten Nachricht und einem 'command' (von Motion definiert; 1 steht hier für die Standartposition) besteht.
-
-\subsubsection{call-Motion-Move-To-Point (point-center-of-object)}
-\chapterauthor{Vanessa Hassouna}
-
-In dem Paket 'planning\_motion' wird die Funktion call-Motion-Move-To-Point dazu benutzt eine \textit{actiongoal} zusenden, sodass ein gewählter Arm sich zu einem Punkt bewegt.
-
-\noindent
-\begin{minipage}{\linewidth}
- 
-\lstset{language=PHP}
-\begin{lstlisting}
-[...]
-
-    (let ((actiongoal
-            (roslisp:with-fields(poke_position) point-center-of-object
-              (actionlib:make-action-goal actionclient point_stamped poke_position command 3))))
-[...]
-
-\end{lstlisting}
-\end{minipage}
+@return: Succesfull oder Aborted
+\end{verbatim}
 
 
-Als Parameter wird eine Nachricht mit dem Namen \textbf{point-center-of-object} übergeben, diese kommt ursprünglich von Vision und wurde von Knowledge bearbeitet.\\
- Die Vorgehensweise ist ähnlich wie in der Funktion zuvor erklärt und wird infolgedessen hier ausgelassen.\\
 
- Der Unterschied der beiden Funktionen ist, dass an dieser Stelle keine Nachricht konstruiert werden muss, da diese als Parameter übergeben wird. Lediglich muss innerhalb der Nachricht auf ein Feld mit dem Namen \textbf{poke\_position} zugegriffen werden. Dieses Feld ist eine 'point\_stamped' Nachricht und wird als Wert dem \textit{actiongoal} übergeben.
+\subsubsection{call-Motion-\\
+Move-Arm-To-Point (point-center-\\of-object \&optional (x 3))
+}
+\chapterauthor{Vanessa Hassouna und Hauke Tietjen}
+\begin{verbatim}
+call-Motion-Move-Arm-To-Point (point-center-of-object \&optional (x 3))
 
+Beschreibung: Ruft den Actionserver von Motion auf und gibt
+ihnen den Befehl den Arm zu dem point-center-of-object zu fahren. 
+Optional kann man den Arm hier auswählen, der bei default der rechte ist.
+
+@param point-center-of-object &optional (x 3)
+@return: Succesfull oder Aborted
+\end{verbatim}
 
 \newpage
 \section{Die Quellcode-Datei: movement.lisp (planning\_move)}
@@ -438,90 +509,283 @@ Die Funktion 'move-head' bekommt als \"Ubergabeparameter Koordinaten (x y z) wel
 Zuerst wird ein neuer Actionclient, für die 'head\_traj\_controller/point\_head\_action' Action erstellt. Anschliessend soll in einem Loop solange gewartet werden, bis der Actionsserver gestartet wurde. Ist dies der Fall, wird eine neue Message erstellt, welche einen Punkt auf Basis der \"ubergebenen Koordinaten, in Relation zum Frame 'base\_link', enth\"alt. Diese wird dann in ein neues Actiongoal gefasst und an den Actionserver geschickt, welcher den Kopf des Pr2 dann in Richtung der Koordinaten bewegen wird.
 
 
-\subsubsection{move-Base-To-Point (x y z w)}
-\chapterauthor{Kevin Störmer}
-
-\noindent
-\begin{minipage}{\linewidth}
-\begin{lstlisting}
-(defun move-Base-To-Point (x y z w)
-  "Moving robot base via nav_pcontroller/move_base. X Y Z are treated as coordinates. W for Orientation."
-  (let ((actionclient 
-         (actionlib:make-action-client "nav_pcontroller/move_base" "move_base_msgs/MoveBaseAction")))
-     (loop until
-             (actionlib:wait-for-server actionclient))
-     (let ((pose-to-drive-to 
-            (cl-transforms-stamped:to-msg 
-            (cl-transforms-stamped:make-pose-stamped "base_link" 0 
-                                                 (cl-transforms:make-3d-vector x y z) (cl-tf:make-quaternion x y z w)))))
-         (let ((actiongoal 
-                 (actionlib:make-action-goal actionclient target_pose pose-to-drive-to)))
-                 (actionlib:call-goal actionclient actiongoal)))))
-\end{lstlisting}
-\end{minipage}
-
-Die Funktion 'move-Base-To-Point' hat es nicht auf den Roboter geschafft, und ist momentan auch nicht korrekt. Sie konnte aus Zeitmangel nicht weiterentwickelt werden.\\
-Angedacht war es, dass eine Pose anhand von Übergabeparametern erstellt wird, und über den Actionserver des Navp-controllers den Roboter in die vorgesehene Pose zu bewegen. Dabei traten allerdings Probleme auf, die wir zeitlich nicht mehr reparieren konnten.
 
 
-\subsubsection{ask-For ()}
+\subsubsection{move-Base-To-\\
+Point-Safe (x y z angle))
+}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+move-Base-To-Point-Safe (x y z angle)
+
+Beschreibung: Hier wird move-Base-To-Point aufgerufen, jedoch 
+bevor dies mit den gegeben Punkten passiert, fährt er in
+eine von Uns definierte Position. Das stellt sicher, dass er nicht gegen Kanten stößt.
+ 
+@param: x y z angle
+@return: Succesfull oder Aborted
+\end{verbatim}
+
+
+\subsubsection{move-Base-To-\\
+Point (x y z angle)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+move-Base-To-Point (x y z angle)
+
+Beschreibung: Anhand des  "nav\_pcontroller/move\_base" 
+wird die Basis bewegt. Der Punkt und die Rotation sind in Frame "map" anzugeben.
+
+@param: x y z angle
+@return: Succesfull oder Aborted
+\end{verbatim}
+
+
+
+\subsubsection{move-Robo-Into\\
+-Homeposition ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+move-Robo-Into-Homeposition ()
+
+Beschreibung: move-Base-To-Point wird aufgerufen mit 
+von uns vordefinierten Punkten die als Homeposition  definiert sind.
+
+@return: Succesfull oder Aborted
+\end{verbatim}
+
+
+\subsubsection{init-Robo-Moving ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+init-Robo-Moving ()
+
+Beschreibung: Eine Hilfsfunktion die dazu dient, die Initialisierung in der Simulation
+zu Übernehmen.
+
+@return: Succesfull oder Aborted
+\end{verbatim}
+
+\subsubsection{init-Action-Client-Base ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+init-Action-Client-Base ()
+
+Beschreibung: Eine Hilfsfunktion die dazu dient, den Action-Client zu initialisieren.
+
+@return: Succesfull oder Aborted
+\end{verbatim}
+
+
+\subsubsection{get-Action-Client-Base ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+get-Action-Client-Base ()
+
+Beschreibung: Eine Hilfsfunktion die dazu dient, den Action-Client zu erhalten.
+
+@return: Succesfull oder Aborted
+\end{verbatim}
+
+
+
+
+
+
+\newpage
+\section{Die Quellcode-Datei: external-logic.lisp (planning\_logic)}
+\subsection{Architekturbild}
 \chapterauthor{Vanessa Hassouna}
 
-Die Funktion ask-For im Paket 'planning\_move' ist eine Zusatzfunktion die nur dazu dient die Nachricht von Vision auszuwerten, ob ein Objekt gefunden wurde oder nicht. Diese sollte sich in dem Packet 'planning\_vision' befinden, jedoch befindet sich diese noch in 'planning\_move'.
 
-\noindent
-\begin{minipage}{\linewidth}
-\begin{lstlisting}
-(defun ask-For ()
-  "Asking Vision if they can see an object"
-  (let ((object-Info (roslisp:call-service "/vision_main/objectPose" 'vision_msgs-srv:GetObjectInfo)))
-    (roslisp:with-fields (info) object-Info (setf object-Info info))
-    (roslisp:with-fields (isstanding) object-Info (setf object-Info isstanding))
-    (if (= object-Info 2)
-        (return-from ask-For T))))
-\end{lstlisting}
-\end{minipage}
-
-Die Funktion selber braucht keinerlei Parameter. Es wird eine lokale Variable mit dem Namen \textbf{object-Info} erstellt, jene speichert die Nachricht die von Vision übermittelt wird (in dem der Service '/vision\_main/objectPose' aufgerufen wird) ab.\\
-
- Diese Nachricht beinhaltet zwei Felder: 1. \textit{info} und 2. \textit{isstanding}. Um an die Information im zweiten Feld zu gelangen müssen die Felder nacheinander aufgerufen werden mit \textit{roslisp:with-fields} (dieses geht auch geschachtelt). Die lokale Variable \textbf{object-Info} wird mit dem Parametern aus dem Feld \textit{isstanding} gefüllt. Dieses Feld beinhaltet die Zahl 1 oder 2, in diesem Fall steht 2 für \textbf{true} und 1 für \textbf{false}.\\
- 
-  Wenn also ein Objekt gefunden wurde gibt die Funktion ein true zurück, ansonsten wird automatisch ein false (nil) zurückgeliefert. 
+\begin{figure}[!htb]
+        \center{\includegraphics[width=0.8\textwidth]
+        {img/externallogic.png}
+        \caption{} Architektur der Quellcode-Datei movement.lisp}
+\end{figure}
 
 
-
-
-\subsubsection{find-Object (x z)}
+\subsection{API}
 \chapterauthor{Vanessa Hassouna}
-Die Funktion find-Object im Paket 'planning\_move' lässt den Pr2 genau \textbf{8} verschiedene Zustände durchlaufen. Dieses Vorgehen endet entweder wenn ein Objekt gefunden wurde, oder gegebenenfalls alle 8 Zustände erfolglos durchlaufen wurden.
-
-\noindent
-\begin{minipage}{\linewidth}
-\begin{lstlisting}
-(defun find-Object (x z)
- "Looking around from 2 to -2 to find an object"
-(let ((positions (make-array '(8) 
-   :initial-contents '(0.0 0.5 1 1.5 2.0 -0.5 -1.5 -2.0))))
-  (loop for i across positions do
-    (progn
-      (let ((y i))
-        (move-Head x y z))
-      (if (planning-move::ask-For)
-          (progn
-            (roslisp::ros-info "find-Object" "I found an object, lets move on ")
-            (return-from find-Object T))
-          (roslisp::ros-info "find-Object" "I can't find any object, let me try it again")))))
-(return-from find-Object nil))
-\end{lstlisting}
-\end{minipage}
-
- Die als Parameter übergebenen \textbf{X-} und \textbf{Z-Werte} sind festgelegt und ändern sich nicht mehr in der Funktion. Der Kopf wird hier mit der oberen Funktion move-Head bewegt. Der einzige Wert der also verändert wird ist der \textbf{Y-Wert}.\\
-
- Dieser führt dazu, dass der Punkt sich im Koordinatensystem (ausgehend von dem \textit{base\_link} 'frame') so verändert, dass der Pr2 nach links und rechts guckt. Die Zustände werden hier in einem Array gespeichert. Dieses Array wird durchlaufen und der jeweilige gespeicherte Wert in einer Zelle wird der Funktion move-Head (planning\_move) als \textbf{Y-Wert} übergeben (mit den Parametern die find-Object selber übermittelt bekommt).Dann wird die Funktion askFor aus dem Paket 'planning\_move' aufgerufen, jene liefert true oder false zurück wie oben beschrieben.\\
+\subsubsection{Topics}
+1. 'joint\_states' \\
+Hört auf den Topic und speichert die Werte des Grippers.\\
+ %vielleicht willst du hier was schreiben?
  
- Wenn also ein Objekt gefunden wurde wird eine positive Nachricht ausgegeben und ebenso eine negative für den gegenteiligen Fall.
-  Wurden alle Zustände erfolglos angenommen liefert die Methode ein \textbf{false} zurück.
-  
+2. 'robot\_pose' \\
+Gibt uns die Position des Roboters.
+\subsection{Beschreibung des Teilsystems}
+
+\subsubsection{\"Ubersicht}
+\chapterauthor{Vanessa Hassouna}
+Die Quellcode-Datei external-logic.lisp im Paket 'planning\_logic'  ist für Funktionen gedacht die außerhalb der anderen Pakete funktionieren und eine Logik beinhalten die nicht zusätzlichen Platz in der main.lisp einehm soll.
+
+
+
+\subsubsection{transformation-Vision-Point (pose amount\\
+\&optional (endFrame "/base\_footprint")}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+transformation-Vision-Point (pose amount &optional (endFrame "/base\_footprint")
+
+Beschreibung: Das gegeben Objekt wird von dem ausgehenden Frame 
+in ein optionalen Frame umgewandelt(bei default ist dieser base\footprint)
+
+@param: pose, amount und optional endFrame
+@return: Liefert eine transformierte tf-point-stamped
+\end{verbatim}
+
+
+
+
+\subsubsection{catch-Transformation \\
+(transform-listener tf-point-stamped endFrame)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+catch-Transformation (transform-listener tf-point-stamped endFrame)
+
+Beschreibung: Hier findet die eigentliche transformation statt.
+
+@param: transform-listener tf-point-stamped endFrame
+@return: Liefert eine transformierte tf-point-stamped
+\end{verbatim}
+
+
+% KOMMT NOCH(defun let-Robo-Try-To-Poke (point-for-motion number-for-arm)
+%KOMMT NOCH (defun try-To-Poke-Different-Location(point-for-motion number-for-arm)
+
+
+\subsubsection{should-Robo-Use-Left-Or-Right-Arm(pose amount \\
+\&optional (endFrame "/base\_footprint"))}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+should-Robo-Use-Left-Or-Right-Arm (pose amount &optional (endFrame "/base\_footprint"))
+
+Beschreibung: Anhand der Y-Achse entscheidet der Roboter
+ob er den linken oder rechten Arm bewegen soll.
+
+@param: pose object-number &optional endFrame
+@return: 3 oder 2 (3 = links 2 = Rechts)
+\end{verbatim}
+
+
+\subsubsection{disassemble-Vision-Call (visionclouds)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+disassemble-Vision-Call (visionclouds)
+
+Beschreibung: Extrahiert alle Informationen aus der Visioncloud und speichert
+ normal\_features, color\_features, object\_amount und object\_pose auf den Param-Server.
+ 
+@param: visionclouds
+@return: object\_pose
+\end{verbatim}
+
+
+
+\subsubsection{set-Params-Features \\
+(normal-s color-s normal-e color-e amount)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+set-Params-Features (normal-s color-s normal-e color-e amount)
+
+Beschreibung: Hilfsfunktion für disassemble-Vision-Call um aus
+normal\_features und color\_features Konkateniert ein features-X zu erstellen. 
+
+@param: normal-s color-s normal-e color-e amount
+@return: Nil
+\end{verbatim}
+
+
+\subsubsection{init-pr2()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+init-pr2 ()
+
+Beschreibung: Hört auf ein Topic Namens "/robot_pose" und bindet die Information.
+
+@return: geometry_msgs/Pose
+\end{verbatim}
+
+\subsubsection{pose-cb (msg)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+pose-cb (msg)
+
+Beschreibung: Rückrufende Funktion. Der Wert von msg wird als 
+fluent *pr2-pose* gespeichjert.
+
+@param: msg
+@return: geometry_msgs/Pose
+\end{verbatim}
+
+\subsubsection{move-pr2 (x y z)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+move-pr2 (x y z)
+
+Beschreibung: Ruft move-Base-To-Point-Safe mit angle-From-Pr2-Pose-To-Point auf.
+
+@param: x y z 
+@return: Succesfull oder Aborted
+\end{verbatim}
+
+\subsubsection{angle-From-Pr2-Pose-To-Point (x-goal y-goal z-goal)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+angle-From-Pr2-Pose-To-Point (x-goal y-goal z-goal)
+
+Beschreibung: Berechnet von der aktuellen Position des Roboters um wie viel Grad er 
+sich drehen muss um zu einem Punkt zu fahren, dafür wurde unter anderem das Packet
+"Cram-Language" mit der Funktion atan benutzt. Da das Bewegen des Pr2 in dem 
+Frame "map" stattfindet, wurde hier zusätzlich noch die aktuelle Drehung des 
+Pr2 in der Welt festgestellt und diese dann mit dem Grad um wie viel er sich 
+drehen muss gegengerechnet, sodass am Ende ein Angle produziert wird, der 
+innerhalb des Frames "map" funktioniert. 
+
+@param: x-goal y-goal z-goal 
+@return: angle 
+\end{verbatim}
+
+
+\subsubsection{try-To-Poke-Different-Location\\
+(point-for-motion number-for-arm)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+ try-To-Poke-Different-Location(point-for-motion number-for-arm)
+
+Beschreibung: Die Funktion lässt den Roboter anhand vorgegebener Zahlen seinen Winkel sowie seine Position ändern, wenn er das Objekt nicht erreichen kann.
+
+@param: point-for-motion number-for-arm
+@return: T oder Nil
+
+
+\end{verbatim}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \newpage
 \section{Nutzungsbeschreibung}
 
