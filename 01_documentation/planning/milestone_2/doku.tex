@@ -557,13 +557,19 @@ Die Funktion find-Object im Paket 'planning\_move' lässt den Pr2 genau \textbf{
 \subsection{Installation und Ausführung von Motion}
 
 \subsubsection{Installation}
-\chapterauthor{Roman Haak}
+\chapterauthor{RH, MB}
 \begin{itemize}
 
 
-\item[a] Zunächst müssen folgende Repositories in den source-Ordner des Workspaces hinzugefügt werden: \url{https://github.com/menanuni/motion_suturo_1718.git}, \url{https://github.com/menanuni/msgs_suturo_1718} und \url{https://github.com/menanuni/knowledge_suturo_1718.git}.
+\item[a] Zunächst müssen folgende Repositories in den source-Ordner des Workspaces hinzugefügt werden:  \\
+\url{https://github.com/menanuni/motion_suturo_1718} \\
+\url{https://github.com/menanuni/msgs_suturo_1718} \\
+\url{https://github.com/menanuni/knowledge_suturo_1718} \\
 
-\item[b] Nun muss noch \textit{MoveIt} über den Befehl \textit{sudo apt-get install ros-indigo-moveit} und anschließend \textit{source /opt/ros/indigo/setup.bash} installiert werden.
+\item[b] Es muss das MoveIt Framework installiert werden, dazu im Terminal: \\
+\textit{sudo apt-get update} \\
+\textit{sudo apt-get install ros-indigo-moveit} \\
+\textit{echo  \grqq{}source /opt/ros/indigo/setup.bash\grqq{} \textgreater\textgreater \textasciitilde{ }/.bashrc} \\
 
 \item[c] Jetzt kann das System über \textit{catkin build} gebaut werden.
 
