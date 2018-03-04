@@ -21,14 +21,6 @@
 
 \newpage
 \section{Motion}
-\subsection{Architekturbild}
-\chapterauthor{Roman Haak}
-\begin{figure}[!htb]
-        \center{\includegraphics[width=\textwidth]
-        {img/Architekturbild.png}
-        \caption{\label{fig:motion_node} Architektur des Teilsystems der Gruppe 'Motion'}}
-\end{figure}
-
 \subsection{Übersicht des Teilsystems}
 \chapterauthor{Roman Haak}
 Die Untergruppe '\textit{Motion}' ist für das Bewegen verschiedener "Körperpartien" des Roboters zuständig.\\
@@ -38,10 +30,17 @@ Das Bewegen der anderen, zum Erfüllen der Zielsetzung des Meilensteins 2 benöt
 von der Gruppe '\textit{Motion}' übernommen.\\
 
 In \textit{Abbildung 1} Bild sieht man die Architektur des Teilsystems der Gruppe '\textit{Motion}'. Dabei gibt zwei Knoten '\textit{suturo\_motion\_main}' und '\textit{simple\_gripper}'.\\
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=\textwidth]
+        {img/Architekturbild.png}
+        \caption{\label{fig:motion_node} Architektur des Teilsystems der Gruppe 'Motion'}}
+\end{figure}
+
 Der Knoten '\textit{suturo\_motion\_main}' ist für das Verarbeiten eingehender Kommandos zum Bewegen der Arme bzw. eines Endeffektors zuständig. Dabei gibt es Kommandos für das Fahren der Arme in eine initiale Position, das Bewegen der Arme zu einer bestimmten Pose und das Umstubsen, Greifen oder Abstellen eines bestimmten Objektes mit einer bestimmten Pose.\\
 Der Knoten '\textit{simple\_gripper}' wird dabei benutzt, um das Öffnen und Schließen des Endeffektors zu realisieren. Dieser Knoten wird von dem Hauptknoten '\textit{suturo\_motion\_main}' über einen Actionserver aufgerufen.\\
 
-Im Folgenden werden die \textit{Schnittstellen}, der \textit{Ablauf} des Teilsystems, besonders \textit{hervorzuhebende} \textit{Algorithmen} und eine \textit{Installationsanleitung} beschrieben.
+Im Folgenden werden die \textit{Schnittstellen}, der \textit{Ablauf} des Teilsystems, besonders \textit{hervorzuhebende} \textit{Algorithmen} und eine \textit{Installationsanleitung} beschrieben.\\
 
 \subsection{Schnittstellen}
 \subsubsection{'suturo\_motion\_main'}
