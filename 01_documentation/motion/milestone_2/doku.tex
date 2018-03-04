@@ -1,7 +1,7 @@
 \documentclass{suturo}
 \usepackage{caption}
 \begin{document}
-    \maketitle{Motion}{29.12.2017}{}{1}{}{}{}{}
+    \maketitle{Motion}{09.03.2018}{}{1}{}{}{}{}
 
 \makeatletter
 \newcommand{\chapterauthor}[1]{%
@@ -11,24 +11,6 @@
   \@afterheading%
 }
 \makeatother
-
-\section{Installation Motion-Package}
-\subsection{Repositorie}
-\chapterauthor{Maximilian Bertram}
-Der Stand des 2. Meilensteines ist im Github Repositorie zu finden: \\
--!!!!!LINK TAG-MEILENSTEIN2!!!!!-
-
-\subsection{Installation}
-\chapterauthor{Maximilian Bertram}
-Voraussetzungen: \\
-- Ubuntu 14.04 (Trusty Tahr) \\
-- ROS-Indigo \\
-- Catkin \\
-- eingerichteter Catkin Workspace \\
-- suturo\_msgs package im Workspace \\
-
-Das Repositorie in den \textit{src}-Ordner des catkin workspaces clonen. \\
-Mit \textit{catkin build} den workspace bauen
 
 \newpage
 \section{Node: main (motion\_suturo\_1718)}
@@ -48,7 +30,7 @@ Dieser Service wird beim Initialisieren unseres Programms aufgerufen. Hierüber 
 Die Objekte sind dabei durch eine Höhe, Breite und Länge als \textit{Box-Collider} definiert.
 
 \newpage
-\subsubsection{ActionServer}
+\subsubsection{Message Definitionen}
 \chapterauthor{Maximilian Bertram}
 '\textit{/motion/moving}': \\
 Vom Typ '\textit{motion\_msgs/MovingCommand}': \\
@@ -104,70 +86,18 @@ bool successful
 
 \subsection{Beschreibung des Teilsystems}
 \subsubsection{Übersicht}
-\chapterauthor{Roman Haak}
-Dieser Teil des Systems ist für das Bewegen des PR2 in eine bestimmte Position, bzw. zu einem bestimmten Punkt hin verantwortlich.\\
-Zum Ausführen von Bewegungen des PR2 benutzen wir das '\textit{MoveIt-Framework}'. Dieses Framework bietet dabei ein '\textit{MoveGroup-Interface}' an, mit dessen Hilfe es dem Benutzer möglich ist, mit einfachen Funktionsaufrufen Bewegungen auszuführen. Die dahinter steckenden Logiken und Umrechnungen, welche zum letztendlichen Bewegen des Armes nötig sind, werden dann von dem Framework umgesetzt, ohne dass der Benutzer sich darum kümmern muss.\\
-Wie wir dieses Framework benutzen, wird im Folgenden vorgestellt.
+\chapterauthor{}
 
 \subsubsection{Klassenvariablen}
-\chapterauthor{Roman Haak}
-Im Folgenden werden kurz die wichtigsten Variablen der Klasse '\textit{main}' vorgestellt, um die Funktionsweise des \textit{MoveGroup-Interfaces} zu verdeutlichen:\\\\
-\textit{\textbf{planning\_scene}} vom Typ \textit{\textbf{PlanningSceneInterface}}:\\
-Über diese Variable ist es uns möglich die sogenannte '\textit{PlanningScene}' des PR2 zu befüllen. Über die \textit{PlanningScene} wird dem PR2 signalisiert, an welcher Stelle sich Objekte befinden, damit Kollisionen mit diesen Vermieden werden können. Wird von dem Benutzer versucht, über das \textit{MoveIt\_Framework} eine Bewegung auszuführen, prüft das Framework zunächst, ob diese Bewegung kollisionsfrei ausgeführt werden kann und bricht mit entsprechender Fehlermeldung ab, falls es in der \textit{PlanningScene} ein Objekt gibt, mit dem der PR2 kollidieren würde. \\
-Die Objekte der PlanningScene sind in unserem Fall die Küchenobjekte der IAI-Küche und werden definiert durch einen '\textit{Box-Collider}' mit gewisser Höhe, Breite und Länge.\\\\
-\textit{\textbf{both\_arms}}, \textit{\textbf{left\_arm}}, \textit{\textbf{right\_arm}} vom Typ \textit{\textbf{MoveGroupInterface}}:\\
-Über Variablen des \textit{MoveGroupInterfaces} können Befehle zum Bewegen eines bestimmten Körperteils abgeschickt werden. Bei uns gibt es dabei drei Gruppen für linken, rechten und beide Arme.\\
-So können wir den Endpunkt der jeweiligen kinematischen Kette zu einem bestimmten Punkt hinbewegen oder auch die Gelenkwinkel der Gelenke einer Gruppe einstellen. Das Berechnen einer Trajektorie übernimmt dabei das \textit{MoveIt-Framework}.\\
-Es wird von dem \textit{MoveGroup}-Objekt eine entsprechende Rückmeldung in Form eines \textit{MoveItErrorCodes} über den Erfolg der Ausführung gegeben.\\\\
-\textit{\textbf{tf}} vom Typ \textit{\textbf{TransformListener}}:\\
-Mit Hilfe des \textit{TransformListeners} können Transformationen zwischen Koordinatensystemen zu einem bestimmten Zeitpunkt durchgeführt werden. Das ist in unserem Fall z.B. nötig, wenn der Arm zu einem bestimmten Punkt bewegt werden soll, der aber in einem anderen Koordinatensystem angegeben ist, als unser \textit{MoveGroup}-Objekt zum Planen verwendet.\\
+\chapterauthor{}
+
 
 
 \subsection{Programmablauf}
-\chapterauthor{Maximilian Bertram}
+\chapterauthor{}
 
-Folgendes ist beim starten unserer Node zu beachten:
-
-Es muss bereits der kitchen\_ model\_ export Service von knowledge gestartet sein, damit wir direkt beim starten der Node die PlanningScene richtig befüllen können.
-
-Zum starten unserer Node stehen zwei launch-files zur Verfügung, eins für die Simulation (\textit{motion\_ main\_ start.launch}) und eins für den echten PR2 (\textit{motion\_ main\_ start\_ real\_ pr2.launch}).
-\\
-
-'\textit{motion\_ main\_ start.launch}': \\
--Startet leere Simulation (empty world) mit PR2 \\
--Startet MoveIt Move\_ Group (es wird eine für die Simulation des PR2 generierte MoveIt Konfiguration genutzt)\\
--Startet einen static transformer für das Umrechnen von Punkten in der Simulation, da hier die gefakte Lokalisierung/Navigation des PR2 noch nicht funktioniert \\
--Startet unsere Main Node \\
-
-\newpage
-'\textit{motion\_ main\_ start\_ real\_ pr2.launch}': \\
--Startet MoveIt Move\_ Group (es wird die MoveIt Konfiguration des iai\_ pr2 packages genutzt) \\
--Startet unsere Main Node \\
--Ein Static Transformer wird nicht benötigt, da auf dem Roboter die Map von einem Service zur Verfügung gestellt wird \\
--Die Simulation muss auf dem echten PR2 nicht gestartet werden \\
-
-Nach einem erfolgreichen Start, wird der \textit{kitchen\_ model\_ service (siehe Kapitel 1.2.3 - Serviceclient)} aufgerufen und die PlanningScene mit den Objekten der Küche befüllt. \\
-Im Falle eines Fehlers beendet sich der Node und es wird eine entsprechende Meldung auf der Konsole ausgegeben. \\
-War das Befüllen der PlanningScene erfolgreich wartet der ActionServer auf weitere Befehle in Form von \textit{MovingCommandAction-Messages}.
-Wird eine neue MovingCommandAction-Message gesendet, wird das \textit{Command} der Message geparst und die entsprechende Gruppe (\textit{linker Arm, rechter Arm, beide Arme}) bewegt. \\
-Es wird der Punkt (falls erforderlich) in das entsprechende Koordinatensystem der zu bewegenden Gruppe umgerechnet. Anschließend wird mit MoveIt ein entsprechender Bewegungsplan erstellt.\\ 
-Wenn ein entsprechender Bewegungsplan existiert und die Gruppe an den Punkt ohne Kollision mit der PlanningScene bewegt werden kann, wird die Bewegung ausgeführt und \textit{true} zurückgegeben.
-Existiert kein Bewegungsplan (z.B.: Gruppe kann rein technisch nicht an den Punkt gelangen) oder  wenn es keine Möglichkeit gibt an den Punkt ohne Kollision zu gelangen, wird \textit{false} zurückgegeben und der entsprechende MoveItErrorCode mit Beschreibung auf der Konsole ausgegeben und keine Bewegung durchgeführt. \\
-
-
-
-
-
-%UNTERSCHIED LAUNCHFILE FÜR SIMULATION UND ECHTER ROBOTER -> LADEN DER KONFIGURATIONSDATEIEN - SIMULATION ODER ECHTER ROBOTER
-%STARTEN DER NAVIGATIONSSACHEN -> AUCH HIER UNTERSCHIED SIMULATION UND ECHTER ROBOTER
-%INITIALISIEREN DER KÜCHE, WARTEN AUF CALL DES ACTIONSERVERS, AUSFÜHREN (FALLS MÖGLICH), RÜCKMELDUNG AN ACTIONCLIENTS (IN SIMULATION UND ECHT GLEICH)
 \subsubsection{Besonderheiten/Besondere Algorithmen}
-\chapterauthor{Maximilian Bertram}
+\chapterauthor{}
 
-\textbf{VisualizationMarker}
-
-Wenn der linke/rechte Arm bewegt wird, werden dabei 2 VisualizationMarker gepublished, welche in RViz angezeigt werden können. Im Idealfall befinden sich diese beiden Punkte exakt an der gleichen Position. Der gelbe Marker zeigt den gewünschten Endpunkt der Bewegung vor dem umrechnen, der rote Marker zeigt den Punkt nach dem Umwandeln in das Koordinatensystem der zu bewegenden Gruppe.
-
-%ÜBERHAUPT VORHANDEN? PARSEN DER MOVEITERRORCODES? VISUALIZATION-MARKER? ORIENTATION DES GRIPPERS?
 
 \end{document}
