@@ -113,6 +113,19 @@ Für eine sinnvolle Logik der Main ist eine gute Übersicht zu schaffen. Da die 
 \chapterauthor{Kevin Störmer}
 Greift der Pr2 daneben, oder verliert er während der Fahrt ein Objekt aus dem Gripper, so könnte der Pr2 ein dieses überfahren oder fälschlicherweise ein Objekt ablegen, welches sich nicht in seinem Gripper befindet.\\
 
+\subsection*{Die Objektplatzierung soll dynamisch sein}
+\chapterauthor{Hauke Tietjen}
+Man könnte für jedes Objekt eine Abstellposition festlegen aber was wäre wenn eine zweite gleiche Ketchupflasche auftaucht und ihr Platz bereits belegt ist? \\
+
+\textbf{Lösung}: Objekte werden in ihren festgelegten Abstellzonen kollisionsfrei platziert bis diese keinen Platz mehr bieten oder bei drohender Überfüllung ein Fehler geworfen werden kann. 
+
+
+\subsection*{Fehler sollen hierarchisch sein}
+\chapterauthor{Hauke Tietjen}
+Es sollte möglich sein festzustellen aus welchen Bereichen Fehler kommen und diese aufgrund dessen anders zu behandeln. Besonders in höher gelegenen Funktionen kann dies genutzt werden. \\
+
+\textbf{Lösung}: In einer Fehlerhierarchie können Fehler von anderen Fehlern erben und erfüllen daher die gewünschte Funktion.
+
 \section*{Methodendokumentation}
 \section{Die Quellcode-Datei: main.lisp (planning\_main\_programm)}
 \subsection{Architekturbild}
@@ -694,7 +707,141 @@ aus den Joint-States geparsed.
 
 
 
+\section{Die Quellcode-Datei: objects.lisp (planning\_objects)}
+\subsection{Architekturbild}
+\chapterauthor{Hauke Tietjen}
 
+
+
+\begin{figure}[!htb]
+	\center{\includegraphics[width=1.0\textwidth]
+		{img/diag_planning_objects.png}
+		\caption{} Architektur der Quellcode-Datei planning-objects.lisp}
+\end{figure}
+
+
+\subsection{API}
+\chapterauthor{Hauke Tietjen}
+\subsubsection{Serviceclients}
+1. '/storage\_place\_service/storage\_place' \\
+Gibt den Ablageplatz des Objekts zur\"uck.\\ \\
+2. '/object\_grasping/grasp\_pose' \\
+Gibt die Greifpose des für die Koordinaten zurück.\\
+3. '~location\_marker' \\
+Publiziert Marker zur Visualisierung von Landezonen.
+\subsection{Beschreibung des Teilsystems}
+\subsubsection{\"Ubersicht}
+\chapterauthor{Hauke Tietjen}
+Die Datei 'objects' aus dem Paket 'planning\_objects' dient dazu aus den von Knowledge vorgegebenen Ablageorten für Objekte Punkte zu bestimmen die geeignet sind um Objekte auf ihnen abzustellen. Dabei werden Platzmangel, Kollision und das Herunterfallen von Objekten berücksichtigt. Zusätzlich lassen sich die finalen Positionen in Rviz visualisieren.
+
+\subsubsection{calculate-landing-zone()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+calculate-landing-zone()
+Beschreibung: Fragt Knowledge an welchen Ablageort das Objekt gehört und
+verkleinert ihn um das Herunterfallen der Objekte von Tischkanten zu
+verhindern. Ruft danach fill-landing-zone-horizontally auf das eine Pose zurück gibt.
+@param object
+@return Gibt eine Pose in /map zurück um ein Objekt zu greifen
+\end{verbatim}
+
+\subsubsection{fill-landing-zone-horizontally()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+fill-landing-zone-horizontally()
+Beschreibung: Befüllt den Ablageort mit einem Objekt pro Aufruf, von Links nach
+Rechts auf der Y-Achse im Frame /map. Fragt Knowledge nach der Z-Achse und Pose
+wo das Objekt gegriffen werden soll.
+@param position width height
+@return Gibt eine Pose in /map zurück um ein Objekt zu greifen
+\end{verbatim}
+
+\subsubsection{calculate-landing-zone-visualized()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+calculate-landing-zone-visualized()
+Beschreibung: Führt calculate-landing-zone() aus und visualisiert das Ergebnis mit
+visualize-landing-zone().
+@param object
+@return Gibt eine Pose in /map zurück um ein Objekt zu greifen
+\end{verbatim}
+
+\subsubsection{visualize-landing-zone()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+visualize-landing-zone()
+Beschreibung: Führt vis-init() und publish-pose() aus um eine Pose zu visualisieren.
+@param pose
+@return 
+\end{verbatim}
+
+\subsubsection{check-which-storage-place()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+check-which-storage-place()
+Beschreibung: Findet heraus in welchem der vier Storageplaces sich die Y-Koordinate befindet.
+@param y
+@return Storageplace
+\end{verbatim}
+
+\subsubsection{vis-init()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+vis-init()
+Beschreibung: Startet den Marker-publisher.
+@param 
+@return 
+\end{verbatim}
+
+\subsubsection{publish-pose()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+publish-pose
+Beschreibung: Publiziert einen Marker mit ID an der angegebenen Pose mit den Dimensionen
+aus height und width.
+@param pose id height width
+@return 
+\end{verbatim}
+
+\section{Die Quellcode-Datei: error-hierarchy.lisp (planning\_error)}
+\subsection{Architekturbild}
+\chapterauthor{Hauke Tietjen}
+\begin{figure}[!htb]
+	\center{\includegraphics[width=0.4\textwidth]
+		{img/diag_planning_error.png}
+		\caption{} Architektur der Quellcode-Datei error-hierarchy.lisp}
+\end{figure}
+
+
+\subsection{API}
+\chapterauthor{Hauke Tietjen}
+\subsubsection{Serviceclients}
+keine
+\subsection{Beschreibung des Teilsystems}
+\subsubsection{\"Ubersicht}
+\chapterauthor{Hauke Tietjen}
+Die Datei 'error-hierarchy' aus dem Paket 'planning\_error' legt die Hierarchie der Fehler fest.
+
+\subsubsection{custom-error()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+custom-error()
+Beschreibung: Dieser Standardfehler erbt von 'error' während alle weiteren Fehler von diesem erben. 
+@param message
+@return 
+\end{verbatim}
+
+\subsubsection{vision-error()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+vision-error()
+Beschreibung: Ein Fehler bei dem es um etwas aus dem Bereich Vision geht kann hiermit
+beschrieben werden. Vor der Fehlernachricht wird jetzt 'vison error:' ausgegeben. 
+@param
+@return 
+\end{verbatim}
+
+Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' sind analog zu 'vison-error' und definieren einfach weitere Fehler für andere Bereiche.
 
 
 \newpage
