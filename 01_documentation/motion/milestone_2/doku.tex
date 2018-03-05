@@ -27,10 +27,23 @@ Das Ziel des Team Motion für den zweiten Meilenstein war es einen Actionserver 
 Ein weiteres Ziel waren genauere Rückgaben über den Erfolg der Aktionen, damit Knowledge seinen Beliefstate aktuell halten kann.\\
 
 \subsection*{Probleme}
-\chapterauthor{Maximilian Bertram}
-\subsubsection*{Objekte greifen in einer Bewegung}
-Es war schwierig das Greifen der Objekte in einer einzigen Bewegung zu planen.
-\textbf{Lösung}: Wir haben uns dazu entschieden die Bewegung für das Greifen und Abstellen auf mehrere Male auszuführen. Zuerst wird der gewünschte Gripper geöffnet und vor das Objekt gefahren. Dann wird der geöffnete Gripper nur auf einer Koordinatenachse bewegt und so \textit{über} das Objekt geschoben.
+\chapterauthor{Maximilian Bertram, Roman Haak}
+\subsubsection*{Kollisionsfreiheit beim Greifen eines Objektes}
+Es war schwierig beim Greifen die kollisionsfreiheit mit anderen, herumstehenden Objekten, die nicht zur \textit{Planningscene} gehören, zu garantieren.\\
+\textbf{Lösung}: Wir haben uns dazu entschieden die Bewegung für das Greifen und Abstellen auf einer Höhe auszuführen, auf der sich kein anderes Objekt befindet. Zuerst wird der gewünschte Gripper auf die 'sichere' Höhe gefahren und über das Objekt gefahren. Dann wird der Gripper geöffnet, richtig orientiert und nur auf einer Koordinatenachse (in negative Z-Richtung von '\textit{base\_footprint}') bewegt und so \textit{über} das Objekt geschoben.\\
+
+\subsubsection*{Unterschiede Simulation echter PR2}
+Teilweise wurden Lösungen implementiert, die in der Simulation sehr gut funktionierten. Aber als sie dann auf dem echten Roboter ausprobiert wurden,
+funktionierten sie auf einmal nicht mehr.\\
+\textbf{Lösung}: Leider gab es bei diesem Problem keine eindeutige Lösung. Lösungen mussten umgeschrieben werden, bis sie auch auf dem echten Roboter funktionierten.
+
+\subsubsection*{'Deterministisches' Umstoßen eines Objektes}
+Zunächst wurde das Umstoßen eines Objektes einfach dadurch realisiert, dass der Arm zu einem Punkt zwischen Roboter und Objekt gefahren wurde und danach zu dem Objekt. Dabei war es aber immer unterschiedlich, welchen Weg \textit{MoveIt} für die zweite Bewegung des Armes, also das Umstoßen, berechnet und ausgeführt hat.\\
+\textbf{Lösung}: Die Funktion wurde so umgeschrieben, dass erst zu einem 'Zwischenpunkt' gefahren wird. Dann wird von diesem 'Zwischenpunkt' bis zu dem Punkt, an den der Gripper als zweites gefahren werden soll, eine 10-Punkte-Trajektorie berechnet. Diese Trajektorie beschreibt dann den geraden Weg von dem 'Zwischenpunkt' zum 'Umstoßpunkt' am Objekt. Und somit ist sichergestellt, dass immer von vorne umgestoßen wird.
+
+\subsubsection*{Synchronisierung \textit{refactoren} des Codes und Implementierung}
+Wir haben in einem \textit{branch} unseres Repositories angefangen zu \textit{refactoren}. In dem \textit{master-branch} wurde inzwischen weiterentwickelt. So kam es zu dem Problem, dass im master-branch stetig neue Funktionen hinzukamen, bzw. verändert wurden, welche dann in dem \textit{refactor-branch} wieder 'eingepflegt' werden mussten. Dadurch hat sich das \textit{refactoren} des Codes leider etwas in die Länge gezogen.\\
+\textbf{Lösung}: Werden neue Funktionen eingebaut, werden diese direkt in den refactorten branch eingebaut, sodass dadurch kein Zusatzaufwand entsteht. Absprache ist in jedem Fall sehr wichtig.
 
 
 \subsection{Übersicht des Teilsystems}
@@ -57,13 +70,13 @@ Im Folgenden werden die \textit{Schnittstellen}, der \textit{Ablauf} des Teilsys
 \subsection{Schnittstellen}
 \subsubsection{'suturo\_motion\_main'}
 
-\paragraph{1.2.1.1 Offered Actions}
+\paragraph{1.2.1.1 Angebotene Actions}
 
 \paragraph{1.2.1.1.1 MovingCommand}
 \chapterauthor{Maximilian Bertram}
-'\textit{/motion/moving}': \\
+'\textit{/suturo\_motion\_main/moving}': \\
 Vom Typ '\textit{motion\_msgs/MovingCommand}': \\
-\begin{lstlisting}[caption={Definition der MovingCommandAction},captionpos=b]
+\begin{lstlisting}[caption={Definition des MovingCommands},captionpos=b]
 #goal definition
 geometry_msgs/PoseStamped goal_pose
 uint8 command
@@ -102,20 +115,37 @@ uint8 UNMANAGEBLE_ERROR=3
 
 Mit Hilfe der MovingCommandAction lassen sich alle von uns zur Verfügung gestellten Funktionen aufrufen. Es wurden Konstanten definiert, die die jeweilige Aktion beschreiben und in der Message-Definition vorhanden sind.
 
-\paragraph{1.3.1.2 Called Actions}
+\paragraph{1.3.1.2 Aufgerufene Actions}
 Wird eine GRASP oder PLACE Aktion ausgeführt, wird über eine \\
 \textit{pr2\_ controllers\_ msgs::Pr2GripperCommandAction} Message der Gripper entsprechend geöffnet oder geschlossen.\\
+Dies ist nur eine Momentaufnahme, eigentlich sollte der Gripper über den Knoten '\textit{simple\_gripper}' geöffnet und geschloßen werden können (Siehe \textit{Abschnitt 1.2.2.1}),
+aber es gab leider noch kleinere Probleme, weshalb wir das Öffnen/Schließen vorläufig über den direkten Weg realisieren.\\
 
 
-\paragraph{1.2.1.3 Called Services}
+\paragraph{1.2.1.3 Aufgerufene Services}
 \chapterauthor{RH, MB}
-'\textit{/kitchen\_model\_service/get\_fixed\_kitchen\_objects}': \\
-Dieser Service wird beim Initialisieren unseres Programms aufgerufen. Hierüber werden die Abmessungen der Objekte der IAI-Küche in die \textit{PlanningScene} geladen, damit der Roboter sich nur kollisionsfrei bewegt(siehe \textit{Kapitel 1.2.2}, Abschnitt zur '\textit{planning\_scene}').\\
-Die Objekte sind dabei durch eine Höhe, Breite und Länge als \textit{Box-Collider} definiert.
+'\textit{/kitchen\_model\_service/get\_fixed\_kitchen\_objects}': 
+\begin{lstlisting}[caption={Definition des GetFixedKitchenObjects-Service},captionpos=b]
+// This servicedefinition is for transfering the shape of the objects in the iai_kitchen.
+// The Motion-component calls this service for getting the shape of the kitchen-objects for it's planningscene.
+// The Knowledge-component reads these shapes out of an owl-file and returns the data described below.
 
-Wird ein Objekt erfolgreich abgestellt oder gegriffen werden für den Beliefstate von Knowledge noch die entsprechenden Messages gepublished: \\
 
-\begin{lstlisting}[caption={Definition des GraspObject.msg},captionpos=b]
+---
+// The frame in which the object-poses are given.
+string frame_id
+// The names of the objects.
+string[] names
+// The bounding_boxes boxes of the objects.
+geometry_msgs/Vector3[] bounding_boxes
+// The poses of the objects.
+geometry_msgs/Pose[] poses
+\end{lstlisting}
+
+'\textit{/beliefstate/grasp\_action}' und '\textit{/beliefstate/drop\_action}':\\
+Wird ein Objekt erfolgreich abgestellt oder gegriffen werden für den \textit{Beliefstate} von \textit{Knowledge} noch die entsprechenden \textit{Messages} gepublished: \\
+
+\begin{lstlisting}[caption={Definition der GraspObject.msg},captionpos=b]
 #A message which get's published by Motion-component after grasping an object.
 #The label of the grasped object.
 string object_label
@@ -123,13 +153,13 @@ string object_label
 Gripper gripper
 \end{lstlisting}
 
-\begin{lstlisting}[caption={Definition des DropObject.msg},captionpos=b]
+\begin{lstlisting}[caption={Definition der DropObject.msg},captionpos=b]
 #A message which get's published by Motion-component after dropping an object.
 #The gripper used. See 'Gripper.msg' for more details.
 Gripper gripper
 \end{lstlisting}
 
-\begin{lstlisting}[caption={Definition des Gripper.msg},captionpos=b]
+\begin{lstlisting}[caption={Definition der Gripper.msg},captionpos=b]
 #A message for defining constants for differencing between left and right gripper.
 uint8 gripper
 #constants for gripper
@@ -138,7 +168,7 @@ uint8 RIGHT_GRIPPER = 2
 \end{lstlisting}
 
 \subsubsection{'simple\_gripper'}
-\paragraph{1.2.2.1 Offered Actions}
+\paragraph{1.2.2.1 Angebotene Actions}
 \begin{lstlisting}[caption={Definition der GripperAction},captionpos=b]
 #goal definition
 #position of the space between the grippers in meters
@@ -157,7 +187,7 @@ bool successful
 #feedback definition
 #bool finished
 \end{lstlisting}
-\paragraph{1.2.2.2 Called Actions}
+\paragraph{1.2.2.2 Aufgerufene Actions}
 Die GripperAction-Message wird entsprechend geparsed und eine \\
  \textit{pr2\_ controllers\_ msgs::Pr2GripperCommandAction} erzeugt und gepublished. \\
 
@@ -269,9 +299,9 @@ Den Stand der für Stand  des 2. Meilensteins findet sich unter folgendem Tag: \
 \chapterauthor{Roman Haak}
 \begin{itemize}
 
-\item Zunächst muss über den Befehl \textit{roslaunch kitchen\_model\_export knowledge\_export\_service.launch} ein Teilsystem von \textit{Knowledge} gestartet werden.
+\item Soll das System im Kontext des echten Roboters benutzt werden, muss zunächst über \textit{roslaunch kitchen\_model\_export knowledge\_export\_service.launch} ein Teilsystem von \textit{Knowledge} gestartet werden.
 
-\item Anschließend kann unser Knoten über \textit{roslaunch motion motion\_main\_start.launch} gestartet werden, falls er im Kontext einer Simulation ausgeführt werden soll, bzw. \textit{roslaunch motion motion\_main\_start\_real\_pr2.launch}, falls der Knoten auf dem PR2 ausgeführt werden soll.
+\item Unser Teilsystem wird über \textit{roslaunch motion motion\_main\_start.launch} gestartet werden, falls er im Kontext einer Simulation ausgeführt werden soll, bzw. \textit{roslaunch motion motion\_main\_start\_real\_pr2.launch}, falls der Knoten auf dem PR2 ausgeführt werden soll.
 
 \item Dann können Befehle an den Actionserver unseres Knotens über das Topic \textit{/moving/goal} abgesetzt werden. Zur Erläuterung des Actionservers siehe Dokumentation der Gruppe \textit{motion}.
 \end{itemize}
