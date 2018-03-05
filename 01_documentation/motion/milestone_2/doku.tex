@@ -171,13 +171,22 @@ Der so errechnete Zielpunkt befindet sich also 'DISTANCE\_BEFORE\_POKING' plus '
 \tab - Soll ein Objekt abgestellt werden, öffne den \textit{Gripper}.\\
 
 7. \textit{Hebe den Arm wieder auf die am Anfang errechnete Höhe an, um das Objekt zu heben, bzw. "vom Objekt wegzufahren".}\\
-\tab - Das Objekt sollte nun entweder an dem gewünschten Platz stehen, bzw. sich in dem\\ \tab \textit{Gripper} des Roboters befinden.\\
+\tab - Das Objekt sollte nun entweder an dem gewünschten Platz stehen, bzw. sich in dem\\ \tab \textit{Gripper} des Roboters befinden.
+
+
+\subsection{Tests \& Evaluation}
+\chapterauthor{MB, RH}
+Da wir agil entwickeln, haben wir abgewägt und die Priorität auf die Zielerreichung des 2.
+Meilensteines gesetzt und uns gegen das Implementieren von Unit-Tests durch ein Testframework entschieden. Alle von Motion angebotenen Funktionen (greifen, abstellen, umstubsen) wurden mehrfach manuell am echten Roboter überprüft und getestet. Die Implementierung von Unit-Tests wird im 3. Meilenstein folgen. \\
+
+Durch die händischen Tests sind immer wieder Differenzen zwischen echtem PR2 und der Simulation aufgefallen. Es mussten immer wieder Anpassungen am Code vorgenommen werden, damit das Package auf dem jeweiligen System wie gewünscht funktioniert. Die Fehlersuche hat hierbei enorm Zeit verbraucht. \\
+
+Am Ende funktionierten die angebotenen Funktionalitäten wie gewünscht, jedoch mit kleineren Fehlern/Unschönheiten.\\
 
 \subsection{Installationsanleitung}
 \chapterauthor{Maximilian Bertram}
+
 \begin{itemize}
-
-
 \item[a] Zunächst müssen folgende Repositories in den source-Ordner des Workspaces hinzugefügt werden:  \\
 \url{https://github.com/menanuni/motion_suturo_1718} \\
 \url{https://github.com/menanuni/msgs_suturo_1718} \\
@@ -189,13 +198,12 @@ Der so errechnete Zielpunkt befindet sich also 'DISTANCE\_BEFORE\_POKING' plus '
 \textit{echo  \grqq{}source /opt/ros/indigo/setup.bash\grqq{} \textgreater\textgreater \textasciitilde{ }/.bashrc} \\
 
 \item[c] Jetzt kann das System über \textit{catkin build} gebaut werden.
-
 \end{itemize}
 
 Den Stand der für Stand  des 2. Meilensteins findet sich unter folgendem Tag: \\
 -TODO: LINK TAG-
 
-\subsection{Ausführung}
+\subsection{Starten der Nodes}
 \chapterauthor{Roman Haak}
 \begin{itemize}
 
