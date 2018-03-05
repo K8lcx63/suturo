@@ -45,28 +45,40 @@ Im Folgenden werden die \textit{Schnittstellen}, der \textit{Ablauf} des Teilsys
 \subsection{Schnittstellen}
 \subsubsection{'suturo\_motion\_main'}
 
-\paragraph{1.3.1.1 Offered Actions}
+\paragraph{1.2.1.1 Offered Actions}
 
-\paragraph{1.3.1.1.1 MovingCommand}
+\paragraph{1.2.1.1.1 MovingCommand}
 \chapterauthor{Maximilian Bertram}
 '\textit{/motion/moving}': \\
 Vom Typ '\textit{motion\_msgs/MovingCommand}': \\
 \begin{lstlisting}[caption={Definition der MovingCommandAction},captionpos=b]
 #goal definition
-geometry_msgs/PointStamped point_stamped
+geometry_msgs/PoseStamped goal_pose
 uint8 command
-#Constants for command value
+#constants for the command
 uint8 UNKNOWN=0
 uint8 MOVE_STANDARD_POSE=1
 uint8 MOVE_RIGHT_ARM=2
 uint8 MOVE_LEFT_ARM=3
-uint8 MOVE_RIGHT_GRIPPER=4
-uint8 MOVE_LEFT_GRIPPER=5
+uint8 POKE_RIGHT_ARM=4
+uint8 POKE_LEFT_ARM=5
+uint8 GRASP_RIGHT_ARM=6
+uint8 GRASP_LEFT_ARM=7
+uint8 PLACE_RIGHT_ARM=8
+uint8 PLACE_LEFT_ARM=9
+#Label of object which shell be grasped.
+#Required because when an object gets grasped by robot,
+#a message gets published from subgroup 'motion', which object
+#has been grasped with which gripper (left or right).
+#When the object gets placed somewhere, another message is published.
+#These messages get published for knowledge's beliefstate, so that
+#the knowledge component knows when an object get's grasped/placed somewhere.
+string grasped_object_label
 ---
 #result definition
 bool successful
 uint8 status
-#Constants for status value
+#constants for the status
 uint8 SUCCESS=0
 uint8 OUT_OF_RANGE=1
 uint8 COLLISION=2
@@ -75,26 +87,46 @@ uint8 UNMANAGEBLE_ERROR=3
 #feedback definition
 #bool finished
 \end{lstlisting}
-TODO: Namen?\\
-'\textit{/motion/moving}': \\
-Vom Typ '\textit{motion\_msgs/MovingCommand}': \\
 
+Mit Hilfe der MovingCommandAction lassen sich alle von uns zur Verfügung gestellten Funktionen aufrufen. Es wurden Konstanten definiert, die die jeweilige Aktion beschreiben und in der Message-Definition vorhanden sind.
 
 \paragraph{1.3.1.2 Called Actions}
-- simple gripper/gripper hier
-\paragraph{1.3.1.3 Offered Services}
-- hier nichts
-\paragraph{1.3.1.4 Called Services}
-\chapterauthor{Roman Haak}
+Wird eine GRASP oder PLACE Aktion ausgeführt, wird über eine \\
+\textit{pr2\_ controllers\_ msgs::Pr2GripperCommandAction} Message der Gripper entsprechend geöffnet oder geschlossen.\\
+
+
+\paragraph{1.2.1.3 Called Services}
+\chapterauthor{RH, MB}
 '\textit{/kitchen\_model\_service/get\_fixed\_kitchen\_objects}': \\
 Dieser Service wird beim Initialisieren unseres Programms aufgerufen. Hierüber werden die Abmessungen der Objekte der IAI-Küche in die \textit{PlanningScene} geladen, damit der Roboter sich nur kollisionsfrei bewegt(siehe \textit{Kapitel 1.2.2}, Abschnitt zur '\textit{planning\_scene}').\\
 Die Objekte sind dabei durch eine Höhe, Breite und Länge als \textit{Box-Collider} definiert.
 
-- hier noch grasp\_action und drop\_action
+Wird ein Objekt erfolgreich abgestellt oder gegriffen werden für den Beliefstate von Knowledge noch die entsprechenden Messages gepublished: \\
 
+\begin{lstlisting}[caption={Definition des GraspObject.msg},captionpos=b]
+#A message which get's published by Motion-component after grasping an object.
+#The label of the grasped object.
+string object_label
+#The gripper used. See 'Gripper.msg' for more details.
+Gripper gripper
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Definition des DropObject.msg},captionpos=b]
+#A message which get's published by Motion-component after dropping an object.
+#The gripper used. See 'Gripper.msg' for more details.
+Gripper gripper
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Definition des Gripper.msg},captionpos=b]
+#A message for defining constants for differencing between left and right gripper.
+uint8 gripper
+#constants for gripper
+uint8 LEFT_GRIPPER = 1
+uint8 RIGHT_GRIPPER = 2
+\end{lstlisting}
 
 \subsubsection{'simple\_gripper'}
-\paragraph{1.3.2.1 Offered Actions}
+\paragraph{1.2.2.1 Offered Actions}
 \begin{lstlisting}[caption={Definition der GripperAction},captionpos=b]
 #goal definition
 #position of the space between the grippers in meters
@@ -104,9 +136,8 @@ float64 effort
 #which grpper to open/closed
 uint8 gripper
 #Constants for the gripper value
-uint8 UNKNOWN=0
-uint8 LEFT=1
-uint8 RIGHT=2
+uint8 LEFT_GRIPPER=1
+uint8 RIGHT_GRIPPER=2
 ---
 #result definition
 bool successful
@@ -114,12 +145,9 @@ bool successful
 #feedback definition
 #bool finished
 \end{lstlisting}
-\paragraph{1.3.2.2 Called Actions}
--nichts
-\paragraph{1.3.2.3 Offered Services}
--nichts
-\paragraph{1.3.2.4 Called Services}
--nichts
+\paragraph{1.2.2.2 Called Actions}
+Die GripperAction-Message wird entsprechend geparsed und eine \\
+ \textit{pr2\_ controllers\_ msgs::Pr2GripperCommandAction} erzeugt und gepublished. \\
 
 \subsection{Ablauf}
 \chapterauthor{}
