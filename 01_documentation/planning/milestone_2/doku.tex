@@ -26,6 +26,8 @@ In den Folgenden Abschnitten wollen wir allem vorran einleitend auf planende Asp
 Abschliessend wollen wir einen Ausblick auf kommende Meilensteine, insbesondere im Hinblick auf die im April folgende Projektpräsentation, formulieren.\\
 Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentation.
 
+
+
 \newpage
 
 \subsection{Zielsetzung}
@@ -36,6 +38,7 @@ Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentatio
 \item Auf der Küchenzeile befindet sich eine beliebige Anzahl Gegenstände aus einer festgelegten Menge. (Tomatensoße, Ja-Milch, Pringles-Salt, Pringles-Paprika, Edeka-Schüssel, Hella Curryketchup, Müsli usw)
 \item Es befinden sich keine Fremdkörper auf dem Boden der Küche, oder im Arbeitsbereich des Pr2.
 \end{itemize}
+
 
 \subsubsection{Ablauf}
 \begin{itemize}
@@ -72,9 +75,11 @@ Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentatio
 
 
 
+
 %drinlassen?
 \newpage
     \maketitle{Planning}{03.03.2018}{}{1}{}{}{}{}
+
 
 
 
@@ -86,6 +91,7 @@ Das Ziel von Gruppe Planning im zweiten Meilenstein ist zu einem die Kommunikati
 \subsection*{Routen können nicht richtig geplant werden}
 \chapterauthor{Vanessa Hassouna}
 Beim fahren fährt der Roboter schnell mit seinen Armen gegen Küchenobjekte und dreht sich in einem Winkel der problematisch mit seinem verletzbaren Rücken ist.\\
+
 
 
 \textbf{Lösung}: Bevor er zu dem gegeben Punkt fährt, fährt er in eine von uns ausgewählte sichere Position. Bis dahin sollte er sich um 90 Grad gedreht haben.
@@ -118,7 +124,7 @@ Greift der Pr2 daneben, oder verliert er während der Fahrt ein Objekt aus dem G
         {img/diag_planning_main_programm.png}
         \caption{} Architektur der Quellcode-Datei main.lisp}
 \end{figure}
-      
+
 
 
 \subsection{Beschreibung des Teilsystems}
@@ -131,6 +137,7 @@ Alle dafür notwendigen Logiken, die auf Basis externer Daten entschieden werden
 
 \subsubsection{main()}
 \chapterauthor{Vanessa Hassouna}
+
 
 
 \noindent
@@ -162,6 +169,7 @@ Jedes mal, wenn der Kopf in einer Position ist wird der Service \textit{/vision\
 \end{itemize}
 
 
+
 \subsection*{Schritt 3: Weitergabe} 
 
 \begin{itemize} 
@@ -169,6 +177,8 @@ Jedes mal, wenn der Kopf in einer Position ist wird der Service \textit{/vision\
 \item Mit hilfe des erhaltenen Labels rufen wir einen anderen Service von Vision auf der Anhand von Objekt-Nummer und Label uns eine Pose zurück gibt.  
 \item Wenn die Pose bei uns angekommen ist publishen wir auf ein Topic von Knowledge damit das gesehene Objekt in der Wissensbasis gespeichert wird.
 \end{itemize}
+
+
 
 
 
@@ -186,6 +196,9 @@ Danach fährt der Pr2 wieder zu seiner Homeposition und sucht die nächsten Obje
 
 
 
+
+
+
 \subsubsection{find-Object(x z)}
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
@@ -197,8 +210,6 @@ terminiert die Funktion. Die Funktion beginnt immer beim zuletzt gesehenen Punkt
 @param: x-axis z-axis
 @return: T wenn Objekt gefunden, nil falls nichts zu finden
 \end{verbatim}
-
-
 
 
 
@@ -219,6 +230,8 @@ terminiert die Funktion. Die Funktion beginnt immer beim zuletzt gesehenen Punkt
 \end{figure}
 
 
+
+
 \subsection{API}
 \chapterauthor{Vanessa Hassouna}
 \subsubsection{Serviceclients}
@@ -229,9 +242,6 @@ Gibt zu einem Objekt (übergeben als Nummer) und einem Label (übergeben als Str
 
 \subsection{Beschreibung des Teilsystems}
 
-
-\noindent
-\begin{minipage}{\linewidth}
 
 
 
@@ -247,30 +257,28 @@ aufgerufen.
 \end{verbatim}
 
 
-
 \subsubsection{check-Points-Is-Equal (msg-one msg-two delta))}
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 check-Points-Is-Equal (msg-one msg-two delta)
+
 Beschreibung: Vergleicht 2 object_detection-srv:object in
 ihren x, y, z Koordinaten anhand eines übergebenen Deltas.
 Überschreitet die Differenz der beiden Messages das Delta
 wird nil zurückgegeben.
+
 @param: object_detection-srv:object msg-one 
 object_detection-srv:object msg-two int delta
 @return: T or nil
 \end{verbatim}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
-\section{Die Quellcode-Datei: knowledge-communicate.lisp\\
- (planning\_knowledge)}
+\section{Die Quellcode-Datei: knowledge-communicate.lisp (planning\_knowledge)}
 \subsection{Architekturbild}
 \chapterauthor{Vanessa Hassouna}
 
-\begin{figure}[!htb]
+\begin{figure}
         \center{\includegraphics[width=0.6\textwidth]
         {img/knowledge.png}
         \caption{} Architektur der Quellcode-Datei knowledge-communicate.lisp}
@@ -300,6 +308,8 @@ Wenn ein Objekt wahrgenommen wurde, geben wir die Information weiter.
 \chapterauthor{Kevin Störmer}
 Die Die Quellcode-Datei 'knowledge-communicate' im Paket 'planning\_knowledge' ist ausschliesslich für die Kommunikation mit Gruppe Knowledge zust\"andig.
 
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Die Quellcode-Datei: motion-actions.lisp (planning\_motion)}
@@ -312,6 +322,8 @@ Die Die Quellcode-Datei 'knowledge-communicate' im Paket 'planning\_knowledge' i
         {img/motion.png}
         \caption{} Architektur der Quellcode-Datei motion-actions.lisp}
 \end{figure}
+
+
 
 
 \subsection{API}
@@ -404,9 +416,9 @@ Die Quellcode-Datei actions.lisp im Paket 'planning\_motion'  ist ausschliesslic
 \end{lstlisting}
 \end{minipage}
 
+
 Die Funktion 'move-head' bekommt als \"Ubergabeparameter Koordinaten (x y z) welche vorgeben sollen, in welche Richtung der Kopf des Pr2 bewegt wird.\\
 Zuerst wird ein neuer Actionclient, für die 'head\_traj\_controller/point\_head\_action' Action erstellt. Anschliessend soll in einem Loop solange gewartet werden, bis der Actionsserver gestartet wurde. Ist dies der Fall, wird eine neue Message erstellt, welche einen Punkt auf Basis der \"ubergebenen Koordinaten, in Relation zum Frame 'base\_link', enth\"alt. Diese wird dann in ein neues Actiongoal gefasst und an den Actionserver geschickt, welcher den Kopf des Pr2 dann in Richtung der Koordinaten bewegen wird.
-
 
 
 
@@ -438,7 +450,6 @@ wird die Basis bewegt. Der Punkt und die Rotation sind in Frame "map" anzugeben.
 @param: x y z angle
 @return: Succesfull oder Aborted
 \end{verbatim}
-
 
 
 \subsubsection{move-Robo-Into\\
@@ -474,7 +485,6 @@ Beschreibung: Eine Hilfsfunktion die dazu dient, den Action-Client zu initialisi
 
 @return: Succesfull oder Aborted
 \end{verbatim}
-
 
 \subsubsection{get-Action-Client-Base ()}
 \chapterauthor{Vanessa Hassouna}
@@ -687,20 +697,6 @@ aus den Joint-States geparsed.
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 \newpage
 \section{Nutzungsbeschreibung}
 
@@ -863,5 +859,7 @@ oder \\
 \chapterauthor{Alexander Haar}
 
 Um alle wichtigen Knoten zu starten muss einfach der Befehl \textit{roslaunch knowledge knowledge\_main.launch} ausgeführt werden. Es wird eine json\_prolog- Node, der PokePositon-Service und der GetFixedKitchenModel- Service gestartet.
+
+
 \end{document}
 
