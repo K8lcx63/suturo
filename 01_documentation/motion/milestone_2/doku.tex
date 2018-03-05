@@ -21,6 +21,16 @@
 
 \newpage
 \section{Motion}
+\subsection*{Zielsetzung}
+\chapterauthor{Maximilian Bertram}
+Das Ziel des Team Motions für den zweiten Meilenstein war es einen Actionserver zu implementieren, der verschiedene Aktionen für das Greifen, Abstellen und Umstoßen von Objekten anbietet. Jede der Aktionen soll mit jedem der vorhandenen Grippern möglich sein, dabei soll der Roboter Objekte in seiner Umgebung berücksichtigen und seine Bewegungspfade so planen, dass keine Kollisionen entstehen. Ist eine kollisionsfreie Bewegung nicht möglich wird die Aktion mit einem entsprechenden Fehler abgebrochen.\\
+Ein weiteres Ziel waren genauere Rückgaben über den Erfolg der Aktionen, damit Knowledge seinen Beliefstate aktuell halten kann.\\
+
+\subsection*{Probleme}
+\subsubsection*{}
+\textbf{Lösung}:
+
+
 \subsection{Übersicht des Teilsystems}
 \chapterauthor{Roman Haak}
 Die Untergruppe '\textit{Motion}' ist für das Bewegen verschiedener "Körperpartien" des Roboters zuständig.\\
@@ -150,7 +160,29 @@ Die GripperAction-Message wird entsprechend geparsed und eine \\
  \textit{pr2\_ controllers\_ msgs::Pr2GripperCommandAction} erzeugt und gepublished. \\
 
 \subsection{Ablauf}
-\chapterauthor{}
+\chapterauthor{Maximilian Bertram}
+\subsubsection*{Schritt 1: Abfragen und hinzufügen der PlanningScene}
+Beim Start der Node wird die PlanningScene (in unserem Fall die iai-Küche) bei Knowledge abgefragt und der MoveIt PlanningScene hinzugefügt.
+
+\subsubsection*{Schritt 2: Parsen der Message}
+Wird eine MovingCommandAction Message empfangen, wird diese zunächst geparsed. Je nachdem welche Konstante für das command feld gesetzt wird, wird die entsprechende Funktion des zugehörigen Controllers aufgerufen.
+
+\subsubsection*{Schritt 3: Umrechnen der Pose}
+Falls die Pose der Message in einem anderen Frame als dem PlanningFrame der zu bewegenden 
+MoveGroup definiert wurde, wird die Pose mithilfe von TF in das PlanningFrame der zu bewegenden Gruppe transformiert.
+
+\subsubsection*{Schritt 4: Planen der Bewegung}
+Zunächst wird die Bewegung mithilfe des MoveIt Frameworks geplant. Ist die Bewegung nicht möglich, weil der Roboter die gewünschte Pose nicht erreichen kann oder es zu einer Kollision während der Bewegung kommen würde, wird die Aktion hier mit einer entsprechenden Fehlermeldung abgebrochen.
+
+\subsubsection*{Schritt 5: Publishen von VisualizationMarkern}
+Es werden VisualizationMarker gepublished um den Endpunkt der Bewegung in RViz zu visualisieren. Diese dienen hauptsächlich dem Debugging.
+
+\subsubsection*{Schritt 6: Durchführen der Bewegung}
+Ist die Bewegung kollisionsfrei möglich und die Pose erreichbar, wird die Bewegung durchgeführt und eine entsprechende Erfolgsmeldung zurückgegeben.
+
+\subsubsection*{Schritt 7: Rückmeldung an Knowledge Service}
+Falls es sich um ein \textit{GRASP} oder \textit{PLACE} Aktion handelt und die Aktion erfolgreich war wird der Knowledge Service aufgerufen um den Beliefstate zu aktualisieren. Es wird übergeben, welches Objekt sich in welchem Gripper befindet.
+
 
 \subsection{Besonderheiten/Besondere Algorithmen}
 \chapterauthor{Roman Haak}
