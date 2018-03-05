@@ -26,8 +26,6 @@ In den Folgenden Abschnitten wollen wir allem vorran einleitend auf planende Asp
 Abschliessend wollen wir einen Ausblick auf kommende Meilensteine, insbesondere im Hinblick auf die im April folgende Projektpräsentation, formulieren.\\
 Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentation.
 
-
-
 \newpage
 
 \subsection{Zielsetzung}
@@ -38,7 +36,6 @@ Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentatio
 \item Auf der Küchenzeile befindet sich eine beliebige Anzahl Gegenstände aus einer festgelegten Menge. (Tomatensoße, Ja-Milch, Pringles-Salt, Pringles-Paprika, Edeka-Schüssel, Hella Curryketchup, Müsli usw)
 \item Es befinden sich keine Fremdkörper auf dem Boden der Küche, oder im Arbeitsbereich des Pr2.
 \end{itemize}
-
 
 \subsubsection{Ablauf}
 \begin{itemize}
@@ -75,11 +72,9 @@ Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentatio
 
 
 
-
 %drinlassen?
 \newpage
     \maketitle{Planning}{03.03.2018}{}{1}{}{}{}{}
-
 
 
 
@@ -91,7 +86,6 @@ Das Ziel von Gruppe Planning im zweiten Meilenstein ist zu einem die Kommunikati
 \subsection*{Routen können nicht richtig geplant werden}
 \chapterauthor{Vanessa Hassouna}
 Beim fahren fährt der Roboter schnell mit seinen Armen gegen Küchenobjekte und dreht sich in einem Winkel der problematisch mit seinem verletzbaren Rücken ist.\\
-
 
 
 \textbf{Lösung}: Bevor er zu dem gegeben Punkt fährt, fährt er in eine von uns ausgewählte sichere Position. Bis dahin sollte er sich um 90 Grad gedreht haben.
@@ -109,24 +103,6 @@ Für eine sinnvolle Logik der Main ist eine gute Übersicht zu schaffen. Da die 
 \textbf{Lösung}: Die Logik der Main wurde in mehrere Teilabschnitte getrennt und in neue Funktionen geschachtelt. Eine weitere Schnittstelle \textbf{planning\_logic} dient zur Extraktion von logischen Zwischenabschnitten.
 
 
-\subsection*{Ein Gripper ist unerwartet leer}
-\chapterauthor{Kevin Störmer}
-Greift der Pr2 daneben, oder verliert er während der Fahrt ein Objekt aus dem Gripper, so könnte der Pr2 ein dieses überfahren oder fälschlicherweise ein Objekt ablegen, welches sich nicht in seinem Gripper befindet.\\
-
-\subsection*{Die Objektplatzierung soll dynamisch sein}
-\chapterauthor{Hauke Tietjen}
-Man könnte für jedes Objekt eine Abstellposition festlegen aber was wäre wenn eine zweite gleiche Ketchupflasche auftaucht und ihr Platz bereits belegt ist? \\
-
-\textbf{Lösung}: Objekte werden in ihren festgelegten Abstellzonen kollisionsfrei platziert bis diese keinen Platz mehr bieten oder bei drohender Überfüllung ein Fehler geworfen werden kann. 
-
-
-\subsection*{Fehler sollen hierarchisch sein}
-\chapterauthor{Hauke Tietjen}
-Es sollte möglich sein festzustellen aus welchen Bereichen Fehler kommen und diese aufgrund dessen anders zu behandeln. Besonders in höher gelegenen Funktionen kann dies genutzt werden. \\
-
-\textbf{Lösung}: In einer Fehlerhierarchie können Fehler von anderen Fehlern erben und erfüllen daher die gewünschte Funktion.
-
-\section*{Methodendokumentation}
 \section{Die Quellcode-Datei: main.lisp (planning\_main\_programm)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
@@ -137,7 +113,7 @@ Es sollte möglich sein festzustellen aus welchen Bereichen Fehler kommen und di
         {img/diag_planning_main_programm.png}
         \caption{} Architektur der Quellcode-Datei main.lisp}
 \end{figure}
-
+      
 
 
 \subsection{Beschreibung des Teilsystems}
@@ -150,7 +126,6 @@ Alle dafür notwendigen Logiken, die auf Basis externer Daten entschieden werden
 
 \subsubsection{main()}
 \chapterauthor{Vanessa Hassouna}
-
 
 
 \noindent
@@ -182,7 +157,6 @@ Jedes mal, wenn der Kopf in einer Position ist wird der Service \textit{/vision\
 \end{itemize}
 
 
-
 \subsection*{Schritt 3: Weitergabe} 
 
 \begin{itemize} 
@@ -190,8 +164,6 @@ Jedes mal, wenn der Kopf in einer Position ist wird der Service \textit{/vision\
 \item Mit hilfe des erhaltenen Labels rufen wir einen anderen Service von Vision auf der Anhand von Objekt-Nummer und Label uns eine Pose zurück gibt.  
 \item Wenn die Pose bei uns angekommen ist publishen wir auf ein Topic von Knowledge damit das gesehene Objekt in der Wissensbasis gespeichert wird.
 \end{itemize}
-
-
 
 
 
@@ -212,18 +184,39 @@ Danach fährt der Pr2 wieder zu seiner Homeposition und sucht die nächsten Obje
 
 
 
-\subsubsection{find-Object(x z)}
-\chapterauthor{Kevin Störmer}
-\begin{verbatim}
-find-Object()
-Beschreibung: Sucht anhand variabler x und z-Achse sowie fest eingestellter
-y-Koordinaten nach sichtbaren Objekten. Sollte ein Objekt gefunden werden,
-oder die maximale Anzahl an Suchläufen überschritten werden,
-terminiert die Funktion. Die Funktion beginnt immer beim zuletzt gesehenen Punkt.
-@param: x-axis z-axis
-@return: T wenn Objekt gefunden, nil falls nichts zu finden
-\end{verbatim}
-
+%
+%
+%\subsubsection{find-Object (x z)}
+%\chapterauthor{Vanessa Hassouna}
+%Die Funktion find-Object im Paket 'planning\_move' lässt den Pr2 genau \textbf{8} verschiedene Zustände durchlaufen. Dieses Vorgehen endet entweder wenn ein Objekt gefunden wurde, oder gegebenenfalls alle 8 Zustände erfolglos durchlaufen wurden.
+%
+%\noindent
+%\begin{minipage}{\linewidth}
+%\begin{lstlisting}
+%(defun find-Object (x z)
+% "Looking around from 2 to -2 to find an object"
+%(let ((positions (make-array '(8) 
+%   :initial-contents '(0.0 0.5 1 1.5 2.0 -0.5 -1.5 -2.0))))
+%  (loop for i across positions do
+%    (progn
+%      (let ((y i))
+%        (move-Head x y z))
+%      (if (planning-move::ask-For)
+%          (progn
+%            (roslisp::ros-info "find-Object" "I found an object, lets move on ")
+%            (return-from find-Object T))
+%          (roslisp::ros-info "find-Object" "I can't find any object, let me try it again")))))
+%(return-from find-Object nil))
+%\end{lstlisting}
+%\end{minipage}
+%
+% Die als Parameter übergebenen \textbf{X-} und \textbf{Z-Werte} sind festgelegt und ändern sich nicht mehr in der Funktion. Der Kopf wird hier mit der oberen Funktion move-Head bewegt. Der einzige Wert der also verändert wird ist der \textbf{Y-Wert}.\\
+%
+% Dieser führt dazu, dass der Punkt sich im Koordinatensystem (ausgehend von dem \textit{base\_link} 'frame') so verändert, dass der Pr2 nach links und rechts guckt. Die Zustände werden hier in einem Array gespeichert. Dieses Array wird durchlaufen und der jeweilige gespeicherte Wert in einer Zelle wird der Funktion move-Head (planning\_move) als \textbf{Y-Wert} übergeben (mit den Parametern die find-Object selber übermittelt bekommt).Dann wird die Funktion askFor aus dem Paket 'planning\_move' aufgerufen, jene liefert true oder false zurück wie oben beschrieben.\\
+% 
+% Wenn also ein Objekt gefunden wurde wird eine positive Nachricht ausgegeben und ebenso eine negative für den gegenteiligen Fall.
+%  Wurden alle Zustände erfolglos angenommen liefert die Methode ein \textbf{false} zurück.
+  
 
 
 
@@ -243,8 +236,6 @@ terminiert die Funktion. Die Funktion beginnt immer beim zuletzt gesehenen Punkt
 \end{figure}
 
 
-
-
 \subsection{API}
 \chapterauthor{Vanessa Hassouna}
 \subsubsection{Serviceclients}
@@ -256,6 +247,104 @@ Gibt zu einem Objekt (übergeben als Nummer) und einem Label (übergeben als Str
 \subsection{Beschreibung des Teilsystems}
 
 
+%willst du die noch einmal überarbeiten?
+%In der aktuellen Version funktoniert sie nicht.
+\subsubsection{check-points-is-equal (msg-one msg-two delta)}
+\chapterauthor{Kevin Störmer}
+
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}
+(defun check-points-is-equal (msg-one msg-two delta)
+  "Compares two points with delta."
+  (roslisp::ros-info "check-points-is-equal" "Starting to check if point of object is still valid")
+  (roslisp:with-fields ((x1 (geometry_msgs-msg:x geometry_msgs-msg:point)) 
+                        (y1 (geometry_msgs-msg:y geometry_msgs-msg:point))
+                        (z1 (geometry_msgs-msg:z geometry_msgs-msg:point)))
+     (object_detection-msg:position (object_detection-srv:object msg-one))
+     (roslisp:with-fields ((x2 (geometry_msgs-msg:x geometry_msgs-msg:point)) 
+                           (y2 (geometry_msgs-msg:y geometry_msgs-msg:point))
+                           (z2 (geometry_msgs-msg:z geometry_msgs-msg:point)))
+                        (object_detection-msg:position (object_detection-srv:object msg-two))
+       (let (
+             (dx (abs (- x1 x2)))
+             (dy (abs (- y1 y2)))
+             (dz (abs (- z1 z2)))
+             )
+         (if (and
+              (<= dx delta)
+              (<= dy delta)
+              (<= dz delta)
+              )
+             (print t)
+             (print nil)
+             )
+         )
+       )
+    )
+  )
+\end{lstlisting}
+\end{minipage}
+
+Die Funktion 'check-points-is-equal' bekommt die Parameter 'msg-one' und 'msg-two' \"ubergeben. Dabei handelt es sich um Messages vom Typ 'object\_detection-msg'. Diese enthalten Punke (x, y, z) die zu verschiedenen Zeiten von Vision über die Kinect wahrgenommen wurden. Sie stellen den Mittelpunkt des umzustossenden Objektes dar. Beim \"Ubergabeparameter delta, handelt es sich um die maximale erlaubte Tolleranz mit der die beiden Punkte von einander abweichen dürfen. \\
+Anf\"anglich werden die Koordinaten der beiden Messages aus den Wrappern extrahiert und in Variablen fortan verf\"ugbar gemacht. Danach werden die Koordinaten paarweise voneinander subtrahiert um die Differenz beider als vorzeichenlose Zahl zu errechnen. Diese Differenz wird dann mit dem vorgegebenen Delta verglichen. Wenn sich alle Differenzen innerhalb des Deltas befinden, wird 'true' zurückgegeben, sonst 'nil'. 
+
+\noindent
+\begin{minipage}{\linewidth}
+
+%Rausschmeisen? In der aktuellen Version wird diese Methode nicht verwendet und funktoniert auch nicht mehr.
+\subsubsection{call-vision-point ()}
+\chapterauthor{Hauke Tietjen}
+\begin{lstlisting}
+(defvar not-a-number)
+
+(defun call-vision-point ()
+  "Call vision service, to look for point. Returns ObjectDetection object"
+  (cpl:with-retry-counters ((retry-counter 10))
+    (cpl:with-failure-handling
+        ((cpl:simple-plan-failure (error-object)
+           (format t "An error happened: ~a~%" error-object)
+           (cpl:do-retry retry-counter
+             (format t "Now retrying~%")
+             (cpl:retry))
+           (format t "Reached maximum amount of retries. Now propagating the failure up.~%")))
+      (let ((response
+              (roslisp:call-service
+               "/vision_main/objectPoint"
+               'object_detection-srv:visobjectinfo)))
+        ;;Debug to find NaN message from vision
+        (setf not-a-number response)
+        (print not-a-number)
+        (roslisp:with-fields ((x (geometry_msgs-msg:x geometry_msgs-msg:point)) 
+                              (y (geometry_msgs-msg:y geometry_msgs-msg:point))
+                              (z (geometry_msgs-msg:z geometry_msgs-msg:point)))
+            (object_detection-msg:position (object_detection-srv:object response))
+          ;;If Vision returns a NaN and it is of type String this will recover from the error
+          (if (or (stringp x)
+                  (stringp y)
+                  (stringp z))
+              (cpl:fail "One or more of the coordinates returned by the service /vision_main/objectPoint is of type String
+                        which is likely the not a number error")
+              (if (or (sb-ext:float-nan-p x)
+                      (sb-ext:float-nan-p y)
+                      (sb-ext:float-nan-p z))
+                  (cpl:fail "One or more of the coordinates returned by the service /vision_main/objectPoint is  not a number")
+                  (roslisp:with-fields (object_detection-msg:error) (object_detection-srv:object response)
+                    (if (or (string= "Cloud empty. " object_detection-msg:error)
+                            (string= "Cloud was empty after filtering. " object_detection-msg:error)
+                            (string= "No plane found. " object_detection-msg:error)
+                            (string= "Final extracted cluster was empty. " object_detection-msg:error))
+                        (cpl:fail (concatenate 'string "Service call failed: " object_detection-msg:error))
+                        (progn
+                          (format t "Service call successful.")
+                          (return-from call-vision-point
+                            (roslisp:call-service "/vision_main/objectPoint" 'object_detection-srv:VisObjectInfo))))))))))))
+\end{lstlisting}
+\end{minipage}
+
+Die Funktion 'call-vision-point' ruft den Service '/vision\_main/objectPoint' von Vision auf. Dieser Service gibt den Mittelpunkt des gesehenen Objekts zurück welcher dann nach einer Fehlerüberpüfung als 'object\_detection-msg' zurückgegeben wird. 
+
+In Gazebo gibt dieser Service manchmal ein 'not a number' zurück, daher wird der Rückgabewert daraufhin überprüft. Es ist noch nicht klar ob 'NaN' als String oder float übergeben wird, daher wird beides überprüft. Zu 'sb-ext:float-nan-p' muss man sagen das es überprüft ob die nachfolgende Variable ein 'NaN' enthält und falls ja 't' zurückgibt, weil dazu keine Dokumentation auffindbar ist. Dann werden noch die bereitgestellten Fehlermeldungen von Vision abgefragt, z.B. ob überhaupt ein Objekt gesehen wurde. Falls mindestens eine dieser Abfragen zutrifft wird der Service-Call und die Fehlerüberprüfung neu gestartet. Dadurch kann die Funktion bis zu zehn mal neu gestartet werden bis sie endgültig aufgibt. Hier könnte in Zukunft eine Funktion auf höherem Level anknüpfen und den Kopf oder den ganzen Roboter bewegen um das Objekt doch noch zu erkennen.
 
 
 \subsubsection{call-Vision-Object-Clouds ()}
@@ -270,28 +359,19 @@ aufgerufen.
 \end{verbatim}
 
 
-\subsubsection{check-Points-Is-Equal (msg-one msg-two delta))}
-\chapterauthor{Kevin Störmer}
-\begin{verbatim}
-check-Points-Is-Equal (msg-one msg-two delta)
-
-Beschreibung: Vergleicht 2 object_detection-srv:object in
-ihren x, y, z Koordinaten anhand eines übergebenen Deltas.
-Überschreitet die Differenz der beiden Messages das Delta
-wird nil zurückgegeben.
-
-@param: object_detection-srv:object msg-one 
-object_detection-srv:object msg-two int delta
-@return: T or nil
-\end{verbatim}
 
 
 
-\section{Die Quellcode-Datei: knowledge-communicate.lisp (planning\_knowledge)}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\section{Die Quellcode-Datei: knowledge-communicate.lisp\\
+ (planning\_knowledge)}
 \subsection{Architekturbild}
 \chapterauthor{Vanessa Hassouna}
 
-\begin{figure}
+\begin{figure}[!htb]
         \center{\includegraphics[width=0.6\textwidth]
         {img/knowledge.png}
         \caption{} Architektur der Quellcode-Datei knowledge-communicate.lisp}
@@ -321,8 +401,6 @@ Wenn ein Objekt wahrgenommen wurde, geben wir die Information weiter.
 \chapterauthor{Kevin Störmer}
 Die Die Quellcode-Datei 'knowledge-communicate' im Paket 'planning\_knowledge' ist ausschliesslich für die Kommunikation mit Gruppe Knowledge zust\"andig.
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Die Quellcode-Datei: motion-actions.lisp (planning\_motion)}
@@ -335,8 +413,6 @@ Die Die Quellcode-Datei 'knowledge-communicate' im Paket 'planning\_knowledge' i
         {img/motion.png}
         \caption{} Architektur der Quellcode-Datei motion-actions.lisp}
 \end{figure}
-
-
 
 
 \subsection{API}
@@ -429,9 +505,9 @@ Die Quellcode-Datei actions.lisp im Paket 'planning\_motion'  ist ausschliesslic
 \end{lstlisting}
 \end{minipage}
 
-
 Die Funktion 'move-head' bekommt als \"Ubergabeparameter Koordinaten (x y z) welche vorgeben sollen, in welche Richtung der Kopf des Pr2 bewegt wird.\\
 Zuerst wird ein neuer Actionclient, für die 'head\_traj\_controller/point\_head\_action' Action erstellt. Anschliessend soll in einem Loop solange gewartet werden, bis der Actionsserver gestartet wurde. Ist dies der Fall, wird eine neue Message erstellt, welche einen Punkt auf Basis der \"ubergebenen Koordinaten, in Relation zum Frame 'base\_link', enth\"alt. Diese wird dann in ein neues Actiongoal gefasst und an den Actionserver geschickt, welcher den Kopf des Pr2 dann in Richtung der Koordinaten bewegen wird.
+
 
 
 
@@ -463,6 +539,7 @@ wird die Basis bewegt. Der Punkt und die Rotation sind in Frame "map" anzugeben.
 @param: x y z angle
 @return: Succesfull oder Aborted
 \end{verbatim}
+
 
 
 \subsubsection{move-Robo-Into\\
@@ -498,6 +575,7 @@ Beschreibung: Eine Hilfsfunktion die dazu dient, den Action-Client zu initialisi
 
 @return: Succesfull oder Aborted
 \end{verbatim}
+
 
 \subsubsection{get-Action-Client-Base ()}
 \chapterauthor{Vanessa Hassouna}
@@ -685,163 +763,27 @@ Beschreibung: Die Funktion lässt den Roboter anhand vorgegebener Zahlen seinen 
 \end{verbatim}
 
 
-\subsubsection{init-gripper-states ()}
-\chapterauthor{Kevin Störmer}
-\begin{verbatim}
-init-gripper-states ()
-Beschreibung: Subscribed das Topic '/joint_states' und gibt als Callback-Funktion
-'is-gripper-filled (msg)' an.
-\end{verbatim}
-
-\subsubsection{is-gripper-filled (msg)}
-\chapterauthor{Kevin Störmer}
-\begin{verbatim}
-is-gripper-filled (msg)
-Beschreibung: Aktualisiert alle 0.01 Sekunden die Fluents *gripper-righ-state-fluent* 
-und *gripper-left-state-fluent* um T oder nil. Dabei wird anhand der Joint-States der
-Gripper-Joints 'r_gripper_joint' und 'l_gripper_joint' entschieden
-ob jeder Gripper des Pr2 gefüllt ist, oder nicht. Diese werte werden
-aus den Joint-States geparsed.
-@param: sensor_msgs/JointState msg 
-\end{verbatim}
 
 
 
-\section{Die Quellcode-Datei: objects.lisp (planning\_objects)}
-\subsection{Architekturbild}
-\chapterauthor{Hauke Tietjen}
 
 
 
-\begin{figure}[!htb]
-	\center{\includegraphics[width=1.0\textwidth]
-		{img/diag_planning_objects.png}
-		\caption{} Architektur der Quellcode-Datei planning-objects.lisp}
-\end{figure}
 
 
-\subsection{API}
-\chapterauthor{Hauke Tietjen}
-\subsubsection{Serviceclients}
-1. '/storage\_place\_service/storage\_place' \\
-Gibt den Ablageplatz des Objekts zur\"uck.\\ \\
-2. '/object\_grasping/grasp\_pose' \\
-Gibt die Greifpose des für die Koordinaten zurück.\\
-3. '~location\_marker' \\
-Publiziert Marker zur Visualisierung von Landezonen.
-\subsection{Beschreibung des Teilsystems}
-\subsubsection{\"Ubersicht}
-\chapterauthor{Hauke Tietjen}
-Die Datei 'objects' aus dem Paket 'planning\_objects' dient dazu aus den von Knowledge vorgegebenen Ablageorten für Objekte Punkte zu bestimmen die geeignet sind um Objekte auf ihnen abzustellen. Dabei werden Platzmangel, Kollision und das Herunterfallen von Objekten berücksichtigt. Zusätzlich lassen sich die finalen Positionen in Rviz visualisieren.
-
-\subsubsection{calculate-landing-zone()}
-\chapterauthor{Hauke Tietjen}
-\begin{verbatim}
-calculate-landing-zone()
-Beschreibung: Fragt Knowledge an welchen Ablageort das Objekt gehört und
-verkleinert ihn um das Herunterfallen der Objekte von Tischkanten zu
-verhindern. Ruft danach fill-landing-zone-horizontally auf das eine Pose zurück gibt.
-@param object
-@return Gibt eine Pose in /map zurück um ein Objekt zu greifen
-\end{verbatim}
-
-\subsubsection{fill-landing-zone-horizontally()}
-\chapterauthor{Hauke Tietjen}
-\begin{verbatim}
-fill-landing-zone-horizontally()
-Beschreibung: Befüllt den Ablageort mit einem Objekt pro Aufruf, von Links nach
-Rechts auf der Y-Achse im Frame /map. Fragt Knowledge nach der Z-Achse und Pose
-wo das Objekt gegriffen werden soll.
-@param position width height
-@return Gibt eine Pose in /map zurück um ein Objekt zu greifen
-\end{verbatim}
-
-\subsubsection{calculate-landing-zone-visualized()}
-\chapterauthor{Hauke Tietjen}
-\begin{verbatim}
-calculate-landing-zone-visualized()
-Beschreibung: Führt calculate-landing-zone() aus und visualisiert das Ergebnis mit
-visualize-landing-zone().
-@param object
-@return Gibt eine Pose in /map zurück um ein Objekt zu greifen
-\end{verbatim}
-
-\subsubsection{visualize-landing-zone()}
-\chapterauthor{Hauke Tietjen}
-\begin{verbatim}
-visualize-landing-zone()
-Beschreibung: Führt vis-init() und publish-pose() aus um eine Pose zu visualisieren.
-@param pose
-@return 
-\end{verbatim}
-
-\subsubsection{check-which-storage-place()}
-\chapterauthor{Hauke Tietjen}
-\begin{verbatim}
-check-which-storage-place()
-Beschreibung: Findet heraus in welchem der vier Storageplaces sich die Y-Koordinate befindet.
-@param y
-@return Storageplace
-\end{verbatim}
-
-\subsubsection{vis-init()}
-\chapterauthor{Hauke Tietjen}
-\begin{verbatim}
-vis-init()
-Beschreibung: Startet den Marker-publisher.
-@param 
-@return 
-\end{verbatim}
-
-\subsubsection{publish-pose()}
-\chapterauthor{Hauke Tietjen}
-\begin{verbatim}
-publish-pose
-Beschreibung: Publiziert einen Marker mit ID an der angegebenen Pose mit den Dimensionen
-aus height und width.
-@param pose id height width
-@return 
-\end{verbatim}
-
-\section{Die Quellcode-Datei: error-hierarchy.lisp (planning\_error)}
-\subsection{Architekturbild}
-\chapterauthor{Hauke Tietjen}
-\begin{figure}[!htb]
-	\center{\includegraphics[width=0.4\textwidth]
-		{img/diag_planning_error.png}
-		\caption{} Architektur der Quellcode-Datei error-hierarchy.lisp}
-\end{figure}
 
 
-\subsection{API}
-\chapterauthor{Hauke Tietjen}
-\subsubsection{Serviceclients}
-keine
-\subsection{Beschreibung des Teilsystems}
-\subsubsection{\"Ubersicht}
-\chapterauthor{Hauke Tietjen}
-Die Datei 'error-hierarchy' aus dem Paket 'planning\_error' legt die Hierarchie der Fehler fest.
 
-\subsubsection{custom-error()}
-\chapterauthor{Hauke Tietjen}
-\begin{verbatim}
-custom-error()
-Beschreibung: Dieser Standardfehler erbt von 'error' während alle weiteren Fehler von diesem erben. 
-@param message
-@return 
-\end{verbatim}
 
-\subsubsection{vision-error()}
-\chapterauthor{Hauke Tietjen}
-\begin{verbatim}
-vision-error()
-Beschreibung: Ein Fehler bei dem es um etwas aus dem Bereich Vision geht kann hiermit
-beschrieben werden. Vor der Fehlernachricht wird jetzt 'vison error:' ausgegeben. 
-@param
-@return 
-\end{verbatim}
 
-Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' sind analog zu 'vison-error' und definieren einfach weitere Fehler für andere Bereiche.
+
+
+
+
+
+
+
+
 
 
 \newpage
@@ -1006,7 +948,5 @@ oder \\
 \chapterauthor{Alexander Haar}
 
 Um alle wichtigen Knoten zu starten muss einfach der Befehl \textit{roslaunch knowledge knowledge\_main.launch} ausgeführt werden. Es wird eine json\_prolog- Node, der PokePositon-Service und der GetFixedKitchenModel- Service gestartet.
-
-
 \end{document}
 
