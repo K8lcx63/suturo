@@ -23,25 +23,28 @@
 \section{Motion}
 \subsection*{Zielsetzung}
 \chapterauthor{Maximilian Bertram}
-Das Ziel des Team Motion für den zweiten Meilenstein war es einen Actionserver zu implementieren, der verschiedene Aktionen für das Greifen, Abstellen und Umstoßen von Objekten anbietet. Jede der Aktionen soll mit jedem der vorhandenen Grippern möglich sein, dabei soll der Roboter Objekte in seiner Umgebung berücksichtigen und seine Bewegungspfade so planen, dass keine Kollisionen entstehen. Ist eine kollisionsfreie Bewegung nicht möglich wird die Aktion mit einem entsprechenden Fehler abgebrochen.\\
+Das Ziel des Teams Motion für den zweiten Meilenstein war es einen Actionserver zu implementieren, der verschiedene Aktionen für das Greifen, Abstellen und Umstoßen von Objekten anbietet. Jede der Aktionen soll mit jedem der vorhandenen \textit{Grippern} möglich sein, dabei soll der Roboter Objekte in seiner Umgebung berücksichtigen und seine Bewegungspfade so planen, dass keine Kollisionen entstehen. Ist eine kollisionsfreie Bewegung nicht möglich wird die Aktion mit einem entsprechenden Fehler abgebrochen.\\
 Ein weiteres Ziel waren genauere Rückgaben über den Erfolg der Aktionen, damit Knowledge seinen Beliefstate aktuell halten kann.\\
 
 \subsection*{Probleme}
-\chapterauthor{Maximilian Bertram, Roman Haak}
 \subsubsection*{Kollisionsfreiheit beim Greifen eines Objektes}
-Es war schwierig beim Greifen die kollisionsfreiheit mit anderen, herumstehenden Objekten, die nicht zur \textit{Planningscene} gehören, zu garantieren.\\
-\textbf{Lösung}: Wir haben uns dazu entschieden die Bewegung für das Greifen und Abstellen auf einer Höhe auszuführen, auf der sich kein anderes Objekt befindet. Zuerst wird der gewünschte Gripper auf die 'sichere' Höhe gefahren und über das Objekt gefahren. Dann wird der Gripper geöffnet, richtig orientiert und nur auf einer Koordinatenachse (in negative Z-Richtung von '\textit{base\_footprint}') bewegt und so \textit{über} das Objekt geschoben.\\
+\chapterauthor{Maximilian Bertram, Roman Haak}
+Es war schwierig beim Greifen die Kollisionsfreiheit mit Objekten, die nicht zur \textit{Planningscene} gehören, zu garantieren.\\
+\textbf{Lösung}: Wir haben uns dazu entschieden, die Bewegung für das Greifen und Abstellen auf einer Höhe auszuführen, auf der sich kein anderes Objekt befindet. Zuerst wird der gewünschte \textit{Gripper} auf eine 'sichere' Höhe bewegt und dann über das Objekt gefahren. Dann wird der \textit{Gripper} geöffnet, richtig orientiert und nur auf einer Koordinatenachse (in negative Z-Richtung von '\textit{base\_footprint}') bewegt und so \textit{über} das Objekt geschoben.\\
 
 \subsubsection*{Unterschiede Simulation echter PR2}
+\chapterauthor{Roman Haak}
 Teilweise wurden Lösungen implementiert, die in der Simulation sehr gut funktionierten. Aber als sie dann auf dem echten Roboter ausprobiert wurden,
-funktionierten sie auf einmal nicht mehr.\\
-\textbf{Lösung}: Leider gab es bei diesem Problem keine eindeutige Lösung. Lösungen mussten umgeschrieben werden, bis sie auch auf dem echten Roboter funktionierten.
+funktionierten sie nicht mehr.\\
+\textbf{Lösung}: Leider gab es bei diesem Problem keine eindeutige Lösung. Lösungen mussten anders implementiert werden, bis sie auch auf dem echten Roboter funktionierten.
 
 \subsubsection*{'Deterministisches' Umstoßen eines Objektes}
+\chapterauthor{Roman Haak}
 Zunächst wurde das Umstoßen eines Objektes einfach dadurch realisiert, dass der Arm zu einem Punkt zwischen Roboter und Objekt gefahren wurde und danach zu dem Objekt. Dabei war es aber immer unterschiedlich, welchen Weg \textit{MoveIt} für die zweite Bewegung des Armes, also das Umstoßen, berechnet und ausgeführt hat.\\
 \textbf{Lösung}: Die Funktion wurde so umgeschrieben, dass erst zu einem 'Zwischenpunkt' gefahren wird. Dann wird von diesem 'Zwischenpunkt' bis zu dem Punkt, an den der Gripper als zweites gefahren werden soll, eine 10-Punkte-Trajektorie berechnet. Diese Trajektorie beschreibt dann den geraden Weg von dem 'Zwischenpunkt' zum 'Umstoßpunkt' am Objekt. Und somit ist sichergestellt, dass immer von vorne umgestoßen wird.
 
 \subsubsection*{Synchronisierung \textit{refactoren} des Codes und Implementierung}
+\chapterauthor{Roman Haak}
 Wir haben in einem \textit{branch} unseres Repositories angefangen zu \textit{refactoren}. In dem \textit{master-branch} wurde inzwischen weiterentwickelt. So kam es zu dem Problem, dass im master-branch stetig neue Funktionen hinzukamen, bzw. verändert wurden, welche dann in dem \textit{refactor-branch} wieder 'eingepflegt' werden mussten. Dadurch hat sich das \textit{refactoren} des Codes leider etwas in die Länge gezogen.\\
 \textbf{Lösung}: Werden neue Funktionen eingebaut, werden diese direkt in den refactorten branch eingebaut, sodass dadurch kein Zusatzaufwand entsteht. Absprache ist in jedem Fall sehr wichtig.
 
@@ -49,7 +52,7 @@ Wir haben in einem \textit{branch} unseres Repositories angefangen zu \textit{re
 \subsection{Übersicht des Teilsystems}
 \chapterauthor{Roman Haak}
 Die Untergruppe '\textit{Motion}' ist für das Bewegen verschiedener "Körperpartien" des Roboters zuständig.\\
-Dabei wurde das Fahren des Roboters bis zu dem jetzigen Meilenstein von der Untergruppe '\textit{Planning}' übernommen, wird
+Dabei wurde das Fahren des Roboters bis zu dem jetzigen Meilenstein von der Untergruppe '\textit{Planning}' realisiert, wird
 in Zukunft aber von '\textit{Motion}' übernommen.\\
 Das Bewegen der anderen, zum Erfüllen der Zielsetzung des Meilensteins 2 benötigten, Teile des Roboters, also Arm und Endeffektor (\textit{Gripper}) wurden 
 von der Gruppe '\textit{Motion}' übernommen.\\
@@ -72,10 +75,14 @@ Im Folgenden werden die \textit{Schnittstellen}, der \textit{Ablauf} des Teilsys
 \textbf{MovingCommand}
 \chapterauthor{Maximilian Bertram}
 Vom Typ '\textit{motion\_msgs/MovingCommand}': \\
+
+\noindent
+\begin{minipage}{\linewidth}
 \begin{lstlisting}[caption={Definition des MovingCommands},captionpos=b]
 #goal definition
 geometry_msgs/PoseStamped goal_pose
 uint8 command
+
 #constants for the command
 uint8 UNKNOWN=0
 uint8 MOVE_STANDARD_POSE=1
@@ -87,6 +94,7 @@ uint8 GRASP_RIGHT_ARM=6
 uint8 GRASP_LEFT_ARM=7
 uint8 PLACE_RIGHT_ARM=8
 uint8 PLACE_LEFT_ARM=9
+
 #Label of object which shell be grasped.
 #Required because when an object gets grasped by robot,
 #a message gets published from subgroup 'motion', which object
@@ -108,6 +116,7 @@ uint8 UNMANAGEBLE_ERROR=3
 #feedback definition
 #bool finished
 \end{lstlisting}
+\end{minipage}
 
 Mit Hilfe der MovingCommandAction lassen sich alle von uns zur Verfügung gestellten Funktionen aufrufen. Es wurden Konstanten definiert, die die jeweilige Aktion beschreiben und in der Message-Definition vorhanden sind.
 
@@ -146,20 +155,24 @@ Wird ein Objekt erfolgreich abgestellt oder gegriffen werden für den \textit{Be
 
 \begin{lstlisting}[caption={Definition der GraspObject.msg},captionpos=b]
 #A message which get's published by Motion-component after grasping an object.
+
 #The label of the grasped object.
 string object_label
+
 #The gripper used. See 'Gripper.msg' for more details.
 Gripper gripper
 \end{lstlisting}
 
 \begin{lstlisting}[caption={Definition der DropObject.msg},captionpos=b]
 #A message which get's published by Motion-component after dropping an object.
+
 #The gripper used. See 'Gripper.msg' for more details.
 Gripper gripper
 \end{lstlisting}
 
 \begin{lstlisting}[caption={Definition der Gripper.msg},captionpos=b]
 #A message for defining constants for differencing between left and right gripper.
+
 uint8 gripper
 #constants for gripper
 uint8 LEFT_GRIPPER = 1
@@ -197,7 +210,7 @@ Die GripperAction-Message wird entsprechend geparsed und eine \\
 Beim Start der Node wird die PlanningScene (in unserem Fall die iai-Küche) bei Knowledge abgefragt und der MoveIt PlanningScene hinzugefügt.
 
 \subsubsection*{Schritt 2: Parsen der Message}
-Wird eine MovingCommandAction Message empfangen, wird diese zunächst geparsed. Je nachdem welche Konstante für das command feld gesetzt wird, wird die entsprechende Funktion des zugehörigen Controllers aufgerufen.
+Wird eine Anfrage auf dem Actionserver empfangen, wird die Zieldefinition der Anfrage zunächst geparsed. Je nachdem welche Konstante für das Feld '\textit{command}' gesetzt wird, wird die entsprechende Funktion des zugehörigen Controllers aufgerufen.
 
 \subsubsection*{Schritt 3: Umrechnen der Pose}
 Falls die Pose der Message in einem anderen Frame als dem PlanningFrame der zu bewegenden 
@@ -213,15 +226,15 @@ Es werden VisualizationMarker gepublished um den Endpunkt der Bewegung in RViz z
 Ist die Bewegung kollisionsfrei möglich und die Pose erreichbar, wird die Bewegung durchgeführt und eine entsprechende Erfolgsmeldung zurückgegeben.
 
 \subsubsection*{Schritt 7: Rückmeldung an Knowledge Service}
-Falls es sich um ein \textit{GRASP} oder \textit{PLACE} Aktion handelt und die Aktion erfolgreich war wird der Knowledge Service aufgerufen um den Beliefstate zu aktualisieren. Es wird übergeben, welches Objekt sich in welchem Gripper befindet.
+Falls es sich um eine \textit{GRASP} oder \textit{PLACE} Aktion handelt und die Aktion erfolgreich war wird der Knowledge Service aufgerufen um den Beliefstate zu aktualisieren. Es wird übergeben, welches Objekt sich in welchem \textit{Gripper} befindet.
 
 
 \subsection{Besonderheiten/Besondere Algorithmen}
-\chapterauthor{Roman Haak}
 In diesem Abschnitt werden kurz erwähnenswerte Algorithmen beschrieben.
 Dabei wird zuerst der Algorithmus für das Umstoßen eines Objektes und anschließend der Algorithmus für das Greifen, bzw. Abstellen eines Objektes beschrieben.\\
 
 \subsubsection{Algorithmus für das Umstoßen eines Objektes}
+\chapterauthor{Roman Haak}
 Über die von unserem Teilsystem angebotene Action '\textit{moving}' kann das Kommando zum Umstoßen eines Objektes mit dem rechten oder mit dem linken \textit{Gripper} abgesetzt werden. Beim Aufruf wird dabei eine Pose übergeben, welche die Position des Mittelpunktes des umzustoßenden Objektes und die beabsichtigte Orientierung des \textit{Grippers} beinhaltet. \\Der Algorithmus, der das Umstoßen dann realisiert, arbeitet wie folgt:\\
 
 1. \textit{Berechne die Pose, zu der der Arm als erstes gefahren werden soll. Diese Pose wird folgendermaßen ermittelt:}\\
@@ -232,7 +245,7 @@ Der so errechnete Zielpunkt befindet sich also 'DISTANCE\_BEFORE\_POKING' plus '
 
 2. \textit{Fahre mit dem rechten bzw. linken Arm zu der errechneten Pose.}\\
 
-3. \textit{Errechne nun einen Punkt, der etwas über dem Objektmittelpunkt liegt und falls der linke Arm benutzt wird, noch um 'GRIPPER\_LENGTH\_LEFT' minus 'GRIPPER\_LENGTH\_RIGHT' näher am Roboter liegt, damit immer auf dieselbe Weise umgestoßen wird, egal ob der linke (längere) oder rechte Arm benutzt wird.}\\
+3. \textit{Errechne nun einen Punkt, der etwas über dem Objektmittelpunkt liegt. Falls der linke Arm benutzt wird, verschiebe den Punkt zusätzlich noch um die Differenz zwischen 'GRIPPER\_LENGTH\_LEFT' und 'GRIPPER\_LENGTH\_RIGHT' hin zum Roboter. Damit soll erreicht werden, dass immer auf dieselbe Weise umgestoßen wird, egal ob der linke (längere) oder rechte Arm benutzt wird.}\\
 
 4. \textit{Berrechne eine 10-Punkte Trajektorie zwischen dem in Schritt 3 errechneten Punkt und der aktuellen Position des Armes.}\\
 \tab - Dies hat den Sinn, dass sichergestellt ist, dass das Objekt von\\ \tab vorne umgestoßen wird.\\
@@ -242,7 +255,8 @@ Der so errechnete Zielpunkt befindet sich also 'DISTANCE\_BEFORE\_POKING' plus '
 
 
 \subsubsection{Algorithmus für das Greifen/Abstellen eines Objektes}
-Über die von unserem Teilsystem angebotene Action '\textit{moving}' kann das Kommando zum Greifen/Abstellen eines Objektes mit dem rechten oder mit dem linken \textit{Gripper} abgesetzt werden. Beim Aufruf wird dabei eine Pose übergeben, welche die Position des Greifpunktes des zu greifenden Objektes, bzw. die Position, zu der der \textit{Gripper} hingefahren werden soll, um das Objekt abzustellen beinhaltet. Zusätzlich ist noch die beabsichtigte Orientierung des \textit{Grippers} beinhaltet. \\Der Algorithmus, der das Greifen bzw. Abstellen dann realisiert, ist dabei derselbe. Denn die beiden Aktionen Greifen und Abstellen unterscheiden sich bei uns momentan nur daran, dass beim Greifen der \textit{Gripper} erst geöffnet und dann zum Greifen geschloßen wird und beim Abstellen der \textit{Gripper} zuerst bereits geschloßen ist und beim Abstellen des Objektes dann geöffnet werden muss. Zu dieser Unterscheidung reichen also Fallunterscheidungen innerhalb des Algorithmus. \\Der Algorithmus arbeitet dabei wie folgt:\\
+\chapterauthor{Roman Haak}
+Über die von unserem Teilsystem angebotene Action '\textit{moving}' kann das Kommando zum Greifen/Abstellen eines Objektes mit dem rechten oder mit dem linken \textit{Gripper} abgesetzt werden. Beim Aufruf wird dabei eine Pose übergeben, welche die Position des Greifpunktes des zu greifenden Objektes, bzw. die Position, zu der der \textit{Gripper} hingefahren werden soll, um das Objekt abzustellen beinhaltet. Zusätzlich ist noch die beabsichtigte Orientierung des \textit{Grippers} angegeben. \\Der Algorithmus, der das Greifen bzw. Abstellen dann realisiert, ist dabei derselbe. Denn die beiden Aktionen Greifen und Abstellen unterscheiden sich prinzipiell nur daran, dass beim Greifen der \textit{Gripper} erst geöffnet und dann zum Greifen geschloßen wird und beim Abstellen der \textit{Gripper} zuerst bereits geschloßen ist und beim Abstellen des Objektes dann geöffnet werden muss. Zu dieser Unterscheidung reichen also Fallunterscheidungen innerhalb des Algorithmus. \\Der Algorithmus arbeitet dabei wie folgt:\\
 
 1. \textit{Hebe den gewünschten Arm auf die Höhe 'TABLE\_HEIGHT' + 'MAXIMUM\_OBJECT\_HEIGHT' + 'GRIPPER\_LENGTH\_LEFT' + 'DISTANCE\_BEFORE\_GRASPING'.}\\
 \tab - Da wir es in unserem aktuellen Stand des Gesamtsystems noch nicht geschafft haben, \\ \tab beim Greifen die Kollisionsfreiheit sicherzustellen, haben wir uns entschieden das Greifen\\ \tab aus einer Höhe zu realisieren, auf der sich sicher kein Objekt befindet.\\
@@ -256,7 +270,7 @@ Der so errechnete Zielpunkt befindet sich also 'DISTANCE\_BEFORE\_POKING' plus '
 \tab - Soll ein Objekt gegriffen werden, öffne den \textit{Gripper}.\\
 \tab - Soll ein Objekt abgestellt werden, lass den \textit{Gripper}, wie er ist.\\
 
-5. \textit{Fahre mit dem Arm zu der in der übergebenen Pose angegebenen Position.}\\
+5. \textit{Fahre mit dem Arm zu der Position, welche in der Pose angegeben ist.}\\
 
 6. \textit{Hier findet wieder eine Fallunterscheidung statt.}\\
 \tab - Soll ein Objekt gegriffen werden, schließe den \textit{Gripper}.\\
@@ -273,7 +287,7 @@ Meilensteines gesetzt und uns gegen das Implementieren von Unit-Tests durch ein 
 
 Durch die händischen Tests sind immer wieder Differenzen zwischen echtem PR2 und der Simulation aufgefallen. Es mussten immer wieder Anpassungen am Code vorgenommen werden, damit das Package auf dem jeweiligen System wie gewünscht funktioniert. Die Fehlersuche hat hierbei enorm Zeit verbraucht. \\
 
-Am Ende funktionierten die angebotenen Funktionalitäten wie gewünscht, jedoch mit kleineren Fehlern/Unschönheiten.\\
+Am Ende funktionierten die angebotenen Funktionalitäten wie gewünscht.\\
 
 \subsection{Installationsanleitung}
 \chapterauthor{Maximilian Bertram}
@@ -299,9 +313,9 @@ Den Stand der für Stand  des 2. Meilensteins findet sich unter folgendem Tag: \
 \chapterauthor{Roman Haak}
 \begin{itemize}
 
-\item Soll das System im Kontext des echten Roboters benutzt werden, muss zunächst über \textit{roslaunch kitchen\_model\_export knowledge\_export\_service.launch} ein Teilsystem von \textit{Knowledge} gestartet werden.
+\item Soll das System im Kontext des echten Roboters benutzt werden, startet man zunächst über \textit{roslaunch kitchen\_model\_export knowledge\_export\_service.launch} ein Teilsystem von \textit{Knowledge}.
 
-\item Unser Teilsystem wird über \textit{roslaunch motion motion\_main\_start.launch} gestartet werden, falls er im Kontext einer Simulation ausgeführt werden soll, bzw. \textit{roslaunch motion motion\_main\_start\_real\_pr2.launch}, falls der Knoten auf dem PR2 ausgeführt werden soll.
+\item Unser Teilsystem wird dann über \textit{roslaunch motion motion\_main\_start.launch} gestartet, falls es im Kontext einer Simulation ausgeführt werden soll, bzw. über \textit{roslaunch motion motion\_main\_start\_real\_pr2.launch}, falls das Ausführen des Systems auf dem echten PR2 gewünscht ist.
 
 \item Dann können Befehle an den Actionserver unseres Knotens über das Topic \textit{/moving/goal} abgesetzt werden. Zur Erläuterung des Actionservers siehe Dokumentation der Gruppe \textit{motion}.
 \end{itemize}
