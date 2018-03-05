@@ -80,17 +80,17 @@ Das Ziel von Knowledge im zweiten Meilenstein ist das Klassifizieren und abspeic
 \section{Probleme}
 \subsection{Routen können nicht richtig geplant werden}
 \chapterauthor{Vanessa Hassouna}
-Beim Fahren fährt der Roboter schnell mit seinen Armen gegen Küchenobjekte und dreht sich in einem Winkel, der problematisch mit seinem verletzbaren Rücken ist.\\
+Beim Fahren fährt der Roboter schnell mit seinen Armen gegen Küchenobjekte und dreht sich in einem Winkel, der problematisch mit seinem verletzbaren Rücken sein kann.
 
-\textbf{Lösung}: Bevor er zu dem gegebenem Punkt fährt, fährt er in eine von uns ausgewählte sichere Position. Bis dahin sollte er sich um 90 Grad gedreht haben.
+\textbf{Lösung}: Bevor der Pr2 zu dem gegebenem Punkt fährt, stellen wir Sicher dass der Roboter in einer sicheren Position ist. Bis dahin sollte er sich um 90 Grad gedreht haben.
 
 \subsection{Extrahieren von wichtigen Information}
 \chapterauthor{Vanessa Hassouna}
 
-Die Informationen der gesehenen Objekte wird als \textbf{msg} übergeben. Dieses beinhaltet ein Array aus normal\_features, ein Array aus \textbf{color\_features}, ein Array mit \textbf{object\_pose} und die Anzahl der gesehenen Objekte. Um jedoch Objekte einzelnd zu betrachtet weiter an Knowledge geben zu können, muss das Array zergliedert werden.\\
+Die Informationen der gesehenen Objekte wird als \textbf{msg} übergeben. Dieses beinhaltet ein Array aus \textbf{normal\_features}, ein Array aus \textbf{color\_features}, ein Array mit \textbf{object\_pose} und die Anzahl der gesehenen Objekte. 
+Um jedoch Objekte an Knowledge senden zu können, muss das Array zuerst zergliedert werden. \\
 
-
-\textbf{Lösung}: Alle erhaltenen Informationen werden zwischengespeichert auf dem "Param-Server", danach werden dieses erst miteinander konkateniert.
+\textbf{Lösung}: Alle erhaltenen Informationen werden auf dem "Param-Server" zwischengespeichert, danach werden diese erst miteinander konkateniert.
 
 \subsection{Logik der Main wird zu groß und unübersichtlich}
 \chapterauthor{Vanessa Hassouna}
@@ -158,15 +158,14 @@ Die Quellcode-Datei 'main' im Paket 'planning\_main\_programm' soll ausschliessl
 Alle dafür notwendigen Logiken, die auf Basis externer Daten entschieden werden, wurden dabei basierend auf der Quelle der Daten in andere Quellcode-Dateien ausgelagert. Dabei wurde z.b der Vergleich zweier Punkte aus Vision in die Quellcode-Datei 'vision-communicate' (Paket: planning\_vision) ausgelagert.
 
 
-\subsubsection{main()}
-\chapterauthor{Vanessa Hassouna}
 
 
 \subsubsection{main ()}
-\chapterauthor{Kevin Störmer}
+\chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
 main()
-Die Main startet eine 'ros-node' mit dem Namen \textit{planning\_main}. Diese Node läuft solange,bis die komplette Main einmalig durchlaufen wurde. 
+Die Main startet eine 'ros-node' mit dem Namen \textit{planning\_main}.
+Diese Node läuft solange,bis die komplette Main einmalig durchlaufen wurde. 
 @return: T oder Nil 
 \end{verbatim}
 
@@ -178,11 +177,11 @@ Die Main startet eine 'ros-node' mit dem Namen \textit{planning\_main}. Diese No
 Der Pr2 begibt sich in die Homeposition, von der aus er Objekte sehen soll. 
 
 \subsubsection{Schritt 2: Suche nach Objekten}
-Jedes Mal, wenn der Kopf von dem Pr2 sich einer Position befindet wird der Service \textit{/vision\_suturo/objects\_information} aufgerufen. Die gegebenen Information werden wie folgt bearbeitet:
+Jedes Mal, wenn der Kopf des Pr2 sich in einer bestimmten Position befindet wird der Service \textit{/vision\_suturo/objects\_information} aufgerufen. Die gegebenen Information werden wie folgt bearbeitet:
 
 \begin{itemize}
 \item Die Informationen werden extrahiert.
-\item Die beiden Arrays \textbf{normal\_features} und \textbf{color\_features} werden zergliedert und mithilfe von \textbf{object\_amount} Identifiziert und auf dem "Param-Server" gespeichert.
+\item Die beiden Arrays \textbf{normal\_features} und \textbf{color\_features} werden zergliedert und mit Hilfe von \textbf{object\_amount} Identifiziert und auf dem "Param-Server" gespeichert.
 \item Die normal\_features und color\_features werden konkateniert auf dem "Param-Server" gespeichert als \textbf{featuresX}, wobei X hier die Nummer des Objektes darstellt.
 \item Die \textbf{object\_pose} wird als Array global gespeichert.
 \end{itemize}
@@ -192,9 +191,9 @@ Jedes Mal, wenn der Kopf von dem Pr2 sich einer Position befindet wird der Servi
 \subsubsection{Schritt 3: Weitergabe} 
 
 \begin{itemize} 
-\item Jetzt werden die gesehenen Objekte weitergeben an Knowledge, hier bekommen wir für jedes gegebene Objekt ein Label als String zurück.
-\item Mit hilfe des erhaltenen Labels rufen wir einen anderen Service von Vision auf der Anhand von Objekt-Nummer und Label uns eine Pose zurück gibt.  
-\item Wenn die Pose bei uns angekommen ist publishen wir auf ein Topic von Knowledge damit das gesehene Objekt in der Wissensbasis gespeichert wird.
+\item Jetzt werden die gesehenen Objekte an Knowledge weitergegeben, hier bekommen wir für jedes gegebene Objekt ein Label als String zurück.
+\item Mit Hilfe des erhaltenen Labels rufen wir den Service '/vision\_suturo/objects\_pose' von Vision auf der anhand von Objekt-Nummer und Label uns eine Pose zurück gibt.  
+\item Wenn die Pose bei uns angekommen ist publishen wir auf ein Topic von Knowledge, damit das gesehene Objekt in der Wissensbasis gespeichert wird.
 \end{itemize}
 
 
@@ -202,9 +201,10 @@ Jedes Mal, wenn der Kopf von dem Pr2 sich einer Position befindet wird der Servi
 
 
 \subsubsection{Schritt 4: Welches Objekt soll ich greifen und wo soll es hin}
-Wir erfragen bei Knowledge, welche Objekte wir greifen sollen in dem wir den Service "knowledge\_msgs/ObjectsToPick" aufrufen. Als Antwort bekommen wir 2 Strings zurück.
-Mit der Funktion X kriegen wir dann einen Standpunkt raus wo das Objekt hinsoll. %X=HAUKES FUNKTION
-Des Weiteren wird noch abgefragt wie das Objekt gegriffen werden, soll. Die Information wird dann weiter an Motion gegeben.
+Wir erfragen bei Knowledge, welche Objekte wir greifen sollen in dem wir den Service "knowledge\_msgs/ObjectsToPick" \\
+aufrufen. Als Antwort bekommen wir 2 Strings zurück.
+Mit der Funktion X erhalten wir dann einen Standpunkt wohin das Objekt platziert werden soll. %X=HAUKES FUNKTION
+Des Weiteren wird noch abgefragt wie das Objekt gegriffen werden soll, diese Information wird dann weiter an Motion gegeben.
 
 \subsubsection{Schritt 5: Hinfahren zum gegebenen Ort}
 Mit Hilfe des Punktes wird berechnet wo der Roboter hinfahren muss. 
@@ -255,7 +255,7 @@ terminiert die Funktion. Die Funktion beginnt immer beim zuletzt gesehenen Punkt
 \chapterauthor{Vanessa Hassouna}
 \subsubsection{Serviceclients}
 1. '/vision\_suturo/Object\_information' \\
-Nimmt Objekt über Kinect wahr und gibt eine "msg" zurück mit Informationen.\\ \\
+Nimmt Objekt über Kinect wahr und gibt eine 'msg' zurück mit Informationen.\\ \\
 2. '/vision\_suturo/objects\_pose' \\
 Gibt zu einem Objekt (übergeben als Nummer) und einem Label (übergeben als String) die Pose mit Rotation zurück.
 
@@ -269,7 +269,7 @@ Gibt zu einem Objekt (übergeben als Nummer) und einem Label (übergeben als Str
 \begin{verbatim}
 call-Vision-Object-Clouds ()
 
-Beschreibung: Der Service von Vision  "/vision\_suturo/objects\_information"
+Beschreibung: Der Service von Vision "/vision\_suturo/objects\_information"
 wird aufgerufen.
 
 @return: Succesfull oder Aborted
@@ -319,7 +319,7 @@ Wir können erfragen, welcher Gripper frei ist.\\
 %?
 \subsubsection{Topics}
 1. 'beliefstate/perceive\_action'\\
-Wenn ein Objekt wahrgenommen wurde, publishen wir die Information an das Topic.
+Wenn ein Objekt wahrgenommen wurde, publishen wir diese Information.
 
 
 \subsection{Beschreibung des Teilsystems}
@@ -362,9 +362,9 @@ Move-Arm-Homeposition()}
 \begin{verbatim}
 call-Motion-Move-Arm-Homeposition()
 
-Beschreibung: uft den Actionserver von Motion auf und sendet an
-Ihnen das Command 2. Dieses Command lässt den Pr2 
-in die Homeposition mit dem Armen fahren.
+Beschreibung: Ruft den Actionserver von Motion auf und
+sendet das 'Command 2'.Dieses Command lässt die Arme des Pr2 
+in die Homeposition fahren.
 
 @return: Succesfull oder Aborted
 \end{verbatim}
@@ -378,10 +378,8 @@ Move-Arm-To-Point (point-center-\\of-object \&optional (x 3))
 \begin{verbatim}
 call-Motion-Move-Arm-To-Point (point-center-of-object \&optional (x 3))
 
-Beschreibung: Ruft den Actionserver von Motion auf und gibt
-ihnen den Befehl den Arm zu dem point-center-of-object zu fahren. 
-Optional kann man den Arm hier auswählen, der bei default der Rechte ist.
-
+Beschreibung: Ruft den Actionserver von Motion auf und 
+sendet den Befehl ein Arm zu dem point-center-of-object zu fahren.
 @param point-center-of-object &optional (x 3)
 @return: Succesfull oder Aborted
 \end{verbatim}
@@ -436,7 +434,7 @@ move-Base-To-Point-Safe (x y z angle)
 
 Beschreibung: Diese Methode lässt den Roboter an eine vordefinierte 
 Position fahren, bei der er sich ungehindert drehen kannn.
-Danach fährt der Pr2 zu den gewünschten Punkt.
+Danach fährt der Pr2 zu dem gewünschten Punkt.
 @param: x y z angle
 @return: Succesfull oder Aborted
 \end{verbatim}
@@ -448,7 +446,7 @@ Point (x y z angle)}
 \begin{verbatim}
 move-Base-To-Point (x y z angle)
 
-Beschreibung: Anhand des  "nav\_pcontroller/move\_base" 
+Beschreibung: Anhand des Actionservice "nav\_pcontroller/move\_base" 
 wird die Basis bewegt. Der Punkt und die Rotation sind in Frame "map" anzugeben.
 
 @param: x y z angle
@@ -463,7 +461,7 @@ wird die Basis bewegt. Der Punkt und die Rotation sind in Frame "map" anzugeben.
 move-Robo-Into-Homeposition ()
 
 Beschreibung: move-Base-To-Point wird aufgerufen mit 
-von uns vordefinierten Punkten die als Homeposition  definiert sind.
+von uns vordefinierten Punkten die als Homeposition dienen.
 
 @return: Succesfull oder Aborted
 \end{verbatim}
@@ -474,8 +472,8 @@ von uns vordefinierten Punkten die als Homeposition  definiert sind.
 \begin{verbatim}
 init-Robo-Moving ()
 
-Beschreibung: Eine Hilfsfunktion, die dazu dient
-die Initialisierung für das Fahren in der Simulation zu Übernehmen.
+Beschreibung: Diese Hilfsfunktion dient dazu,
+die Initialisierung für das Fahren in der Simulation zu übernehmen.
 
 @return: Succesfull oder Aborted
 \end{verbatim}
@@ -485,7 +483,7 @@ die Initialisierung für das Fahren in der Simulation zu Übernehmen.
 \begin{verbatim}
 init-Action-Client-Base ()
 
-Beschreibung: Eine Hilfsfunktion die dazu dient, 
+Beschreibung: Diese Hilfsfunktion dient dazu, 
 den Action-Client zu initialisieren.
 
 @return: Succesfull oder Aborted
@@ -496,7 +494,7 @@ den Action-Client zu initialisieren.
 \begin{verbatim}
 get-Action-Client-Base ()
 
-Beschreibung: Eine Hilfsfunktion die dazu dient, den Action-Client zu erhalten.
+Beschreibung: Diese Hilfsfunktion dient dazu, den Action-Client zu erhalten.
 
 @return: Succesfull oder Aborted
 \end{verbatim}
@@ -522,16 +520,16 @@ Beschreibung: Eine Hilfsfunktion die dazu dient, den Action-Client zu erhalten.
 \chapterauthor{Vanessa Hassouna}
 \subsubsection{Topics}
 1. 'joint\_states' \\
-Hört auf den Topic und speichert die Werte des Grippers.\\
+Subscribed das Topic und speichert die Werte des Grippers.\\
  %vielleicht willst du hier was schreiben?
  
 2. 'robot\_pose' \\
-Gibt uns die Position des Roboters.
+Subscribed das Topic und gibt uns die Position des Roboters.
 \subsection{Beschreibung des Teilsystems}
 
 \subsubsection{\"Ubersicht}
 \chapterauthor{Vanessa Hassouna}
-Die Quellcode-Datei "external-logic.lisp" im Paket 'planning\_logic' ist für reine logische Funktionen vorgesehen.
+Die Quellcode-Datei 'external-logic.lisp' im Paket 'planning\_logic' ist für reine logische Funktionen vorgesehen.
 
 
 
@@ -541,8 +539,8 @@ Die Quellcode-Datei "external-logic.lisp" im Paket 'planning\_logic' ist für re
 \begin{verbatim}
 transformation-Vision-Point (pose amount &optional (endFrame "/base\_footprint")
 
-Beschreibung: Das gegeben Objekt wird von dem ausgehenden Frame
-in ein optionalen Frame umgewandelt.
+Beschreibung: Das gegebene Objekt wird von dem ausgehenden Frame
+in ein optionales Frame umgewandelt.
 
 @param: pose, amount und optional endFrame
 @return: Liefert eine transformierte tf-point-stamped
@@ -605,7 +603,7 @@ object\_amount und object\_pose auf den Param-Server.
 set-Params-Features (normal-s color-s normal-e color-e amount)
 
 Beschreibung: Eine Hilfsfunktion für die Funktion "disassemble-Vision-Call" 
-um aus normal\_features und color\_features Konkateniert ein features-X zu 
+um aus normal\_features und color\_features konkateniert ein features-X zu 
 erstellen. (Knowledge benötigt ein Array in dem zuerst color\_features 
 vorkommen und direkt im Anschluss normal_features)
 
@@ -629,8 +627,8 @@ Beschreibung: Subscribed das Topic '/robot_pose'.
 \begin{verbatim}
 pose-cb (msg)
 
-Beschreibung: Callback-Funktion für "init-pr2" die dauerhaft die Fluents *pr2-pose*
-aktualisiert.
+Beschreibung: Callback-Funktion für "init-pr2" die durchgängig die Fluents
+*pr2-pose* aktualisiert.
 @param: msg
 @return: geometry_msgs/Pose
 \end{verbatim}
@@ -651,15 +649,13 @@ Beschreibung: Ruft move-Base-To-Point-Safe mit angle-From-Pr2-Pose-To-Point auf.
 \begin{verbatim}
 angle-From-Pr2-Pose-To-Point (x-goal y-goal z-goal)
 
-Beschreibung: Berechnet von der aktuellen Position 
-des Roboters um wie viel Grad er sich drehen muss 
-um zu einem Punkt zu fahren. Dafür wurde unter anderem das Paket
-"Cram-Language" mit der Funktion 'atan' benutzt. 
-Da das Bewegen des Pr2 in dem Frame "\map" stattfindet, 
-wurde hier zusätzlich noch die aktuelle Drehung des Pr2 in 
-der Welt gespeichert und diese dann mit dem Grad um wie viel er sich
-drehen muss gegengerechnet, so dass am Ende ein Angle produziert wird, der
-innerhalb des Frames "\map" funktioniert.
+Beschreibung: Berechnet von der aktuellen Position des Roboters um wie viel Grad
+er sich drehen muss, damit er zu einem Punkt fahren kann. Dafür wurde unter 
+anderem das Paket "Cram-Language" mit der Funktion 'atan' benutzt. 
+Da das Bewegen des Pr2 in dem Frame "\map" stattfindet, wurde hier zusätzlich 
+noch die aktuelle Drehung des in der Welt gespeichert. Dies wird dann mit dem 
+Grad um wie viel der Pr2 sich drehen muss gegengerechnet, 
+so dass am Ende ein Winkel produziert wird, der innerhalb des Frames "\map" funktioniert.
 
 @param: x-goal y-goal z-goal 
 @return: angle 
@@ -1624,13 +1620,13 @@ Der Visualization Marker gibt den Mittelpunkt von Objekten aus. Dieser kann den 
 \chapterauthor{Vanessa Hassouna}
 \begin{itemize}
 
-\item Zuerst muss im Terminal \textbf{roslisp\_repl} eingeeben werden, daraufhin startet emacs. 
+\item Zuerst muss im Terminal \textbf{roslisp\_repl} eingegeben werden, daraufhin startet emacs. 
 
-\item Nun wird in der Repl (dort wo cl-user steht) ein \textbf{,} (ausgesprochen Komma) eingegeben.
+\item Nun wird in der Repl (dort wo cl-user steht) ein "\textbf{,}" (ausgesprochen Komma) eingegeben.
 
-\item Nun wird \textbf{r-l-s} eingegeben und mit \textbf{enter} bestätigt. Es folgt die Eingabe des Namens für ein Paket: \textbf{planning\_main\_programm} mit zweimaligen \textbf{Enter} wird die Eingabe bestätigt.
+\item Nun wird \textbf{r-l-s} eingegeben und mit \textbf{ENTER} bestätigt. Es folgt die Eingabe des Namens für ein Paket: \textbf{planning\_main\_programm} wird mit zweimaligem Befehl \textbf{ENTER} bestätigt.
 
-\item Zum Schluss wird noch in dem cl-user Fenster \textbf{(planning-main-programm::main)} eingegeben und mit \textbf{enter} bestätigt (die Klammern gehören auch dazu).
+\item Zum Schluss wird noch in dem cl-user Fenster \textbf{(planning-main-programm::main)} eingegeben und mit \textbf{ENTER} bestätigt (die Klammern gehören auch dazu).
 \end{itemize}
 
 
