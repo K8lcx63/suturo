@@ -67,14 +67,10 @@ Der Knoten '\textit{simple\_gripper}' wird dabei benutzt, um das Öffnen und Sch
 
 Im Folgenden werden die \textit{Schnittstellen}, der \textit{Ablauf} des Teilsystems, besonders \textit{hervorzuhebende} \textit{Algorithmen} und eine \textit{Installationsanleitung} beschrieben.\\
 
-\subsection{Schnittstellen}
-\subsubsection{'suturo\_motion\_main'}
-
-\paragraph{1.2.1.1 Angebotene Actions}
-
-\paragraph{1.2.1.1.1 MovingCommand}
+\subsection{Schnittstellen - 'suturo\_motion\_main'}
+\subsubsection{Angebotene Actions}
+\textbf{MovingCommand}
 \chapterauthor{Maximilian Bertram}
-'\textit{/suturo\_motion\_main/moving}': \\
 Vom Typ '\textit{motion\_msgs/MovingCommand}': \\
 \begin{lstlisting}[caption={Definition des MovingCommands},captionpos=b]
 #goal definition
@@ -115,16 +111,17 @@ uint8 UNMANAGEBLE_ERROR=3
 
 Mit Hilfe der MovingCommandAction lassen sich alle von uns zur Verfügung gestellten Funktionen aufrufen. Es wurden Konstanten definiert, die die jeweilige Aktion beschreiben und in der Message-Definition vorhanden sind.
 
-\paragraph{1.3.1.2 Aufgerufene Actions}
+\subsubsection{Aufgerufene Actions}
 Wird eine GRASP oder PLACE Aktion ausgeführt, wird über eine \\
 \textit{pr2\_ controllers\_ msgs::Pr2GripperCommandAction} Message der Gripper entsprechend geöffnet oder geschlossen.\\
-Dies ist nur eine Momentaufnahme, eigentlich sollte der Gripper über den Knoten '\textit{simple\_gripper}' geöffnet und geschloßen werden können (Siehe \textit{Abschnitt 1.2.2.1}),
+Dies ist nur eine Momentaufnahme, eigentlich sollte der Gripper über den Knoten '\textit{simple\_gripper}' geöffnet und geschloßen werden können (Siehe \textit{Abschnitt 1.3.1}),
 aber es gab leider noch kleinere Probleme, weshalb wir das Öffnen/Schließen vorläufig über den direkten Weg realisieren.\\
 
 
-\paragraph{1.2.1.3 Aufgerufene Services}
+\subsubsection{Aufgerufene Services}
 \chapterauthor{RH, MB}
-'\textit{/kitchen\_model\_service/get\_fixed\_kitchen\_objects}': 
+\textbf{GetFixedKitchenObjects}\\
+Vom Typ '\textit{knowledge\_msgs/GetFixedKitchenObjects}': \\ 
 \begin{lstlisting}[caption={Definition des GetFixedKitchenObjects-Service},captionpos=b]
 // This servicedefinition is for transfering the shape of the objects in the iai_kitchen.
 // The Motion-component calls this service for getting the shape of the kitchen-objects for it's planningscene.
@@ -142,7 +139,9 @@ geometry_msgs/Vector3[] bounding_boxes
 geometry_msgs/Pose[] poses
 \end{lstlisting}
 
-'\textit{/beliefstate/grasp\_action}' und '\textit{/beliefstate/drop\_action}':\\
+\subsubsection{Benutzte Topics}
+\textbf{GraspAction und DropAction}
+
 Wird ein Objekt erfolgreich abgestellt oder gegriffen werden für den \textit{Beliefstate} von \textit{Knowledge} noch die entsprechenden \textit{Messages} gepublished: \\
 
 \begin{lstlisting}[caption={Definition der GraspObject.msg},captionpos=b]
@@ -167,8 +166,9 @@ uint8 LEFT_GRIPPER = 1
 uint8 RIGHT_GRIPPER = 2
 \end{lstlisting}
 
-\subsubsection{'simple\_gripper'}
-\paragraph{1.2.2.1 Angebotene Actions}
+\subsection{Schnittstellen - 'simple\_gripper'}
+\subsubsection{Angebotene Actions}
+Vom Typ '\textit{motion\_msgs/Gripper}': \\
 \begin{lstlisting}[caption={Definition der GripperAction},captionpos=b]
 #goal definition
 #position of the space between the grippers in meters
@@ -187,7 +187,7 @@ bool successful
 #feedback definition
 #bool finished
 \end{lstlisting}
-\paragraph{1.2.2.2 Aufgerufene Actions}
+\subsubsection{Aufgerufene Actions}
 Die GripperAction-Message wird entsprechend geparsed und eine \\
  \textit{pr2\_ controllers\_ msgs::Pr2GripperCommandAction} erzeugt und gepublished. \\
 
