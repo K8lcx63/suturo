@@ -122,9 +122,7 @@ Mit Hilfe der MovingCommandAction lassen sich alle von uns zur Verfügung gestel
 
 \subsubsection{Aufgerufene Actions}
 Wird eine GRASP oder PLACE Aktion ausgeführt, wird über eine \\
-\textit{pr2\_ controllers\_ msgs::Pr2GripperCommandAction} Message der Gripper entsprechend geöffnet oder geschlossen.\\
-Dies ist nur eine Momentaufnahme, eigentlich sollte der Gripper über den Knoten '\textit{simple\_gripper}' geöffnet und geschloßen werden können (Siehe \textit{Abschnitt 1.3.1}),
-aber es gab leider noch kleinere Probleme, weshalb wir das Öffnen/Schließen vorläufig über den direkten Weg realisieren.\\
+\textit{motion\_msgs::Gripper}-Message an den Actionserver des Knotens '\textit{simple\_gripper}' der Gripper entsprechend geöffnet oder geschlossen.(Siehe \textit{Abschnitt 1.3.1})\\
 
 
 \subsubsection{Aufgerufene Services}
@@ -132,19 +130,18 @@ aber es gab leider noch kleinere Probleme, weshalb wir das Öffnen/Schließen vo
 \textbf{GetFixedKitchenObjects}\\
 Vom Typ '\textit{knowledge\_msgs/GetFixedKitchenObjects}': \\ 
 \begin{lstlisting}[caption={Definition des GetFixedKitchenObjects-Service},captionpos=b]
-// This servicedefinition is for transfering the shape of the objects in the iai_kitchen.
-// The Motion-component calls this service for getting the shape of the kitchen-objects for it's planningscene.
-// The Knowledge-component reads these shapes out of an owl-file and returns the data described below.
-
+#This servicedefinition is for transfering the shape of the objects in the iai_kitchen.
+#The Motion-component calls this service for getting the shape of the kitchen-objects for it's planningscene.
+#The Knowledge-component reads these shapes out of an owl-file and returns the data described below.
 
 ---
-// The frame in which the object-poses are given.
+#The frame in which the object-poses are given.
 string frame_id
-// The names of the objects.
+#The names of the objects.
 string[] names
-// The bounding_boxes boxes of the objects.
+#The bounding_boxes boxes of the objects.
 geometry_msgs/Vector3[] bounding_boxes
-// The poses of the objects.
+#The poses of the objects.
 geometry_msgs/Pose[] poses
 \end{lstlisting}
 
