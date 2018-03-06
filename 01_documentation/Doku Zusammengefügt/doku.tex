@@ -1803,6 +1803,16 @@ Beschreibung: Errechnet Farbfeatures von Punktwolken
 	    Vektor für Farbfeatures, der befüllt wird
 \end{verbatim}\label{func:getcolorfeatures}
 
+\subsubsection{getTargetByLabel}
+\chapterauthor{Alexander Link (Doku), Tammo Wübbena (Code)}
+\begin{verbatim}
+PointCloudRGBPtr getTargetByLabel(std::string label)
+Beschreibung: Lädt die PCD-Datei des Objekts, das zum übergebenen label
+gehört.
+@param: String label
+@return Objekt-Punktwolke aus der jeweiligen PCD-Datei
+\end{verbatim}\label{func:gettargetbylabel}
+
 
 \subsection*{vision\_node}
 \chapterauthor{Alexander Link (Doku), Beide (Code)}
@@ -1929,22 +1939,6 @@ Gibt eine Punktwolke unseres Sichtfelds (Szene oder Scene) zurück. Dabei wird a
 \\ \\
 Die Callback-Funktion wird im loop immer wieder aufgerufen, solange die Node noch aktiv ist bzw. der roscore-server besteht.
 
-\subsubsection{Service Client gazebo/get\_model\_state}
-\begin{verbatim}
-gazebo_msgs/GetModelState.srv
-@request: -
-@response:  string model_name,
-            string relative_entity_name,
-            std_msgs/Header header (uint32 seq, time stamp, string frame_id),
-            geometry_msgs/Pose pose (...),
-            geometry_msgs/Twist twist (...),
-            bool success,
-            string status_message
-\end{verbatim}
-Gibt Informationen über das gesuchte Objekt direkt aus gazebo aus.
-\\ \\
-Wird benutzt, um bei Problemen in der Simulation anstelle der vom kinect erkannten Daten auf die direkten Daten aus gazebo ausweichen zu können, an denen der Kinect-Sensor unbeteiligt ist.
-
 \subsection{Programmablauf}
 \chapterauthor{Tammo Wübbena}
 \subsubsection{Schritt 1: Erkennen der Punktwolke}
@@ -2043,7 +2037,7 @@ Der Visualization Marker gibt den Mittelpunkt von Objekten aus. Dieser kann den 
 
 \subsection{Installation und Ausführung von Vision}
 
-\subsubsection{Installation}
+\subsubsection{Installation (mit gazebo)}
 \chapterauthor{Alexander Link}
 
 \textbf{Voraussetzungen}
@@ -2100,28 +2094,35 @@ Folgendes muss zur .bashrc (oder zshrc) hinzugefügt werden:
 \subsubsection{Ausf\"uhrung}
 \chapterauthor{Alexander Link}
 
-\textbf{vision\_main/objectPoint}
+\textbf{vision\_suturo/objects\_information}
 \begin{itemize}
-\item Liefer einen PointStamped und einen Fehlercode zurück
-\item Nimmt keine Argumente
-\item Benutzt VisObjectInfo.srv
+\item Benutzt objects.srv
+\item Nimmt keine Argumente.
+\item Gibt ObjectsInfo.msg zurück
+\begin{itemize}
+\item float32[] CVFH-Features
+\item uint64[] Farb-Features
+\item uint8 Objektmenge
+\item string[] Weitere Objektinformationen
+\item string[] Fehlermeldung (wenn vorhanden)
 \end{itemize}
-\textbf{vision\_main/objectPose (WIP)}
+\end{itemize}
+\textbf{vision\_suturo/objects\_poses}
 \begin{itemize}
-\item Gibt einen bool zur\"uck, der angibt, ob ein Objekt steht oder liegt, zusammen mit einem String f\"ur weitere Informationen.
-\item Nimmt keine Argumente
-\item Benutzt GetObjectInfo.srv 
+\item Benutzt poses.srv
+\item Nimmt ein Label (string) und einen Index (int) entgegen.
+\item Gibt einen geometry\_msgs/PoseStamped zurück.
 \end{itemize}
 
 \textbf{rosservice}
 
 Unsere Services k\"onnen auch manuell abgerufen werden: \\
 
-\textit{rosservice call vision\_main/objectPoint} \\
+\textit{rosservice call vision\_suturo/objects\_information} \\
 
 oder \\
 
-\textit{rosservice call vision\_main/objectPose}
+\textit{rosservice call vision\_suturo/objects\_poses}
 
 \subsection{Installation und Ausführung von Knowledge}
 
