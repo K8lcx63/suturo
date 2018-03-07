@@ -23,9 +23,9 @@
 \section{Vorwort}
 \chapterauthor{Kevin Störmer}
 Im Rahmen unserer Bachelorprojektarbeit 'Suturo', haben wir die Chance ein intelligentes Robotersystem, am Roboter 'Pr2' von Willow Garage zu entwickeln. \\
-Dabei wurde in Absprache mit unseren Tutoren, eine Zielsetzung entwickelt, die wir im Rahmen des letzten Meilensteines verfolgt haben, aufbauend auf unseren Erfolgen des vorherigen Meilensteines. \\
-In den folgenden Abschnitten wollen wir allem vorran einleitend auf planende Aspekte, sowie unsere Vorgehensweisen und Zielsetzungen eingehen. Daraufhin soll im Abschnitt zu unserer Schnittstellendokumentation, auf konkrete Lösungen der Projektgruppen eingegangen werden.\\ ~ \\
-Abschliessend wollen wir einen Ausblick auf kommende Meilensteine, insbesondere im Hinblick auf die im April folgende Projektpräsentation, formulieren.\\
+Dabei wurde in Absprache mit unseren Tutoren, eine Zielsetzung entwickelt, die wir im Rahmen des letzten Meilensteins verfolgt haben, aufbauend auf unseren Erfolgen des vorherigen Meilensteins. \\
+In den folgenden Abschnitten wollen wir allem voran einleitend auf planende Aspekte, sowie unsere Vorgehensweisen und Zielsetzungen eingehen. Daraufhin soll im Abschnitt zu unserer Schnittstellendokumentation, auf konkrete Lösungen der Projektgruppen eingegangen werden.\\ ~ \\
+Abschließend wollen wir einen Ausblick auf kommende Meilensteine, insbesondere im Hinblick auf die im April folgende Projektpräsentation, formulieren.\\
 Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentation.
 
 
@@ -47,8 +47,8 @@ Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentatio
 \item Der Pr2 fährt in Home-Position, dh. die Arme des Pr2 werden über den Kopf gefahren, und der Pr2 bewegt seine Basis in eine feste Position vor der Küchenzeile.
 \item Der Roboter fährt mit deinem Kopf eine Reihe festgelegter Punkte, anhand der Küchenzeile entlang.
 \item Nach jedem mit dem Kopf gefahrenen Schritt, versucht der Pr2 Objekte zu entdecken. 
-\item Entdeckte Objekte werden an die Wissenzentrale des Pr2 weitergeleitet und anhand eines Classifiers identifiziert.
-\item Die Wissenzentrale entscheidet, welche der gesehenen Objekt gegriffen werden sollen.
+\item Entdeckte Objekte werden an die Wissenszentrale des Pr2 weitergeleitet und anhand eines Classifiers identifiziert.
+\item Die Wissenszentrale entscheidet, welche der gesehenen Objekt gegriffen werden sollen.
 \item Der Pr2 greift mit dem am besten geeigneten Gripper das gesuchte Objekt. 
 \item Befindet sich kein weiteres Objekt im Sichtfeld, bewegt der Pr2 seinen Kopf weiter. 
 \item Entdeckt der Pr2 nun ein weiteres Objekt, wird es mit dem freien Gripper gegriffen.
@@ -138,6 +138,14 @@ Normal- und Farb-Features werden zur Klassifizierung der ermittelten Objekte ben
 \chapterauthor{Tammo Wübbena}
 Für eine sinnvolle Greifpose müssen die Punkt im Koordinatensystem sowie Rotation und Translation der Objekte bestimmt werden. 
 \textbf{Lösung}: Vision erhält von Knowledge die klassifizierten Labels und Nummern der Objekte, deren Pose dann mit einem Alignment-Algorithmus und einer Verfeinerung durch den Iterative Closest Point ermittelt werden.
+
+\subsection{Welche Gripper sind belegt}
+\chapterauthor{Alexander Haar}
+Um herauszufinden, welcher Gripper gerade belegt ist wurde ein aktionsbasierter beliefstate verwendet. Ist für ein Objekt die zuletzt ausgeführte Aktion eine Greifaktion, dann muss sich das Objekt in dem angegeben Gripper befinden, also ist der Gripper belegt.
+
+\subsection{Welche Objekte sollen weggeräumt werden}
+\chapterauthor{Alexander Haar} 
+Hier ist wieder der aktionsbasierte beliefstate die Lösung. Alle Objekte, welche nur wahrgenommen wurden und noch nicht gegriffen wurden müssen sich noch auf der Kücheninsel befinden. Mithilfe des storage\_place- Pakets werden dann die Objekte ermittelt, welche als nächstes weggeräumt werden sollen.
 
 \section*{Methodendokumentation Gruppe Planning}
 \section{Die Quellcode-Datei: main.lisp (planning\_main\_programm)}
