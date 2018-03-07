@@ -1929,7 +1929,7 @@ poses.srv
 							poses (the pose of the requested object)
 							)
 \end{verbatim}
-After the objects\_information service is called, it is processed by knowledge and planning. The estimated object classified by knowledge is labeled. Its index is calculated by planning (this is done by checking the seperated feature-array) and then send to vision. In our package the buffered object is then aligned with a mesh, so we can calculate the pose of it and send it back.
+Nachdem der Service objects\_information aufgerufen wurde, werden die dadurch erzeugten Features von Planning (Weiterleitung) und Knowledge (Klassifizierung) bearbeitet. Die erkannten Objekte werden dann von Knowledge jeweils mit einem Label versehen. Der Index wird von Planning bestimmt (durch teilen des übergebenen Feature-Arrays). Danach werden die Objekte von unserem Paket bearbeitet und die Pose durch Vergleich mit den jeweiligen Meshes ermittelt. Danach werden die Posen zurück an Planning übergeben.
 
 \subsubsection{Subscriber REAL\_KINECT\_POINTS\_FRAME}
 \begin{verbatim}
