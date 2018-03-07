@@ -107,16 +107,16 @@ Greift der Pr2 daneben, oder verliert er während der Fahrt ein Objekt aus dem G
 
 \subsection{Die Objektplatzierung soll dynamisch sein}
 \chapterauthor{Hauke Tietjen}
-Man könnte für jedes Objekt eine Abstellposition festlegen aber was wäre wenn eine zweite gleiche Ketchupflasche auftaucht und ihr Platz bereits belegt ist? \\
+Man könnte für jedes Objekt eine Abstellposition festlegen aber was wäre wenn eine zweite Ketchupflasche auftaucht und genauso aussieht wie die Erste? Ihr Platz könnte bereits belegt sein. \\
 
-\textbf{Lösung}: Objekte werden in ihren festgelegten Abstellzonen kollisionsfrei platziert bis diese keinen Platz mehr bieten oder bei drohender Überfüllung ein Fehler geworfen werden kann. 
+\textbf{Lösung}: Objekte werden in ihren festgelegten Abstellzonen kollisionsfrei platziert, bis diese keinen Platz mehr bieten oder bei drohender Überfüllung ein Fehler geworfen werden kann.
 
 
 \subsection{Fehler sollen hierarchisch sein}
 \chapterauthor{Hauke Tietjen}
-Es sollte möglich sein festzustellen aus welchen Bereichen Fehler kommen und diese aufgrund dessen anders zu behandeln. Besonders in höher gelegenen Funktionen kann dies genutzt werden. \\
+Man sollte feststellen können aus welchen Bereichen Fehler kommen und diese, aufgrund dessen, anders zu behandeln. Besonders in höher gelegenen Funktionen kann dies nützlich bei der Fehlerbehandlung sein. \\
 
-\textbf{Lösung}: In einer Fehlerhierarchie können Fehler von anderen Fehlern erben und erfüllen daher die gewünschte Funktion.
+\textbf{Lösung}: In einer Fehlerhierarchie können Fehler von anderen Fehlern erben. Daher eignet sie sich gut um über- und untergeordnete Programmabschnitten Fehler zuzuordnen.
 
 \subsection{Bestimmen der GraspPose vom Objekt}
 \chapterauthor{Max-Phillip Bahr}
@@ -739,15 +739,17 @@ Publiziert Marker zur Visualisierung von Landezonen.
 \subsection{Beschreibung des Teilsystems}
 \subsubsection{\"Ubersicht}
 \chapterauthor{Hauke Tietjen}
-Die Datei 'objects' aus dem Paket 'planning\_objects' dient dazu aus den von Knowledge vorgegebenen Ablageorten für Objekte Punkte zu bestimmen die geeignet sind um Objekte auf ihnen abzustellen. Dabei werden Platzmangel, Kollision und das Herunterfallen von Objekten berücksichtigt. Zusätzlich lassen sich die finalen Positionen in Rviz visualisieren.
+Die Datei 'objects' aus dem Paket 'planning\_objects' dient dazu, aus den von Knowledge vorgegebenen Ablageorten für Objekte, Punkte zu bestimmen, die geeignet sind um Objekte auf ihnen abzustellen. Dabei werden Platzmangel, Kollision und das Herunterfallen von Objekten berücksichtigt. Zusätzlich lassen sich die finalen Positionen in Rviz visualisieren.
 
 \subsubsection{calculate-landing-zone()}
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 calculate-landing-zone()
 Beschreibung: Fragt Knowledge an welchen Ablageort das Objekt gehört und
-verkleinert ihn um das Herunterfallen der Objekte von Tischkanten zu
-verhindern. Ruft danach fill-landing-zone-horizontally auf das eine Pose zurück gibt.
+verkleinert ihn um das Herunterfallen, der Objekte von Tischkanten, zu
+verhindern. Danach wird fill-landing-zone-horizontally auf das eine Pose
+zurück gibt. Diese wird in den Frame '/map' transformiert sowie X- und
+Y-Achse werden mit den neuen Werten überschrieben.
 @param object
 @return Gibt eine Pose in /map zurück um ein Objekt zu greifen
 \end{verbatim}
@@ -756,9 +758,10 @@ verhindern. Ruft danach fill-landing-zone-horizontally auf das eine Pose zurück
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 fill-landing-zone-horizontally()
-Beschreibung: Befüllt den Ablageort mit einem Objekt pro Aufruf, von Links nach
-Rechts auf der Y-Achse im Frame /map. Fragt Knowledge nach der Z-Achse und Pose
-wo das Objekt gegriffen werden soll.
+Beschreibung: Befüllt den Ablageort mit einem Objekt pro Aufruf,
+von Links nach Rechts auf der Y-Achse im Frame '/map'.
+Fragt Knowledge nach der Z-Achse und Pose wo das Objekt 
+gegriffen werden soll.
 @param position width height
 @return Gibt eine Pose in /map zurück um ein Objekt zu greifen
 \end{verbatim}
@@ -767,8 +770,8 @@ wo das Objekt gegriffen werden soll.
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 calculate-landing-zone-visualized()
-Beschreibung: Führt calculate-landing-zone() aus und visualisiert das Ergebnis mit
-visualize-landing-zone().
+Beschreibung: Führt calculate-landing-zone() aus und visualisiert
+das Ergebnis, mit visualize-landing-zone().
 @param object
 @return Gibt eine Pose in /map zurück um ein Objekt zu greifen
 \end{verbatim}
@@ -777,7 +780,8 @@ visualize-landing-zone().
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 visualize-landing-zone()
-Beschreibung: Führt vis-init() und publish-pose() aus um eine Pose zu visualisieren.
+Beschreibung: Führt vis-init() und publish-pose() aus um eine 
+Pose zu visualisieren.
 @param pose
 @return 
 \end{verbatim}
@@ -786,7 +790,8 @@ Beschreibung: Führt vis-init() und publish-pose() aus um eine Pose zu visualisi
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 check-which-storage-place()
-Beschreibung: Findet heraus in welchem der vier Storageplaces sich die Y-Koordinate befindet.
+Beschreibung: Findet heraus in welchem der vier Storageplaces
+sich die Y-Koordinate befindet.
 @param y
 @return Storageplace
 \end{verbatim}
@@ -804,8 +809,8 @@ Beschreibung: Startet den Marker-publisher.
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 publish-pose
-Beschreibung: Publiziert einen Marker mit ID an der angegebenen Pose mit den Dimensionen
-aus height und width.
+Beschreibung: Publiziert einen Marker mit ID an der 
+angegebenen Pose mit den Dimensionen aus height und width.
 @param pose id height width
 @return 
 \end{verbatim}
@@ -833,7 +838,8 @@ Die Datei 'error-hierarchy' aus dem Paket 'planning\_error' legt die Hierarchie 
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 custom-error()
-Beschreibung: Dieser Standardfehler erbt von 'error' während alle weiteren Fehler von diesem erben. 
+Beschreibung: Dieser Standardfehler erbt von 'error' während
+alle weiteren Fehler von diesem erben. 
 @param message
 @return 
 \end{verbatim}
@@ -842,13 +848,14 @@ Beschreibung: Dieser Standardfehler erbt von 'error' während alle weiteren Fehl
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 vision-error()
-Beschreibung: Ein Fehler bei dem es um etwas aus dem Bereich Vision geht kann hiermit
-beschrieben werden. Vor der Fehlernachricht wird jetzt 'vison error:' ausgegeben. 
+Beschreibung: Diese Fehlerklasse beschreibt Fehler, die im
+Zusammenhang mit Vision stehen. Vor der 
+Fehlernachricht wird 'vison error:' ausgegeben. 
 @param
 @return 
 \end{verbatim}
 
-Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' sind analog zu 'vison-error' und definieren einfach weitere Fehler für andere Bereiche.
+Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' sind analog zu 'vison-error' und definieren weitere Fehler für andere Bereiche.
 
 
 \newpage
