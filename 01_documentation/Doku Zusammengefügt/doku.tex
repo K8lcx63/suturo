@@ -4,7 +4,7 @@
 \usepackage{spverbatim}
 \usepackage{caption}
 
-
+\newcommand\tab[1][1cm]{\hspace*{#1}}
 
 \begin{document}
     \maketitle{Suturo}{02.01.2017}{}{2}{}{}{}{}
@@ -23,9 +23,9 @@
 \section{Vorwort}
 \chapterauthor{Kevin Störmer}
 Im Rahmen unserer Bachelorprojektarbeit 'Suturo', haben wir die Chance ein intelligentes Robotersystem, am Roboter 'Pr2' von Willow Garage zu entwickeln. \\
-Dabei wurde in Absprache mit unseren Tutoren, eine Zielsetzung entwickelt, die wir im Rahmen des letzten Meilensteines verfolgt haben, aufbauend auf unseren Erfolgen des vorherigen Meilensteines. \\
-In den folgenden Abschnitten wollen wir allem vorran einleitend auf planende Aspekte, sowie unsere Vorgehensweisen und Zielsetzungen eingehen. Daraufhin soll im Abschnitt zu unserer Schnittstellendokumentation, auf konkrete Lösungen der Projektgruppen eingegangen werden.\\ ~ \\
-Abschliessend wollen wir einen Ausblick auf kommende Meilensteine, insbesondere im Hinblick auf die im April folgende Projektpräsentation, formulieren.\\
+Dabei wurde in Absprache mit unseren Tutoren, eine Zielsetzung entwickelt, die wir im Rahmen des letzten Meilensteins verfolgt haben, aufbauend auf unseren Erfolgen des vorherigen Meilensteins. \\
+In den folgenden Abschnitten wollen wir allem voran einleitend auf planende Aspekte, sowie unsere Vorgehensweisen und Zielsetzungen eingehen. Daraufhin soll im Abschnitt zu unserer Schnittstellendokumentation, auf konkrete Lösungen der Projektgruppen eingegangen werden.\\ ~ \\
+Abschließend wollen wir einen Ausblick auf kommende Meilensteine, insbesondere im Hinblick auf die im April folgende Projektpräsentation, formulieren.\\
 Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentation.
 
 
@@ -47,8 +47,8 @@ Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentatio
 \item Der Pr2 fährt in Home-Position, dh. die Arme des Pr2 werden über den Kopf gefahren, und der Pr2 bewegt seine Basis in eine feste Position vor der Küchenzeile.
 \item Der Roboter fährt mit deinem Kopf eine Reihe festgelegter Punkte, anhand der Küchenzeile entlang.
 \item Nach jedem mit dem Kopf gefahrenen Schritt, versucht der Pr2 Objekte zu entdecken. 
-\item Entdeckte Objekte werden an die Wissenzentrale des Pr2 weitergeleitet und anhand eines Classifiers identifiziert.
-\item Die Wissenzentrale entscheidet, welche der gesehenen Objekt gegriffen werden sollen.
+\item Entdeckte Objekte werden an die Wissenszentrale des Pr2 weitergeleitet und anhand eines Classifiers identifiziert.
+\item Die Wissenszentrale entscheidet, welche der gesehenen Objekt gegriffen werden sollen.
 \item Der Pr2 greift mit dem am besten geeigneten Gripper das gesuchte Objekt. 
 \item Befindet sich kein weiteres Objekt im Sichtfeld, bewegt der Pr2 seinen Kopf weiter. 
 \item Entdeckt der Pr2 nun ein weiteres Objekt, wird es mit dem freien Gripper gegriffen.
@@ -71,16 +71,19 @@ Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentatio
 \item Der Pr2 befindet sich in Home-Position
 \end{itemize}
 \section{Aufgabenverteilung}
-\chapterauthor{Störmer, Hassouna, Bahr, Haak}
-Das Ziel von Gruppe Planning im zweiten Meilenstein ist zum einem die Kommunikationsschnittelle zwischen den anderen Gruppen zu sein, aber auch eigene wichtige Funktionalitäten hinzuzufügen. Planning selber ist für das Fahren zwischen den Tischen, das Errorhandling, wenn ein Objekt nicht gegriffen werden kann oder runterfällt, sowie das Entscheiden, wo ein Objekt genau hingestellt werden soll, zuständig.
+\chapterauthor{Störmer, Hassouna, Bahr, Bertram, Haar}
+Die Aufgabe der Gruppe Planning, ist zum einen die Etablierung einer Kommunikationsschnittstelle zwischen den Funktionalitäten der anderen Gruppen, zum anderen die Entwicklung eigener Funktionalitäten. Die Gruppe möchte hier besonderen Wert auf die Navigation des Roboters in der Welt, Sicherheitskritischem Errorhandling und der Identifikation von Ablageorten für jedes bekannte Objekt. \\
 
-Das Ziel von Vision im zweiten Meilenstein ist das Erkennen und Segmentieren mehrerer Objekte in einer wahrgenommenen Szene. Diese Objekte sollen extrahiert werden und die Posen der einzelnen Cluster zur weiteren Verarbeitung übergeben werden. 
+Das Ziel der Gruppe Vision soll es sein, mehrere Objekte in einer wahrgenommenen Szene zu erkennen und zu segmentieren .Diese Objekte sollen extrahiert werden und die Posen der einzelnen Cluster zur weiteren Verarbeitung übergeben werden. \\
 
-Das Ziel von Knowledge im zweiten Meilenstein ist das Klassifizieren und abspeichern von erkannten Gegenständen im Beliefstate, sowie das bestimmen einer geeigneten GraspPose für jeden Gegenstand.
+Die Gruppe Knowledge ist zuständig für das Klassifizieren und Abspeichern von erkannten Gegenständen im Beliefstate, sowie das Bestimmen einer geeigneten GraspPose für jeden Gegenstand.\\
+
+Das Ziel des Teams Motion ist es einen Actionserver zu implementieren, der verschiedene Aktionen für das Greifen, Abstellen und Umstoßen von Objekten anbietet. Jede der Aktionen soll mit jedem der vorhandenen \textit{Grippern} möglich sein, dabei soll der Roboter Objekte in seiner Umgebung berücksichtigen und seine Bewegungspfade so planen, dass keine Kollisionen entstehen. Ist eine kollisionsfreie Bewegung nicht möglich wird die Aktion mit einem entsprechenden Fehler abgebrochen.\\
+
 \section{Probleme}
 \subsection{Routen können nicht richtig geplant werden}
 \chapterauthor{Vanessa Hassouna}
-Beim Fahren kollidiert der Roboter häufig mit seinen Armen mit Küchenobjekten und dreht sich in einem Winkel, der problematisch für seinen verletzbaren Rücken sein kann.
+Beim Fahren kollidiert der Roboter schnell (häufig) mit seinen Armen mit Küchenobjekten und dreht sich in einem Winkel, der problematisch für seinen verletzbaren Rücken sein kann.
 
 \textbf{Lösung}: Bevor der Pr2 zu dem gegebenem Punkt fährt, stellen wir sicher, dass sich der Roboter in einer entsprechenden sicheren Position befindet. Bis dahin sollte er sich um 90 Grad gedreht haben.
 
@@ -90,7 +93,7 @@ Beim Fahren kollidiert der Roboter häufig mit seinen Armen mit Küchenobjekten 
 Die Informationen der gesehenen Objekte wird als \textbf{Message} übergeben. Diese beinhaltet ein Array aus \textbf{normal\_features}, ein Array aus \textbf{color\_features}, ein Array mit \textbf{object\_pose} und die Anzahl der gesehenen Objekte. 
 Um jedoch Objekte an Knowledge senden zu können, muss das Array zuerst zergliedert werden. \\
 
-\textbf{Lösung}: Alle erhaltenen Informationen werden auf dem Parameterserver zwischengespeichert, erst danach werden diese miteinander konkateniert.
+\textbf{Lösung}: Alle erhaltenen Informationen werden auf dem "Param-Server" zwischengespeichert, erst danach werden diese miteinander konkateniert.
 
 \subsection{Logik der Main wird zu groß und unübersichtlich}
 \chapterauthor{Vanessa Hassouna}
@@ -107,16 +110,16 @@ Greift der Pr2 daneben, oder verliert er während der Fahrt ein Objekt aus dem G
 
 \subsection{Die Objektplatzierung soll dynamisch sein}
 \chapterauthor{Hauke Tietjen}
-Man könnte für jedes Objekt eine Abstellposition festlegen aber was wäre wenn eine zweite gleiche Ketchupflasche auftaucht und ihr Platz bereits belegt ist? \\
+Man könnte für jedes Objekt eine Abstellposition festlegen aber was wäre wenn eine zweite Ketchupflasche auftaucht und genauso aussieht wie die Erste? Ihr Platz könnte bereits belegt sein. \\
 
-\textbf{Lösung}: Objekte werden in ihren festgelegten Abstellzonen kollisionsfrei platziert bis diese keinen Platz mehr bieten oder bei drohender Überfüllung ein Fehler geworfen werden kann. 
+\textbf{Lösung}: Objekte werden in ihren festgelegten Abstellzonen kollisionsfrei platziert, bis diese keinen Platz mehr bieten oder bei drohender Überfüllung ein Fehler geworfen werden kann.
 
 
 \subsection{Fehler sollen hierarchisch sein}
 \chapterauthor{Hauke Tietjen}
-Es sollte möglich sein festzustellen aus welchen Bereichen Fehler kommen und diese aufgrund dessen anders zu behandeln. Besonders in höher gelegenen Funktionen kann dies genutzt werden. \\
+Man sollte feststellen können aus welchen Bereichen Fehler kommen und diese, aufgrund dessen, anders zu behandeln. Besonders in höher gelegenen Funktionen kann dies nützlich bei der Fehlerbehandlung sein. \\
 
-\textbf{Lösung}: In einer Fehlerhierarchie können Fehler von anderen Fehlern erben und erfüllen daher die gewünschte Funktion.
+\textbf{Lösung}: In einer Fehlerhierarchie können Fehler von anderen Fehlern erben. Daher eignet sie sich gut um über- und untergeordnete Programmabschnitten Fehler zuzuordnen.
 
 \subsection{Bestimmen der GraspPose vom Objekt}
 \chapterauthor{Max-Phillip Bahr}
@@ -138,6 +141,35 @@ Normal- und Farb-Features werden zur Klassifizierung der ermittelten Objekte ben
 \chapterauthor{Tammo Wübbena}
 Für eine sinnvolle Greifpose müssen die Punkt im Koordinatensystem sowie Rotation und Translation der Objekte bestimmt werden. 
 \textbf{Lösung}: Vision erhält von Knowledge die klassifizierten Labels und Nummern der Objekte, deren Pose dann mit einem Alignment-Algorithmus und einer Verfeinerung durch den Iterative Closest Point ermittelt werden.
+
+\subsection{Welche Gripper sind belegt}
+\chapterauthor{Alexander Haar}
+Um herauszufinden, welcher Gripper gerade belegt ist wurde ein aktionsbasierter beliefstate verwendet. Ist für ein Objekt die zuletzt ausgeführte Aktion eine Greifaktion, dann muss sich das Objekt in dem angegeben Gripper befinden, also ist der Gripper belegt.
+
+\subsection{Welche Objekte sollen weggeräumt werden}
+\chapterauthor{Alexander Haar} 
+Hier ist wieder der aktionsbasierte beliefstate die Lösung. Alle Objekte, welche nur wahrgenommen wurden und noch nicht gegriffen wurden müssen sich noch auf der Kücheninsel befinden. Mithilfe des storage\_place- Pakets werden dann die Objekte ermittelt, welche als nächstes weggeräumt werden sollen.
+
+\subsection{Kollisionsfreiheit beim Greifen eines Objektes}
+\chapterauthor{Maximilian Bertram, Roman Haak}
+Es war schwierig beim Greifen die Kollisionsfreiheit mit Objekten, die nicht zur \textit{Planningscene} gehören, zu garantieren.\\
+\textbf{Lösung}: Wir haben uns dazu entschieden, die Bewegung für das Greifen und Abstellen auf einer Höhe auszuführen, auf der sich kein anderes Objekt befindet. Zuerst wird der gewünschte \textit{Gripper} auf eine 'sichere' Höhe bewegt und dann über das Objekt gefahren. Dann wird der \textit{Gripper} geöffnet, richtig orientiert und nur auf einer Koordinatenachse (in negative Z-Richtung von '\textit{base\_footprint}') bewegt und so \textit{über} das Objekt geschoben.\\
+
+\subsection{Unterschiede Simulation echter PR2}
+\chapterauthor{Roman Haak}
+Teilweise wurden Lösungen implementiert, die in der Simulation sehr gut funktionierten. Aber als sie dann auf dem echten Roboter ausprobiert wurden,
+funktionierten sie nicht mehr.\\
+\textbf{Lösung}: Leider gab es bei diesem Problem keine eindeutige Lösung. Lösungen mussten anders implementiert werden, bis sie auch auf dem echten Roboter funktionierten.
+
+\subsection{'Deterministisches' Umstoßen eines Objektes}
+\chapterauthor{Roman Haak}
+Zunächst wurde das Umstoßen eines Objektes einfach dadurch realisiert, dass der Arm zu einem Punkt zwischen Roboter und Objekt gefahren wurde und danach zu dem Objekt. Dabei war es aber immer unterschiedlich, welchen Weg \textit{MoveIt} für die zweite Bewegung des Armes, also das Umstoßen, berechnet und ausgeführt hat.\\
+\textbf{Lösung}: Die Funktion wurde so umgeschrieben, dass erst zu einem 'Zwischenpunkt' gefahren wird. Dann wird von diesem 'Zwischenpunkt' bis zu dem Punkt, an den der Gripper als zweites gefahren werden soll, eine 10-Punkte-Trajektorie berechnet. Diese Trajektorie beschreibt dann den geraden Weg von dem 'Zwischenpunkt' zum 'Umstoßpunkt' am Objekt. Und somit ist sichergestellt, dass immer von vorne umgestoßen wird.
+
+\subsection{Synchronisierung \textit{refactoren} des Codes und Implementierung}
+\chapterauthor{Roman Haak}
+Wir haben in einem \textit{branch} unseres Repositories angefangen zu \textit{refactoren}. In dem \textit{master-branch} wurde inzwischen weiterentwickelt. So kam es zu dem Problem, dass im master-branch stetig neue Funktionen hinzukamen, bzw. verändert wurden, welche dann in dem \textit{refactor-branch} wieder 'eingepflegt' werden mussten. Dadurch hat sich das \textit{refactoren} des Codes leider etwas in die Länge gezogen.\\
+\textbf{Lösung}: Werden neue Funktionen eingebaut, werden diese direkt in den refactorten branch eingebaut, sodass dadurch kein Zusatzaufwand entsteht. Absprache ist in jedem Fall sehr wichtig.
 
 \section*{Methodendokumentation Gruppe Planning}
 \section{Die Quellcode-Datei: main.lisp (planning\_main\_programm)}
@@ -184,8 +216,8 @@ Jedes Mal, wenn der Kopf des Pr2 sich in einer bestimmten Position befindet, wir
 
 \begin{itemize}
 \item Die gegebenen Informationen werden extrahiert.
-\item Die beiden Arrays \textbf{normal\_features} und \textbf{color\_features} werden zergliedert und mit Hilfe von \textbf{object\_amount} identifiziert und auf dem Parameterserver gespeichert.
-\item Die normal\_features und color\_features werden konkateniert auf dem Parameterserver als \textbf{featuresX} gespeichert, wobei X hier die Nummer des Objektes darstellt.
+\item Die beiden Arrays \textbf{normal\_features} und \textbf{color\_features} werden zergliedert und mit Hilfe von \textbf{object\_amount} identifiziert und auf dem "Param-Server" gespeichert.
+\item Die normal\_features und color\_features werden konkateniert auf dem "Param-Server" als \textbf{featuresX} gespeichert, wobei X hier die Nummer des Objektes darstellt.
 \item Die \textbf{object\_pose} wird als Array global gespeichert.
 \end{itemize}
 
@@ -196,16 +228,16 @@ Jedes Mal, wenn der Kopf des Pr2 sich in einer bestimmten Position befindet, wir
 \begin{itemize} 
 \item Jetzt werden die gesehenen Objekte an Knowledge weitergegeben, hier bekommen wir für jedes gegebene Objekt ein Label als String zurück.
 \item Mit Hilfe des erhaltenen Labels rufen wir den Service '/vision\_suturo/objects\_pose' von Vision auf, der anhand von Objekt-Nummer und Label uns eine Pose zurück gibt.  
-\item Wenn die Pose übergeben wurde, publishen wir auf ein Topic von Knowledge, damit das gesehene Objekt in der Wissensbasis gespeichert wird.
+\item Wenn die Pose bei uns angekommen ist, publishen wir auf ein Topic von Knowledge, damit das gesehene Objekt in der Wissensbasis gespeichert wird.
 \end{itemize}
 
 
 
 
 
-\subsubsection{Schritt 4: Welches Objekt wird gegriffen}
-Wir erfragen bei Knowledge welche Objekte wir greifen sollen, in dem wir den Service\\
-"knowledge\_msgs/ObjectsToPick" aufrufen. Als Antwort werden 2 Strings zurück gegeben.
+\subsubsection{Schritt 4: Welches Objekt soll ich greifen und wo soll es hin}
+Wir erfragen bei Knowledge welche Objekte wir greifen sollen, in dem wir den Service "knowledge\_msgs/ObjectsToPick" \\
+aufrufen. Als Antwort bekommen wir 2 Strings zurück.
 Mit der Funktion calculate-landing-zone-visualized() erhalten wir dann einen Standpunkt wohin das Objekt platziert werden soll. %X=HAUKES FUNKTION
 Des Weiteren wird noch abgefragt wie das Objekt gegriffen werden soll. Diese Information wird dann weiter an Motion gegeben.
 
@@ -421,14 +453,15 @@ Die Quellcode-Datei actions.lisp im Paket 'planning\_motion'  ist ausschliesslic
 \begin{verbatim}
 move-Head (x y z)
 Beschreibung: Lässt den Rr2-Kopf bewegen, dabei wird der Service 
-"head\_traj\_controller/point\_head\_action" angesprochen.
+"head_traj_controller/point_head_action" angesprochen.
 x,y, und z werden als Koordinaten ausgehend von base_link behandelt.
 @param: x y z
 @return: Succesfull oder Aborted
 \end{verbatim}
 
 
-\subsubsection{move-Base-To-Point-Safe (x y z angle))
+\subsubsection{move-Base-To-\\
+Point-Safe (x y z angle))
 }
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
@@ -437,18 +470,18 @@ move-Base-To-Point-Safe (x y z angle)
 Beschreibung: Diese Methode lässt den Roboter an eine vordefinierte 
 Position fahren, bei der er sich ungehindert drehen kannn.
 Danach fährt der Pr2 zu dem gewünschten Punkt.
-
 @param: x y z angle
 @return: Successfull oder Aborted
 \end{verbatim}
 
 
-\subsubsection{move-Base-To-Point (x y z angle)}
+\subsubsection{move-Base-To-\\
+Point (x y z angle)}
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
 move-Base-To-Point (x y z angle)
 
-Beschreibung: Anhand des Actionservice "nav_pcontroller/move_base" 
+Beschreibung: Anhand des Actionservice "nav\_pcontroller/move\_base" 
 wird die Basis bewegt. Der Punkt und die Rotation sind in Frame "map" anzugeben.
 
 @param: x y z angle
@@ -456,7 +489,8 @@ wird die Basis bewegt. Der Punkt und die Rotation sind in Frame "map" anzugeben.
 \end{verbatim}
 
 
-\subsubsection{move-Robo-Into-Homeposition ()}
+\subsubsection{move-Robo-Into\\
+-Homeposition ()}
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
 move-Robo-Into-Homeposition ()
@@ -548,7 +582,16 @@ in ein optionales Frame umgewandelt.
 \end{verbatim}
 
 
+\subsubsection{publish-pose (label object\_pose)}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+publish-pose (label object_pose)
 
+Beschreibung: Published eine knowledge_msgs/PerceivedObject-msg
+
+@param: string label, PoseStamped object_pose
+@return: int amountOfListeners
+\end{verbatim}
 
 \subsubsection{catch-Transformation \\
 (transform-listener tf-point-stamped endFrame)}
@@ -556,13 +599,22 @@ in ein optionales Frame umgewandelt.
 \begin{verbatim}
 catch-Transformation (transform-listener tf-point-stamped endFrame)
 
-Beschreibung: Hier findet die eigentliche Transformation (von von der Funktion 
-transformation-Vision-Point) statt.
+Beschreibung: Hier findet die eigentliche Transformation statt.
 
 @param: transform-listener tf-point-stamped endFrame
 @return: Liefert eine transformierte tf-point-stamped
 \end{verbatim}
 
+\subsubsection{disassemble-graspindividual-response (msg)}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+disassemble-graspindividual-response (msg)
+
+Beschreibung: Löst die Y-Koordinate einer GraspPose heraus.
+
+@param: GraspPoseMessage msg
+@return: float y
+\end{verbatim}
 
 %KOMMT NOCH(defun let-Robo-Try-To-Poke (point-for-motion number-for-arm)
 %KOMMT NOCH (defun try-To-Poke-Different-Location(point-for-motion number-for-arm)
@@ -573,7 +625,7 @@ transformation-Vision-Point) statt.
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
 should-Robo-Use-Left-Or-Right-Arm (pose amount &optional
-(endFrame "/base_footprint"))
+(endFrame "/base\_footprint"))
 
 Beschreibung: Anhand der Y-Achse entscheidet der Roboter
 ob er den linken oder rechten Arm bewegen soll.
@@ -589,8 +641,8 @@ ob er den linken oder rechten Arm bewegen soll.
 disassemble-Vision-Call (visionclouds)
 
 Beschreibung: Extrahiert alle Informationen aus der 
-Visioncloud und speichert normal_features, color_features, 
-object_amount und object_pose auf den Param-Server.
+Visioncloud und speichert normal\_features, color\_features, 
+object\_amount und object\_pose auf den Param-Server.
  
 @param: visionclouds
 @return: object\_pose
@@ -605,8 +657,8 @@ object_amount und object_pose auf den Param-Server.
 set-Params-Features (normal-s color-s normal-e color-e amount)
 
 Beschreibung: Eine Hilfsfunktion für die Funktion "disassemble-Vision-Call", 
-um aus normal_features und color_features konkateniert ein features-X zu 
-erstellen. (Knowledge benötigt ein Array in dem zuerst color_features 
+um aus normal\_features und color\_features konkateniert ein features-X zu 
+erstellen. (Knowledge benötigt ein Array in dem zuerst color\_features 
 vorkommen und direkt im Anschluss normal_features)
 
 @param: normal-s color-s normal-e color-e amount
@@ -619,7 +671,7 @@ vorkommen und direkt im Anschluss normal_features)
 \begin{verbatim}
 init-pr2 ()
 
-Beschreibung: Subscribed das Topic '/amcl_pose'.
+Beschreibung: Subscribed das Topic '/amcl_status'.
 
 @return: geometry_msgs/Pose
 \end{verbatim}
@@ -654,11 +706,11 @@ angle-From-Pr2-Pose-To-Point (x-goal y-goal z-goal)
 
 Beschreibung: Berechnet von der aktuellen Position des Roboters um wie viel Grad
 er sich drehen muss, damit er zu einem Punkt fahren kann. Dafür wurde unter 
-anderem das Paket "Cram-Language" mit der Funktion 'atan' genutzt. 
+anderem das Paket "Cram-Language" mit der Funktion 'atan' benutzt. 
 Da das Bewegen des Pr2 in dem Frame "\map" stattfindet, wurde hier zusätzlich 
 noch die aktuelle Drehung in der Welt gespeichert. Dies wird dann mit dem 
-Grad, um wie viel der Pr2 sich drehen muss, gegengerechnet, so dass 
-am Ende ein Winkel produziert wird, der innerhalb des Frames "\map" funktioniert.
+Grad, um wie viel der Pr2 sich drehen muss, gegengerechnet, 
+so dass am Ende ein Winkel produziert wird, der innerhalb des Frames "\map" funktioniert.
 
 @param: x-goal y-goal z-goal 
 @return: angle 
@@ -669,7 +721,8 @@ am Ende ein Winkel produziert wird, der innerhalb des Frames "\map" funktioniert
 (point-for-motion number-for-arm)}
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
-try-To-Poke-Different-Location(point-for-motion number-for-arm)
+try-To-Poke-Different-Location\\
+(point-for-motion number-for-arm)
 
 Beschreibung: Die Funktion lässt den Roboter 
 anhand vorgegebener Positionen seine Drehung sowie seine
@@ -729,15 +782,17 @@ Publiziert Marker zur Visualisierung von Landezonen.
 \subsection{Beschreibung des Teilsystems}
 \subsubsection{\"Ubersicht}
 \chapterauthor{Hauke Tietjen}
-Die Datei 'objects' aus dem Paket 'planning\_objects' dient dazu aus den von Knowledge vorgegebenen Ablageorten für Objekte Punkte zu bestimmen die geeignet sind um Objekte auf ihnen abzustellen. Dabei werden Platzmangel, Kollision und das Herunterfallen von Objekten berücksichtigt. Zusätzlich lassen sich die finalen Positionen in Rviz visualisieren.
+Die Datei 'objects' aus dem Paket 'planning\_objects' dient dazu, aus den von Knowledge vorgegebenen Ablageorten für Objekte, Punkte zu bestimmen, die geeignet sind um Objekte auf ihnen abzustellen. Dabei werden Platzmangel, Kollision und das Herunterfallen von Objekten berücksichtigt. Zusätzlich lassen sich die finalen Positionen in Rviz visualisieren.
 
 \subsubsection{calculate-landing-zone()}
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 calculate-landing-zone()
 Beschreibung: Fragt Knowledge an welchen Ablageort das Objekt gehört und
-verkleinert ihn um das Herunterfallen der Objekte von Tischkanten zu
-verhindern. Ruft danach fill-landing-zone-horizontally auf das eine Pose zurück gibt.
+verkleinert ihn um das Herunterfallen, der Objekte von Tischkanten, zu
+verhindern. Danach wird fill-landing-zone-horizontally auf das eine Pose
+zurück gibt. Diese wird in den Frame '/map' transformiert sowie X- und
+Y-Achse werden mit den neuen Werten überschrieben.
 @param object
 @return Gibt eine Pose in /map zurück um ein Objekt zu greifen
 \end{verbatim}
@@ -746,9 +801,10 @@ verhindern. Ruft danach fill-landing-zone-horizontally auf das eine Pose zurück
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 fill-landing-zone-horizontally()
-Beschreibung: Befüllt den Ablageort mit einem Objekt pro Aufruf, von Links nach
-Rechts auf der Y-Achse im Frame /map. Fragt Knowledge nach der Z-Achse und Pose
-wo das Objekt gegriffen werden soll.
+Beschreibung: Befüllt den Ablageort mit einem Objekt pro Aufruf,
+von Links nach Rechts auf der Y-Achse im Frame '/map'.
+Fragt Knowledge nach der Z-Achse und Pose wo das Objekt 
+gegriffen werden soll.
 @param position width height
 @return Gibt eine Pose in /map zurück um ein Objekt zu greifen
 \end{verbatim}
@@ -757,8 +813,8 @@ wo das Objekt gegriffen werden soll.
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 calculate-landing-zone-visualized()
-Beschreibung: Führt calculate-landing-zone() aus und visualisiert das Ergebnis mit
-visualize-landing-zone().
+Beschreibung: Führt calculate-landing-zone() aus und visualisiert
+das Ergebnis, mit visualize-landing-zone().
 @param object
 @return Gibt eine Pose in /map zurück um ein Objekt zu greifen
 \end{verbatim}
@@ -767,7 +823,8 @@ visualize-landing-zone().
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 visualize-landing-zone()
-Beschreibung: Führt vis-init() und publish-pose() aus um eine Pose zu visualisieren.
+Beschreibung: Führt vis-init() und publish-pose() aus um eine 
+Pose zu visualisieren.
 @param pose
 @return 
 \end{verbatim}
@@ -776,7 +833,8 @@ Beschreibung: Führt vis-init() und publish-pose() aus um eine Pose zu visualisi
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 check-which-storage-place()
-Beschreibung: Findet heraus in welchem der vier Storageplaces sich die Y-Koordinate befindet.
+Beschreibung: Findet heraus in welchem der vier Storageplaces
+sich die Y-Koordinate befindet.
 @param y
 @return Storageplace
 \end{verbatim}
@@ -794,8 +852,8 @@ Beschreibung: Startet den Marker-publisher.
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 publish-pose
-Beschreibung: Publiziert einen Marker mit ID an der angegebenen Pose mit den Dimensionen
-aus height und width.
+Beschreibung: Publiziert einen Marker mit ID an der 
+angegebenen Pose mit den Dimensionen aus height und width.
 @param pose id height width
 @return 
 \end{verbatim}
@@ -823,7 +881,8 @@ Die Datei 'error-hierarchy' aus dem Paket 'planning\_error' legt die Hierarchie 
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 custom-error()
-Beschreibung: Dieser Standardfehler erbt von 'error' während alle weiteren Fehler von diesem erben. 
+Beschreibung: Dieser Standardfehler erbt von 'error' während
+alle weiteren Fehler von diesem erben. 
 @param message
 @return 
 \end{verbatim}
@@ -832,13 +891,14 @@ Beschreibung: Dieser Standardfehler erbt von 'error' während alle weiteren Fehl
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 vision-error()
-Beschreibung: Ein Fehler bei dem es um etwas aus dem Bereich Vision geht kann hiermit
-beschrieben werden. Vor der Fehlernachricht wird jetzt 'vison error:' ausgegeben. 
+Beschreibung: Diese Fehlerklasse beschreibt Fehler, die im
+Zusammenhang mit Vision stehen. Vor der 
+Fehlernachricht wird 'vison error:' ausgegeben. 
 @param
 @return 
 \end{verbatim}
 
-Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' sind analog zu 'vison-error' und definieren einfach weitere Fehler für andere Bereiche.
+Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' sind analog zu 'vison-error' und definieren weitere Fehler für andere Bereiche.
 
 
 \newpage
@@ -1244,7 +1304,7 @@ Beschreibung: Gibt die zwei Objekte zurück, welche als nächstes verteilt werde
 \subsection*{Schnittstellen}
 \chapterauthor{Alexander Haar}
 
-\subsubsection*{Subscriber process\_perceive\_action}
+\subsubsection{Subscriber process\_perceive\_action}
 \begin{verbatim}
 def process_perceive_action(perceive_object_msg)
 Beschreibung: Erstellt anhand der Message eine Prologanfrage und
@@ -1252,7 +1312,7 @@ sendet diese an den json_prolog- Server.
 @param perceive_object_msg: Die PerceiveObject.msg
 \end{verbatim}
 
-\subsubsection*{Subscriber process\_grasp\_action}
+\subsubsection{Subscriber process\_grasp\_action}
 \begin{verbatim}
 def process_grasp_action(grasp_object_msg)
 Beschreibung: Erstellt anhand der Message eine Prologanfrage und
@@ -1260,7 +1320,7 @@ sendet diese an den json_prolog- Server.
 @param grasp_object_msg: Die GraspObject.msg
 \end{verbatim}
 
-\subsubsection*{Subscriber process\_drop\_action}
+\subsubsection{Subscriber process\_drop\_action}
 \begin{verbatim}
 def process_drop_action(drop_object_msg)
 Beschreibung: Erstellt anhand der Message eine Prologanfrage und
@@ -1268,7 +1328,7 @@ sendet diese an den json_prolog- Server.
 @param drop_object_msg: Die DropObject.msg
 \end{verbatim}
 
-\subsubsection*{Service Server gripper\_empty}
+\subsubsection{Service Server gripper\_empty}
 \begin{verbatim}
 def gripper_empty(req)
 Beschreibung: Die Anfrage an den Server ist leer. Zurückgegeben werden
@@ -1277,7 +1337,7 @@ zwei booleans, welche angeben, ob der Gripper belegt ist.
 @return: Die Antwort des Services.
 \end{verbatim}
 
-\subsubsection*{Service Server object\_to\_pick}
+\subsubsection{Service Server object\_to\_pick}
 \begin{verbatim}
 def objects_to_pick(req)
 Beschreibung: Gibt die zwei Objekte zurück, welche als nächstes weggeräumt werden sollen.
@@ -1287,31 +1347,31 @@ Beschreibung: Gibt die zwei Objekte zurück, welche als nächstes weggeräumt we
 
 \subsection*{Programmablauf}
 \chapterauthor{Alexander Haar}
-\subsubsection*{Schritt 1: Wahrnehmen mehrerer Objekte}
+\subsubsection{Schritt 1: Wahrnehmen mehrerer Objekte}
 Es werden mehre Objekte wahrgenommen und deren Label sowie Pose wird dem beliefstate bekannt gemacht.
 
-\subsubsection*{Schritt 2: Welche zwei Objekte sollen weggeräumt werden?}
+\subsubsection{Schritt 2: Welche zwei Objekte sollen weggeräumt werden?}
 Nachdem Alle zu verteilenden Objekte bekannt sind, werden möglichst zwei Objekte ausgewählt, welche den gleichen Lagerplatz besitzen.
 
-\subsubsection*{Schritt 3: Greifen eines Objekts}
+\subsubsection{Schritt 3: Greifen eines Objekts}
 Das erste der beiden Objekte wird gegriffen.
 
-\subsubsection*{Schritt 4: Greifen eines weiteren Objekts}
+\subsubsection{Schritt 4: Greifen eines weiteren Objekts}
 Anschließend wird das zweite Objekt gegriffen.
 
-\subsubsection*{Schritt 5: Abstellen des 1. Objekts}
+\subsubsection{Schritt 5: Abstellen des 1. Objekts}
 Der Roboter fährt zum entsprechenden Lagerplatz und stellt es dort ab.
 
-\subsubsection*{Schritt 6: Anfrage welcher der Gripper belegt ist}
+\subsubsection{Schritt 6: Anfrage welcher der Gripper belegt ist}
 Nun wird geprüft, ob beide Gripper leer sind, dies ist nicht der Fall.
 
-\subsubsection*{Schritt 7: Abstellen des 2. Objekts}
+\subsubsection{Schritt 7: Abstellen des 2. Objekts}
 Der Roboter fährt zum nächsten Lagerplatz und stellt das zweite Objekt dort ab.
 
-\subsubsection*{Schritt 8: Anfrage welcher der Gripper belegt ist}
+\subsubsection{Schritt 8: Anfrage welcher der Gripper belegt ist}
 Erneut wird geprüft, ob beide Gripper leer sind, dies ist jetzt der Fall.
 
-\subsubsection*{Schritt 9: Welche Objekte sollen weggeräumt werden?}
+\subsubsection{Schritt 9: Welche Objekte sollen weggeräumt werden?}
 Nun beginnt dieser Prozess wieder bei Schritt 2.
 
 
@@ -1409,35 +1469,148 @@ Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zur
 \newpage
 
 \section*{Methodendokumentation Gruppe Motion}
-\section{Node: main (motion\_suturo\_1718)}
-\subsection{Architekturbild}
+
+\subsection{Übersicht des Teilsystems}
 \chapterauthor{Roman Haak}
+Die Untergruppe '\textit{Motion}' ist für das Bewegen verschiedener "Körperpartien" des Roboters zuständig.\\
+Dabei wurde das Fahren des Roboters bis zu dem jetzigen Meilenstein von der Untergruppe '\textit{Planning}' realisiert, wird
+in Zukunft aber von '\textit{Motion}' übernommen.\\
+Das Bewegen der anderen, zum Erfüllen der Zielsetzung des Meilensteins 2 benötigten, Teile des Roboters, also Arm und Endeffektor (\textit{Gripper}) wurden 
+von der Gruppe '\textit{Motion}' übernommen.\\
+
+In \textit{Abbildung 1} Bild sieht man die Architektur des Teilsystems der Gruppe '\textit{Motion}'. Dabei gibt zwei Knoten '\textit{suturo\_motion\_main}' und '\textit{simple\_gripper}'.\\
+
 \begin{figure}[!htb]
         \center{\includegraphics[width=\textwidth]
         {img/Architekturbild.png}
-        \caption{\label{fig:motion_node} Architektur der motion-node}}
+        \caption{\label{fig:motion_node} Architektur des Teilsystems der Gruppe 'Motion'}}
 \end{figure}
 
-\subsection{API}
-\subsubsection{Serviceclient}
-\chapterauthor{Roman Haak}
-'\textit{/kitchen\_model\_service/get\_fixed\_kitchen\_objects}': \\
-Dieser Service wird beim Initialisieren unseres Programms aufgerufen. Hierüber werden die Abmessungen der Objekte der IAI-Küche in die \textit{PlanningScene} geladen, damit der Roboter sich nur kollisionsfrei bewegt(siehe \textit{Kapitel 1.2.2}, Abschnitt zur '\textit{planning\_scene}').\\
-Die Objekte sind dabei durch eine Höhe, Breite und Länge als \textit{Box-Collider} definiert.
+Der Knoten '\textit{suturo\_motion\_main}' ist für das Verarbeiten eingehender Kommandos zum Bewegen der Arme bzw. eines Endeffektors zuständig. Dabei gibt es Kommandos für das Fahren der Arme in eine initiale Position, das Bewegen der Arme zu einer bestimmten Pose und das Umstubsen, Greifen oder Abstellen eines bestimmten Objektes mit einer bestimmten Pose.\\
+Der Knoten '\textit{simple\_gripper}' wird dabei benutzt, um das Öffnen und Schließen des Endeffektors zu realisieren. Dieser Knoten wird von dem Hauptknoten '\textit{suturo\_motion\_main}' über einen Actionserver aufgerufen.\\
 
+Im Folgenden werden die \textit{Schnittstellen}, der \textit{Ablauf} des Teilsystems, besonders \textit{hervorzuhebende} \textit{Algorithmen} und eine \textit{Installationsanleitung} beschrieben.\\
 
-\subsubsection{ActionServer}
+\subsection{Schnittstellen - 'suturo\_motion\_main'}
+\subsubsection{Angebotene Actions}
+\textbf{MovingCommand}
 \chapterauthor{Maximilian Bertram}
-'\textit{/motion/moving}': \\
 Vom Typ '\textit{motion\_msgs/MovingCommand}': \\
-\begin{lstlisting}[caption={Definition der MovingCommandAction},captionpos=b]
+
+\noindent
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={Definition des MovingCommands},captionpos=b]
 #goal definition
-geometry_msgs/PointStamped point_stamped
+geometry_msgs/PoseStamped goal_pose
 uint8 command
+
+#constants for the command
 uint8 UNKNOWN=0
 uint8 MOVE_STANDARD_POSE=1
 uint8 MOVE_RIGHT_ARM=2
 uint8 MOVE_LEFT_ARM=3
+uint8 POKE_RIGHT_ARM=4
+uint8 POKE_LEFT_ARM=5
+uint8 GRASP_RIGHT_ARM=6
+uint8 GRASP_LEFT_ARM=7
+uint8 PLACE_RIGHT_ARM=8
+uint8 PLACE_LEFT_ARM=9
+
+#Label of object which shell be grasped.
+#Required because when an object gets grasped by robot,
+#a message gets published from subgroup 'motion', which object
+#has been grasped with which gripper (left or right).
+#When the object gets placed somewhere, another message is published.
+#These messages get published for knowledge's beliefstate, so that
+#the knowledge component knows when an object get's grasped/placed somewhere.
+string grasped_object_label
+---
+#result definition
+bool successful
+uint8 status
+#constants for the status
+uint8 SUCCESS=0
+uint8 OUT_OF_RANGE=1
+uint8 COLLISION=2
+uint8 UNMANAGEBLE_ERROR=3
+---
+#feedback definition
+#bool finished
+\end{lstlisting}
+\end{minipage}
+
+Mit Hilfe der MovingCommandAction lassen sich alle von uns zur Verfügung gestellten Funktionen aufrufen. Es wurden Konstanten definiert, die die jeweilige Aktion beschreiben und in der Message-Definition vorhanden sind.
+
+\subsubsection{Aufgerufene Actions}
+Wird eine GRASP oder PLACE Aktion ausgeführt, wird über eine \\
+\textit{motion\_msgs::Gripper}-Message an den Actionserver des Knotens '\textit{simple\_gripper}' der Gripper entsprechend geöffnet oder geschlossen.(Siehe \textit{Abschnitt 1.3.1})\\
+
+
+\subsubsection{Aufgerufene Services}
+\chapterauthor{RH, MB}
+\textbf{GetFixedKitchenObjects}\\
+Vom Typ '\textit{knowledge\_msgs/GetFixedKitchenObjects}': \\ 
+\begin{lstlisting}[caption={Definition des GetFixedKitchenObjects-Service},captionpos=b]
+#This servicedefinition is for transfering the shape of the objects in the iai_kitchen.
+#The Motion-component calls this service for getting the shape of the kitchen-objects for it's planningscene.
+#The Knowledge-component reads these shapes out of an owl-file and returns the data described below.
+
+---
+#The frame in which the object-poses are given.
+string frame_id
+#The names of the objects.
+string[] names
+#The bounding_boxes boxes of the objects.
+geometry_msgs/Vector3[] bounding_boxes
+#The poses of the objects.
+geometry_msgs/Pose[] poses
+\end{lstlisting}
+
+\subsubsection{Benutzte Topics}
+\textbf{GraspAction und DropAction}
+
+Wird ein Objekt erfolgreich abgestellt oder gegriffen werden für den \textit{Beliefstate} von \textit{Knowledge} noch die entsprechenden \textit{Messages} gepublished: \\
+
+\begin{lstlisting}[caption={Definition der GraspObject.msg},captionpos=b]
+#A message which get's published by Motion-component after grasping an object.
+
+#The label of the grasped object.
+string object_label
+
+#The gripper used. See 'Gripper.msg' for more details.
+Gripper gripper
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Definition der DropObject.msg},captionpos=b]
+#A message which get's published by Motion-component after dropping an object.
+
+#The gripper used. See 'Gripper.msg' for more details.
+Gripper gripper
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Definition der Gripper.msg},captionpos=b]
+#A message for defining constants for differencing between left and right gripper.
+
+uint8 gripper
+#constants for gripper
+uint8 LEFT_GRIPPER = 1
+uint8 RIGHT_GRIPPER = 2
+\end{lstlisting}
+
+\subsection{Schnittstellen - 'simple\_gripper'}
+\subsubsection{Angebotene Actions}
+Vom Typ '\textit{motion\_msgs/Gripper}': \\
+\begin{lstlisting}[caption={Definition der GripperAction},captionpos=b]
+#goal definition
+#position of the space between the grippers in meters
+float64 position
+#force in newton (default =  20)
+float64 effort
+#which grpper to open/closed
+uint8 gripper
+#Constants for the gripper value
+uint8 LEFT_GRIPPER=1
+uint8 RIGHT_GRIPPER=2
 ---
 #result definition
 bool successful
@@ -1445,108 +1618,94 @@ bool successful
 #feedback definition
 #bool finished
 \end{lstlisting}
+\subsubsection{Aufgerufene Actions}
+Die GripperAction-Message wird entsprechend geparsed und eine \\
+ \textit{pr2\_ controllers\_ msgs::Pr2GripperCommandAction} erzeugt und gepublished. \\
 
-Über die MovingCommand Action ist es möglich Bewegungs-Anweisungen an unseren Actionserver zu senden. Die MovingCommand Action besteht dabei aus folgenden Attributen:
-\begin{center}
-	\begin{tabular}{ l | l | p{7cm}}
-		Name & Type & Bedeutung \\ \hline
-		goal\_ point & geometry\_ msgs/PointStamped & Der Endpunkt der Bewegung als PointStamped mit definierter frameid im Header Teil des PointStamped \\ \hline
-		command & uint8 & Konstante, die die Art des Befehls definiert (siehe Tabelle weiter unten) \\
-	\end{tabular}
-\captionof{table}{Felder des Goals der MovingCommandAction}
-\end{center}
-  
-Folgende Konstanten sind für die MovingCommand Action Message definiert:
-
-\begin{center}
-	\begin{tabular}{ l | l | p{7cm}}
-		Name & Int-Wert & Bedeutung \\ \hline
-		UNKNOWN & 0 & - \\ \hline
-		MOVE\_ STANDARD\_ POSE & 1 & Roboter Arme in die Initiale Pose bewegen (es wird kein PointStamped in der Message benötigt) \\ \hline
-		MOVE\_ RIGHT\_ ARM & 2 & Rechten Arm zu gegebenem PointStamped bewegen \\ \hline
-		MOVE\_ LEFT\_ ARM & 3 & Linken Arm zu gegebenem PointStamped bewegen \\
-	\end{tabular}
-	\captionof{table}{Konstanten der MovingCommandAction}
-\end{center}
-
-Folgendes wird zurückgegeben:
-
-
-\begin{center}
-	\begin{tabular}{ l | l | p{10cm}}
-		Name & Type & Bedeutung \\ \hline
-		successfull & bool & true/false, je nachdem ob die Bewegung erfolgreich durchgeführt werden konnte oder nicht. Im Falle eines Fehlers, werden die MoveIt Error-Codes mit einer entsprechenden Beschreibung auf der Konsole ausgegeben. \\
-	\end{tabular}
-	\captionof{table}{Rückgabe der MovingCommandAction}
-\end{center}
-
-
-\subsection{Beschreibung des Teilsystems}
-\subsubsection{Übersicht}
-\chapterauthor{Roman Haak}
-Dieser Teil des Systems ist für das Bewegen des PR2 in eine bestimmte Position, bzw. zu einem bestimmten Punkt hin verantwortlich.\\
-Zum Ausführen von Bewegungen des PR2 benutzen wir das '\textit{MoveIt-Framework}'. Dieses Framework bietet dabei ein '\textit{MoveGroup-Interface}' an, mit dessen Hilfe es dem Benutzer möglich ist, mit einfachen Funktionsaufrufen Bewegungen auszuführen. Die dahinter steckenden Logiken und Umrechnungen, welche zum letztendlichen Bewegen des Armes nötig sind, werden dann von dem Framework umgesetzt, ohne dass der Benutzer sich darum kümmern muss.\\
-Wie wir dieses Framework benutzen, wird im Folgenden vorgestellt.
-
-\subsubsection{Klassenvariablen}
-\chapterauthor{Roman Haak}
-Im Folgenden werden kurz die wichtigsten Variablen der Klasse '\textit{main}' vorgestellt, um die Funktionsweise des \textit{MoveGroup-Interfaces} zu verdeutlichen:\\\\
-\textit{\textbf{planning\_scene}} vom Typ \textit{\textbf{PlanningSceneInterface}}:\\
-Über diese Variable ist es uns möglich die sogenannte '\textit{PlanningScene}' des PR2 zu befüllen. Über die \textit{PlanningScene} wird dem PR2 signalisiert, an welcher Stelle sich Objekte befinden, damit Kollisionen mit diesen Vermieden werden können. Wird von dem Benutzer versucht, über das \textit{MoveIt\_Framework} eine Bewegung auszuführen, prüft das Framework zunächst, ob diese Bewegung kollisionsfrei ausgeführt werden kann und bricht mit entsprechender Fehlermeldung ab, falls es in der \textit{PlanningScene} ein Objekt gibt, mit dem der PR2 kollidieren würde. \\
-Die Objekte der PlanningScene sind in unserem Fall die Küchenobjekte der IAI-Küche und werden definiert durch einen '\textit{Box-Collider}' mit gewisser Höhe, Breite und Länge.\\\\
-\textit{\textbf{both\_arms}}, \textit{\textbf{left\_arm}}, \textit{\textbf{right\_arm}} vom Typ \textit{\textbf{MoveGroupInterface}}:\\
-Über Variablen des \textit{MoveGroupInterfaces} können Befehle zum Bewegen eines bestimmten Körperteils abgeschickt werden. Bei uns gibt es dabei drei Gruppen für linken, rechten und beide Arme.\\
-So können wir den Endpunkt der jeweiligen kinematischen Kette zu einem bestimmten Punkt hinbewegen oder auch die Gelenkwinkel der Gelenke einer Gruppe einstellen. Das Berechnen einer Trajektorie übernimmt dabei das \textit{MoveIt-Framework}.\\
-Es wird von dem \textit{MoveGroup}-Objekt eine entsprechende Rückmeldung in Form eines \textit{MoveItErrorCodes} über den Erfolg der Ausführung gegeben.\\\\
-\textit{\textbf{tf}} vom Typ \textit{\textbf{TransformListener}}:\\
-Mit Hilfe des \textit{TransformListeners} können Transformationen zwischen Koordinatensystemen zu einem bestimmten Zeitpunkt durchgeführt werden. Das ist in unserem Fall z.B. nötig, wenn der Arm zu einem bestimmten Punkt bewegt werden soll, der aber in einem anderen Koordinatensystem angegeben ist, als unser \textit{MoveGroup}-Objekt zum Planen verwendet.\\
-
-
-\subsection{Programmablauf}
+\subsection{Ablauf}
 \chapterauthor{Maximilian Bertram}
+\subsubsection{Schritt 1: Abfragen und hinzufügen der PlanningScene}
+Beim Start der Node wird die PlanningScene (in unserem Fall die iai-Küche) bei Knowledge abgefragt und der MoveIt PlanningScene hinzugefügt.
 
-Folgendes ist beim starten unserer Node zu beachten:
+\subsubsection{Schritt 2: Parsen der Message}
+Wird eine Anfrage auf dem Actionserver empfangen, wird die Zieldefinition der Anfrage zunächst geparsed. Je nachdem welche Konstante für das Feld '\textit{command}' gesetzt wird, wird die entsprechende Funktion des zugehörigen Controllers aufgerufen.
 
-Es muss bereits der kitchen\_ model\_ export Service von knowledge gestartet sein, damit wir direkt beim starten der Node die PlanningScene richtig befüllen können.
+\subsubsection{Schritt 3: Umrechnen der Pose}
+Falls die Pose der Message in einem anderen Frame als dem PlanningFrame der zu bewegenden 
+MoveGroup definiert wurde, wird die Pose mithilfe von TF in das PlanningFrame der zu bewegenden Gruppe transformiert.
 
-Zum starten unserer Node stehen zwei launch-files zur Verfügung, eins für die Simulation (\textit{motion\_ main\_ start.launch}) und eins für den echten PR2 (\textit{motion\_ main\_ start\_ real\_ pr2.launch}).
-\\
+\subsubsection{Schritt 4: Planen der Bewegung}
+Zunächst wird die Bewegung mithilfe des MoveIt Frameworks geplant. Ist die Bewegung nicht möglich, weil der Roboter die gewünschte Pose nicht erreichen kann oder es zu einer Kollision während der Bewegung kommen würde, wird die Aktion hier mit einer entsprechenden Fehlermeldung abgebrochen.
 
-'\textit{motion\_ main\_ start.launch}': \\
--Startet leere Simulation (empty world) mit PR2 \\
--Startet MoveIt Move\_ Group (es wird eine für die Simulation des PR2 generierte MoveIt Konfiguration genutzt)\\
--Startet einen static transformer für das Umrechnen von Punkten in der Simulation, da hier die gefakte Lokalisierung/Navigation des PR2 noch nicht funktioniert \\
--Startet unsere Main Node \\
+\subsubsection{Schritt 5: Publishen von VisualizationMarkern}
+Es werden VisualizationMarker gepublished um den Endpunkt der Bewegung in RViz zu visualisieren. Diese dienen hauptsächlich dem Debugging.
 
-'\textit{motion\_ main\_ start\_ real\_ pr2.launch}': \\
--Startet MoveIt Move\_ Group (es wird die MoveIt Konfiguration des iai\_ pr2 packages genutzt) \\
--Startet unsere Main Node \\
--Ein Static Transformer wird nicht benötigt, da auf dem Roboter die Map von einem Service zur Verfügung gestellt wird \\
--Die Simulation muss auf dem echten PR2 nicht gestartet werden \\
+\subsubsection{Schritt 6: Durchführen der Bewegung}
+Ist die Bewegung kollisionsfrei möglich und die Pose erreichbar, wird die Bewegung durchgeführt und eine entsprechende Erfolgsmeldung zurückgegeben.
 
-Nach einem erfolgreichen Start, wird der \textit{kitchen\_ model\_ service (siehe Kapitel 1.2.3 - Serviceclient)} aufgerufen und die PlanningScene mit den Objekten der Küche befüllt. \\
-Im Falle eines Fehlers beendet sich der Node und es wird eine entsprechende Meldung auf der Konsole ausgegeben. \\
-War das Befüllen der PlanningScene erfolgreich wartet der ActionServer auf weitere Befehle in Form von \textit{MovingCommandAction-Messages}.
-Wird eine neue MovingCommandAction-Message gesendet, wird das \textit{Command} der Message geparst und die entsprechende Gruppe (\textit{linker Arm, rechter Arm, beide Arme}) bewegt. \\
-Es wird der Punkt (falls erforderlich) in das entsprechende Koordinatensystem der zu bewegenden Gruppe umgerechnet. Anschließend wird mit MoveIt ein entsprechender Bewegungsplan erstellt.\\ 
-Wenn ein entsprechender Bewegungsplan existiert und die Gruppe an den Punkt ohne Kollision mit der PlanningScene bewegt werden kann, wird die Bewegung ausgeführt und \textit{true} zurückgegeben.
-Existiert kein Bewegungsplan (z.B.: Gruppe kann rein technisch nicht an den Punkt gelangen) oder  wenn es keine Möglichkeit gibt an den Punkt ohne Kollision zu gelangen, wird \textit{false} zurückgegeben und der entsprechende MoveItErrorCode mit Beschreibung auf der Konsole ausgegeben und keine Bewegung durchgeführt. \\
+\subsubsection{Schritt 7: Rückmeldung an Knowledge Service}
+Falls es sich um eine \textit{GRASP} oder \textit{PLACE} Aktion handelt und die Aktion erfolgreich war wird der Knowledge Service aufgerufen um den Beliefstate zu aktualisieren. Es wird übergeben, welches Objekt sich in welchem \textit{Gripper} befindet.
 
 
+\subsection{Besonderheiten/Besondere Algorithmen}
+In diesem Abschnitt werden kurz erwähnenswerte Algorithmen beschrieben.
+Dabei wird zuerst der Algorithmus für das Umstoßen eines Objektes und anschließend der Algorithmus für das Greifen, bzw. Abstellen eines Objektes beschrieben.\\
+
+\subsubsection{Algorithmus für das Umstoßen eines Objektes}
+\chapterauthor{Roman Haak}
+Über die von unserem Teilsystem angebotene Action '\textit{moving}' kann das Kommando zum Umstoßen eines Objektes mit dem rechten oder mit dem linken \textit{Gripper} abgesetzt werden. Beim Aufruf wird dabei eine Pose übergeben, welche die Position des Mittelpunktes des umzustoßenden Objektes und die beabsichtigte Orientierung des \textit{Grippers} beinhaltet. \\Der Algorithmus, der das Umstoßen dann realisiert, arbeitet wie folgt:\\
+
+1. \textit{Berechne die Pose, zu der der Arm als erstes gefahren werden soll. Diese Pose wird folgendermaßen ermittelt:}\\
+\tab - die Orientierung wird von der beim Aufruf des Kommandos übergebenen Pose übernommen\\
+\tab - die Position ist die Position des Objektmittelpunkts, von der noch die Distanz\\ \tab   'DISTANCE\_BEFORE\_POKING' und 'GRIPPER\_LENGTH\_LEFT'\\ \tab bzw. 'GRIPPER\_LENGTH\_RIGHT' von der X-Koordinate im 'base\_footprint'-Frame \\ \tab abgezogen wird, wobei 'DISTANCE\_BEFORE\_POKING', 'GRIPPER\_LENGTH\_LEFT' \tab und 'GRIPPER\_LENGTH\_RIGHT' definierte Konstanten sind.\\
+
+Der so errechnete Zielpunkt befindet sich also 'DISTANCE\_BEFORE\_POKING' plus 'GRIPPER\_LENGTH\_LEFT' bzw. 'GRIPPER\_LENGTH\_RIGHT' vor dem Objekt, aus Sicht des Roboters.\\
+
+2. \textit{Fahre mit dem rechten bzw. linken Arm zu der errechneten Pose.}\\
+
+3. \textit{Errechne nun einen Punkt, der etwas über dem Objektmittelpunkt liegt. Falls der linke Arm benutzt wird, verschiebe den Punkt zusätzlich noch um die Differenz zwischen 'GRIPPER\_LENGTH\_LEFT' und 'GRIPPER\_LENGTH\_RIGHT' hin zum Roboter. Damit soll erreicht werden, dass immer auf dieselbe Weise umgestoßen wird, egal ob der linke (längere) oder rechte Arm benutzt wird.}\\
+
+4. \textit{Berrechne eine 10-Punkte Trajektorie zwischen dem in Schritt 3 errechneten Punkt und der aktuellen Position des Armes.}\\
+\tab - Dies hat den Sinn, dass sichergestellt ist, dass das Objekt von\\ \tab vorne umgestoßen wird.\\
+
+5. \textit{Fahre den Arm entlang der gewünschten Trajektorie.}\\
+\tab - Das Objekt sollte nun umgestoßen worden sein.
 
 
+\subsubsection{Algorithmus für das Greifen/Abstellen eines Objektes}
+\chapterauthor{Roman Haak}
+Über die von unserem Teilsystem angebotene Action '\textit{moving}' kann das Kommando zum Greifen/Abstellen eines Objektes mit dem rechten oder mit dem linken \textit{Gripper} abgesetzt werden. Beim Aufruf wird dabei eine Pose übergeben, welche die Position des Greifpunktes des zu greifenden Objektes, bzw. die Position, zu der der \textit{Gripper} hingefahren werden soll, um das Objekt abzustellen beinhaltet. Zusätzlich ist noch die beabsichtigte Orientierung des \textit{Grippers} angegeben. \\Der Algorithmus, der das Greifen bzw. Abstellen dann realisiert, ist dabei derselbe. Denn die beiden Aktionen Greifen und Abstellen unterscheiden sich prinzipiell nur daran, dass beim Greifen der \textit{Gripper} erst geöffnet und dann zum Greifen geschloßen wird und beim Abstellen der \textit{Gripper} zuerst bereits geschloßen ist und beim Abstellen des Objektes dann geöffnet werden muss. Zu dieser Unterscheidung reichen also Fallunterscheidungen innerhalb des Algorithmus. \\Der Algorithmus arbeitet dabei wie folgt:\\
 
-%UNTERSCHIED LAUNCHFILE FÜR SIMULATION UND ECHTER ROBOTER -> LADEN DER KONFIGURATIONSDATEIEN - SIMULATION ODER ECHTER ROBOTER
-%STARTEN DER NAVIGATIONSSACHEN -> AUCH HIER UNTERSCHIED SIMULATION UND ECHTER ROBOTER
-%INITIALISIEREN DER KÜCHE, WARTEN AUF CALL DES ACTIONSERVERS, AUSFÜHREN (FALLS MÖGLICH), RÜCKMELDUNG AN ACTIONCLIENTS (IN SIMULATION UND ECHT GLEICH)
-\subsubsection{Besonderheiten/Besondere Algorithmen}
-\chapterauthor{Maximilian Bertram}
+1. \textit{Hebe den gewünschten Arm auf die Höhe 'TABLE\_HEIGHT' + 'MAXIMUM\_OBJECT\_HEIGHT' + 'GRIPPER\_LENGTH\_LEFT' + 'DISTANCE\_BEFORE\_GRASPING'.}\\
+\tab - Da wir es in unserem aktuellen Stand des Gesamtsystems noch nicht geschafft haben, \\ \tab beim Greifen die Kollisionsfreiheit sicherzustellen, haben wir uns entschieden das Greifen\\ \tab aus einer Höhe zu realisieren, auf der sich sicher kein Objekt befindet.\\
 
-\textbf{VisualizationMarker}
+2. \textit{Bewege den Arm auf dieser Höhe über das zu greifende/abzustellende Objekt.}\\
 
-Wenn der linke/rechte Arm bewegt wird, werden dabei 2 VisualizationMarker gepublished, welche in RViz angezeigt werden können. Im Idealfall befinden sich diese beiden Punkte exakt an der gleichen Position. Der gelbe Marker zeigt den gewünschten Endpunkt der Bewegung vor dem umrechnen, der rote Marker zeigt den Punkt nach dem Umwandeln in das Koordinatensystem der zu bewegenden Gruppe.
+3. \textit{Ändere die Orientierung des Armes zu der Orientierung, die in der übergebenen Pose beinhaltet ist.}\\
+\tab - Die übergebene Orientierung ist in dem aktuellen Stand die, bei der der \textit{Gripper} nach \\ \tab unten orientiert ist, damit das Objekt so gegriffen werden kann.\\
 
-%ÜBERHAUPT VORHANDEN? PARSEN DER MOVEITERRORCODES? VISUALIZATION-MARKER? ORIENTATION DES GRIPPERS?
+4. \textit{Hier findet eine Fallunterscheidung statt.}\\
+\tab - Soll ein Objekt gegriffen werden, öffne den \textit{Gripper}.\\
+\tab - Soll ein Objekt abgestellt werden, lass den \textit{Gripper}, wie er ist.\\
+
+5. \textit{Fahre mit dem Arm zu der Position, welche in der Pose angegeben ist.}\\
+
+6. \textit{Hier findet wieder eine Fallunterscheidung statt.}\\
+\tab - Soll ein Objekt gegriffen werden, schließe den \textit{Gripper}.\\
+\tab - Soll ein Objekt abgestellt werden, öffne den \textit{Gripper}.\\
+
+7. \textit{Hebe den Arm wieder auf die am Anfang errechnete Höhe an, um das Objekt zu heben, bzw. "vom Objekt wegzufahren".}\\
+\tab - Das Objekt sollte nun entweder an dem gewünschten Platz stehen, bzw. sich in dem\\ \tab \textit{Gripper} des Roboters befinden.
+
+
+\subsection{Tests \& Evaluation}
+\chapterauthor{MB, RH}
+Da wir agil entwickeln, haben wir abgewägt und die Priorität auf die Zielerreichung des 2.
+Meilensteines gesetzt und uns gegen das Implementieren von Unit-Tests durch ein Testframework entschieden. Alle von Motion angebotenen Funktionen (greifen, abstellen, umstubsen) wurden mehrfach manuell am echten Roboter überprüft und getestet. Die Implementierung von Unit-Tests wird im 3. Meilenstein folgen. \\
+
+Durch die händischen Tests sind immer wieder Differenzen zwischen echtem PR2 und der Simulation aufgefallen. Es mussten immer wieder Anpassungen am Code vorgenommen werden, damit das Package auf dem jeweiligen System wie gewünscht funktioniert. Die Fehlersuche hat hierbei enorm Zeit verbraucht. \\
+
+Am Ende funktionierten die angebotenen Funktionalitäten wie gewünscht.\\
 
 \newpage
 
@@ -1982,7 +2141,7 @@ Der Visualization-Publisher ''publiziert'' (advertise) die extrahierten Cluster 
 \begin{itemize}
 
 
-\item[a] Sind alle Systeme lauffähig (Vision,Knowledge und Motion), muss für Planning folgendes Repository hinzufügt werden: \url{https://github.com/menanuni/planning_suturo_1718.git}. 
+\item[a] Laufen alle anderen Systeme (Vision,Knowledge und Motion), muss für Planning folgendes Repository hinzufügt werden: \url{https://github.com/menanuni/planning_suturo_1718.git}. 
 
 \item[b] Ist die Arbeitsumgebung vollständig gebaut, wird CRAM installiert \url{http://cram-system.org/installation}.
 
@@ -2006,11 +2165,10 @@ Der Visualization-Publisher ''publiziert'' (advertise) die extrahierten Cluster 
 
 \subsection{Installation und Ausführung von Motion}
 
-\subsubsection{Installation}
-\chapterauthor{RH, MB}
+\subsubsection{Installationsanleitung}
+\chapterauthor{Maximilian Bertram}
+
 \begin{itemize}
-
-
 \item[a] Zunächst müssen folgende Repositories in den source-Ordner des Workspaces hinzugefügt werden:  \\
 \url{https://github.com/menanuni/motion_suturo_1718} \\
 \url{https://github.com/menanuni/msgs_suturo_1718} \\
@@ -2022,20 +2180,21 @@ Der Visualization-Publisher ''publiziert'' (advertise) die extrahierten Cluster 
 \textit{echo  \grqq{}source /opt/ros/indigo/setup.bash\grqq{} \textgreater\textgreater \textasciitilde{ }/.bashrc} \\
 
 \item[c] Jetzt kann das System über \textit{catkin build} gebaut werden.
-
 \end{itemize}
 
-\subsubsection{Ausführung}
+Den Stand der für Stand  des 2. Meilensteins findet sich unter folgendem Tag: \\
+-TODO: LINK TAG-
+
+\subsubsection{Starten der Nodes}
 \chapterauthor{Roman Haak}
 \begin{itemize}
 
-\item Zunächst muss über den Befehl \textit{roslaunch kitchen\_model\_export knowledge\_export\_service.launch} ein Teilsystem von \textit{Knowledge} gestartet werden.
+\item Soll das System im Kontext des echten Roboters benutzt werden, startet man zunächst über \textit{roslaunch kitchen\_model\_export knowledge\_export\_service.launch} ein Teilsystem von \textit{Knowledge}.
 
-\item Anschließend kann unser Knoten über \textit{roslaunch motion motion\_main\_start.launch} gestartet werden, falls er im Kontext einer Simulation ausgeführt werden soll, bzw. \textit{roslaunch motion motion\_main\_start\_real\_pr2.launch}, falls der Knoten auf dem PR2 ausgeführt werden soll.
+\item Unser Teilsystem wird dann über \textit{roslaunch motion motion\_main\_start.launch} gestartet, falls es im Kontext einer Simulation ausgeführt werden soll, bzw. über \textit{roslaunch motion motion\_main\_start\_real\_pr2.launch}, falls das Ausführen des Systems auf dem echten PR2 gewünscht ist.
 
 \item Dann können Befehle an den Actionserver unseres Knotens über das Topic \textit{/moving/goal} abgesetzt werden. Zur Erläuterung des Actionservers siehe Dokumentation der Gruppe \textit{motion}.
 \end{itemize}
-
 
 \subsection{Installation und Ausführung von Vision}
 
