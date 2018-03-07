@@ -1556,7 +1556,7 @@ Wenn der linke/rechte Arm bewegt wird, werden dabei 2 VisualizationMarker gepubl
 \section{Vision}
 \subsection{Vorwort Vision}
 \chapterauthor{Alexander Link}
-Da einige Teile der Dokumentation überarbeitet und nicht komplett neu geschrieben wurden, ist zu beachten, dass die Autoren der Vision-Teile zu der Dokumentation von Meilenstein 1 genau umgekehrt waren. Auch ist hinzuzufügen, dass an vielen Funktionen Tammo Wübbena und Alexander Link zugleich beteiligt waren. In solchen Fällen ist das mit "Beide"\ abgekürzt.
+Da einige Teile der Dokumentation überarbeitet und nicht komplett neu geschrieben wurden, ist zu beachten, dass die Autoren der Vision-Teile zu der Dokumentation von Meilenstein 1 genau umgekehrt waren. Auch ist hinzuzufügen, dass an vielen Funktionen Tammo Wübbena und Alexander Link zugleich beteiligt waren. In solchen Fällen sind beide Autoren mit "Beide"\ abgekürzt.
 
 \subsection{Überblick Vision}
 \chapterauthor{Alexander Link}
@@ -1967,8 +1967,11 @@ Es werden die Normal-Features, Color-Features für die Klassifikation durch Know
 \subsubsection{Schritt 6: Befüllen der MSG}
 Die einzelnen Features und Posen (letzteres aktuell noch nicht getestet) werden in der Message (ObjectsInfo.msg) gespeichert und zur weiteren Bearbeitung an Planning weitergegeben.
 
-\subsection*{Visualization Marker}
-Der Visualization Marker gibt den Mittelpunkt von Objekten aus. Dieser kann den anderen Gruppen beim debuggen helfen.
+\subsubsection{Schritt 7: Ermitteln der Pose}
+Die von Knowledge gelabelten Objekte werden mit ihren jeweiligen Meshes abgeglichen und durch SACInitialAlignment werden ihre jeweiligen Posen ermittelt.
+
+\subsection*{Visualization-Publisher}
+Der Visualization-Publisher ''publiziert'' (advertise) die extrahierten Cluster als zusammenhängende Punktwolke
 
 \newpage
 \section{Nutzungsbeschreibung}
