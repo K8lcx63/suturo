@@ -907,7 +907,7 @@ Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-erro
 \section*{Methodendokumentation Gruppe Knowledge}
 \section{knowledge\_grasp}
 \chapterauthor{Max-Phillip Bahr}
-Das Knowledge\_Grasp-Paket dient dazu die GraspPose zu einem erkannten Gegenstand aus der Ontologie auszulesen, an der der PR2 diesen Gegenstand vor ihm greifen soll.
+Das Knowledge\_Grasp-Paket dient dazu, die GraspPose zu einem erkannten Gegenstand aus der Ontologie auszulesen. Die GraspPose dient dazu dem PR2 mitzuteilen wie er einen Gegenstand greifen soll.
 
 \begin{figure}[!htb]
         \center{\includegraphics[width=\textwidth]
@@ -927,7 +927,9 @@ find_grasp_pose(ObjectClassLabel, Position, Quaternion)
 @param Quaternion Orientation der GraspPose also Prolog Liste 
        (z.B. [0.0 0.0 0.0 1.0])
 
-Description : Liest zu einem gegebenen Objektlabel eine zugehörige GraspPose aus der Ontologie aus. Es wird bei der eingespeicherten GraspPose von der Translation des Grippers zum Mittelpunkt des Objekts ausgegangen.
+Description : Liest zu einem gegebenen Objektlabel eine zugehörige GraspPose 
+aus der Ontologie aus. Es wird bei der eingespeicherten GraspPose von der 
+Translation des Grippers zum Mittelpunkt des Objekts ausgegangen.
 \end{spverbatim}
 
 \subsubsection{createQuery - C++}
@@ -936,19 +938,25 @@ std::string createQuery(std::string object_label)
 @param object_label Das Objektlabel.
 @return Den aus dem Objektlabel zusammengesetzten Query-String.
 
-Description : Baut aus dem Objektlabel einen Query-String für die Prolog-Methode find_grasp_pose zusammen.
+Description : Baut aus dem Objektlabel einen Query-String für die 
+Prolog-Methode find_grasp_pose zusammen.
 \end{spverbatim}
 
 \subsubsection{find\_grasp\_pose - C++}
 \begin{spverbatim}
 bool find_grasp_pose(knowledge_msgs::GraspIndividual::Request  &req, 
                              knowledge_msgs::GraspIndividual::Response &res)
-@param req Adresse des Request Objekts von GraspIndividual das bearbeitet werden soll.
+@param req Adresse des Request Objekts von GraspIndividual das bearbeitet 
+           werden soll.
 @param res Adresse zum schreiben des Response Objekts von GraspIndividual.
 @return true wenn Methode erfolgreich, false wenn nicht.
 
-Description : Die Methode liest das Objektlabel aus req aus und baut mit createQuery einen QueryString  der mit der once-Methode an den Prolog Server geschickt wird. Wenn Prolog mit find_grasp_pose (Prolog Methode) eine Lösung zur Query findet (also die GraspPose aus der Ontologie ausliest) wird diese in das Response Objekt 
-geschrieben und true zurückgegeben. Wenn nicht wird eine Fehlermeldung ausgegeben und false zurückgegeben.
+Description : Die Methode liest das Objektlabel aus req aus und baut mit 
+createQuery einen QueryString, der mit der once-Methode an den Prolog Server 
+geschickt wird. Wenn Prolog mit find_grasp_pose (Prolog Methode) eine Lösung 
+zur Query findet (also die GraspPose aus der Ontologie ausliest), wird diese in 
+das Response Objekt geschrieben und true zurückgegeben. Wenn nicht wird 
+eine Fehlermeldung ausgegeben und false zurückgegeben.
 \end{spverbatim}
 
 \section{svm\_classifier}
@@ -2299,7 +2307,8 @@ oder \\
 \chapterauthor{Alexander Haar}
 
 \begin{itemize}
-\item[1.] Java8 installieren:$ https://wiki.ubuntuusers.de/Java/Installation/Oracle\_Java/Java\_8/ $
+\item[1.] Java8 installieren:\\
+$ https://wiki.ubuntuusers.de/Java/Installation/Oracle\_Java/Java\_8/ $\\
 Wichtig JDK
 \item[2.] Repo clonen und bauen
 \item[3.] Die folgenden Schritte ausführen: $http://knowrob.org/installation/workspace$
