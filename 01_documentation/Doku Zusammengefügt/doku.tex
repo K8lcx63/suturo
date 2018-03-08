@@ -144,11 +144,13 @@ Für eine sinnvolle Greifpose müssen die Punkt im Koordinatensystem sowie Rotat
 
 \subsection{Welche Gripper sind belegt}
 \chapterauthor{Alexander Haar}
-Um herauszufinden, welcher Gripper gerade belegt ist wurde ein aktionsbasierter beliefstate verwendet. Ist für ein Objekt die zuletzt ausgeführte Aktion eine Greifaktion, dann muss sich das Objekt in dem angegeben Gripper befinden, also ist der Gripper belegt.
+Um Objekte zu greifen muss bekannt sein, ob sich im Gripper bereits ein Objekt befindet.\\
+\textbf{Lösung}: Um herauszufinden, welcher Gripper gerade belegt ist wurde ein aktionsbasierter beliefstate verwendet. Ist für ein Objekt die zuletzt ausgeführte Aktion eine Greifaktion, dann muss sich das Objekt in dem angegeben Gripper befinden, also ist der Gripper belegt.
 
 \subsection{Welche Objekte sollen weggeräumt werden}
 \chapterauthor{Alexander Haar} 
-Hier ist wieder der aktionsbasierte beliefstate die Lösung. Alle Objekte, welche nur wahrgenommen wurden und noch nicht gegriffen wurden müssen sich noch auf der Kücheninsel befinden. Mithilfe des storage\_place- Pakets werden dann die Objekte ermittelt, welche als nächstes weggeräumt werden sollen.
+Um herauszufinden, welche Objekte als nächstes weggeräumt werden sollen muss klar sein, welche Objekte sich noch auf der Kücheninsel befinden.\\
+\textbf{Lösung}: Hier ist wieder der aktionsbasierte beliefstate das beste Mittel. Alle Objekte, welche nur wahrgenommen wurden und noch nicht gegriffen wurden müssen sich noch auf der Kücheninsel befinden. Mithilfe des storage\_place- Pakets werden dann die Objekte ermittelt, welche als nächstes weggeräumt werden sollen.
 
 \subsection{Kollisionsfreiheit beim Greifen eines Objektes}
 \chapterauthor{Maximilian Bertram, Roman Haak}
@@ -1207,7 +1209,8 @@ und das entsprechende Mesh.
 \subsubsection{update\_object\_frame - Python}
 \begin{verbatim}
 def update_object_frame(object_name, object_pose)
-Beschreibung: Ändert die Pose des angegeben Objekts auf die übergebene.
+Beschreibung: Ändert die Pose des angegeben Objekts auf die übergebene
+              Pose.
 @param object_name: Der Name des Objekts.
 @param object_pose: Die Pose des Objekts.
 \end{verbatim}
@@ -1340,7 +1343,8 @@ zwei booleans, welche angeben, ob der Gripper belegt ist.
 \subsubsection{Service Server object\_to\_pick}
 \begin{verbatim}
 def objects_to_pick(req)
-Beschreibung: Gibt die zwei Objekte zurück, welche als nächstes weggeräumt werden sollen.
+Beschreibung: Gibt die zwei Objekte zurück, welche als nächstes 
+              weggeräumt werden sollen.
 @param req: Die Anfrage an den Service.
 @return: Die Antwort des Services.
 \end{verbatim}
@@ -1351,7 +1355,7 @@ Beschreibung: Gibt die zwei Objekte zurück, welche als nächstes weggeräumt we
 Es werden mehre Objekte wahrgenommen und deren Label sowie Pose wird dem beliefstate bekannt gemacht.
 
 \subsubsection{Schritt 2: Welche zwei Objekte sollen weggeräumt werden?}
-Nachdem Alle zu verteilenden Objekte bekannt sind, werden möglichst zwei Objekte ausgewählt, welche den gleichen Lagerplatz besitzen.
+Nachdem alle zu verteilenden Objekte bekannt sind, werden möglichst zwei Objekte ausgewählt, welche den gleichen Lagerplatz besitzen.
 
 \subsubsection{Schritt 3: Greifen eines Objekts}
 Das erste der beiden Objekte wird gegriffen.
@@ -1391,8 +1395,10 @@ Das storage\_place-Paket dient zur Ermittlung des Lagerplatzes eines Objekts.
 \subsubsection{createQuery - C++}
 \begin{verbatim}
 std::string createQuery(std::string object_label)
-Beschreibung: Erzeugt eine Prologanfrage, um einen Lagerplatz zu ermitteln.
-@param object_label: Der Name des Objekts von dem der Lagerplatz bestimmt werden soll.
+Beschreibung: Erzeugt eine Prologanfrage, um einen Lagerplatz 
+              zu ermitteln.
+@param object_label: Der Name des Objekts von dem der Lagerplatz 
+                     bestimmt werden soll.
 \end{verbatim}\label{func:segmentplanes}
 
 \subsubsection{main - C++}
@@ -1448,10 +1454,12 @@ Beschreibung: Ermittelt zu einer Objektklasse den Lagerplatz.
 \begin{verbatim}
 bool find_storage_place(knowledge_msgs::StoragePlace::Request &req,
  knowledge_msgs::StoragePlace::Response &res)
-Beschreibung: Service- Methode, welche einen Lagerplatz für Objekte ermittelt.
-@param req: Die Anfrage an den Service, welche den Namen des Objekts enthält.  
-@param res: Die Antwort des Services, welche das Zentrum und die Ausmaße des Lagerplatzes
-            enthält.
+Beschreibung: Service- Methode, welche einen Lagerplatz für Objekte 
+              ermittelt.
+@param req: Die Anfrage an den Service, welche den Namen des Objekts 
+            enthält.  
+@param res: Die Antwort des Services, welche das Zentrum und die 
+            Ausmaße des Lagerplatzes enthält.
 @return: true, falls der Aufruf erfolgreich war und false sonst.
 \end{verbatim}\label{func:findcluster}
 
@@ -2291,7 +2299,8 @@ oder \\
 \chapterauthor{Alexander Haar}
 
 \begin{itemize}
-\item[1.] Java8 installieren:$ https://wiki.ubuntuusers.de/Java/Installation/Oracle_Java/Java_8/ $Wichtig JDK
+\item[1.] Java8 installieren:$ https://wiki.ubuntuusers.de/Java/Installation/Oracle\_Java/Java\_8/ $
+Wichtig JDK
 \item[2.] Repo clonen und bauen
 \item[3.] Die folgenden Schritte ausführen: $http://knowrob.org/installation/workspace$
 \end{itemize}
@@ -2299,7 +2308,7 @@ oder \\
 \subsubsection{Ausführung}
 \chapterauthor{Alexander Haar}
 
-Um alle wichtigen Knoten zu starten muss einfach der Befehl \textit{roslaunch knowledge knowledge\_main.launch} ausgeführt werden. Es wird eine json\_prolog- Node, der PokePositon-Service und der GetFixedKitchenModel- Service gestartet.
+Um alle wichtigen Knoten zu starten muss einfach der Befehl \textit{roslaunch knowledge knowledge\_main.launch} ausgeführt werden.
 
 
 \end{document}
