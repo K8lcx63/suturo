@@ -110,16 +110,16 @@ Greift der Pr2 daneben, oder verliert er während der Fahrt ein Objekt aus dem G
 
 \subsection{Die Objektplatzierung soll dynamisch sein}
 \chapterauthor{Hauke Tietjen}
-Man könnte für jedes Objekt eine Abstellposition festlegen aber was wäre wenn eine zweite Ketchupflasche auftaucht und genauso aussieht wie die Erste? Ihr Platz könnte bereits belegt sein. \\
+Wenn jedes Objekt einen statischen Abstellplatz hätte, könnten identische Objekte miteinander kollidieren. Außerdem bringt es Abwechslung in den Programmablauf, wodurch Probleme aufgedeckt werden können. Ein Beispiel wäre Überlappungen von Objekten, in der Wahrnehmung. \\
 
 \textbf{Lösung}: Objekte werden in ihren festgelegten Abstellzonen kollisionsfrei platziert, bis diese keinen Platz mehr bieten oder bei drohender Überfüllung ein Fehler geworfen werden kann.
 
 
 \subsection{Fehler sollen hierarchisch sein}
 \chapterauthor{Hauke Tietjen}
-Man sollte feststellen können aus welchen Bereichen Fehler kommen und diese, aufgrund dessen, anders zu behandeln. Besonders in höher gelegenen Funktionen kann dies nützlich bei der Fehlerbehandlung sein. \\
+Man sollte feststellen können in welchen Bereichen Fehler auftreten und diese, aufgrund dessen, anders zu behandeln. Besonders in höher gelegenen Funktionen kann dies nützlich bei der Fehlerbehandlung sein. \\
 
-\textbf{Lösung}: In einer Fehlerhierarchie können Fehler von anderen Fehlern erben. Daher eignet sie sich gut um über- und untergeordnete Programmabschnitten Fehler zuzuordnen.
+\textbf{Lösung}: In einer Fehlerhierarchie können Fehler von anderen Fehlern erben. Daher eignet sie sich gut um über- und untergeordneten Programmabschnitten Fehler zuzuordnen.
 
 \subsection{Bestimmen der GraspPose vom Objekt}
 \chapterauthor{Max-Phillip Bahr}
@@ -353,6 +353,10 @@ Gibt uns zwei Strings zurück. Diese sind leer, wenn kein Objekt mehr gegriffen 
 Wir können erfragen, welcher Gripper frei ist.\\
 
 4. 'kitchen\_mode\_service/get\_fixed\_kitchen\_objects'\\
+
+5. 'storage\_place\_service/storage\_place'\\
+
+6. 'knowledge\_grasp/knowledge\_grasp'\\
 %?
 \subsubsection{Topics}
 1. 'beliefstate/perceive\_action'\\
@@ -364,7 +368,33 @@ Wenn ein Objekt wahrgenommen wurde, publishen wir diese Information.
 \chapterauthor{Kevin Störmer}
 Die Quellcode-Datei 'knowledge-communicate' im Paket 'planning\_knowledge' ist ausschliesslich für die Kommunikation mit Modulen der Gruppe Knowledge zust\"andig.
 
+\subsubsection{ask-knowledge-where-belongs-object()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+ask-knowledge-where-belongs-object()
 
+Beschreibung: Fragt den storage\_place\_service von Knowledge zu welchem
+Abstellplatz das gegebene Objekt gehört.
+
+@param object
+@return: Abstellplatz als X- und Y-Koordinate in der Mitte, sowie
+Breite und Höhe
+\end{verbatim}
+
+
+\subsubsection{how-To-Pick-Objects()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+how-To-Pick-Objects()
+
+Beschreibung: Fragt den knowledge\_grasp Service wie das gegebene Objekt 
+gegriffen werden soll. Der Service wird ausnahmsweise auch zum Abstellen 
+des Objekts verwendet, weil aufgrund technischer Probleme noch kein
+Service zum Abstellen bereitgestellt werden konnte.
+
+@param object
+@return: grasp pose
+\end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -790,33 +820,40 @@ Die Datei 'objects' aus dem Paket 'planning\_objects' dient dazu, aus den von Kn
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 calculate-landing-zone()
-Beschreibung: Fragt Knowledge an welchen Ablageort das Objekt gehört und
-verkleinert ihn um das Herunterfallen, der Objekte von Tischkanten, zu
-verhindern. Danach wird fill-landing-zone-horizontally auf das eine Pose
-zurück gibt. Diese wird in den Frame '/map' transformiert sowie X- und
-Y-Achse werden mit den neuen Werten überschrieben.
+
+Beschreibung: Die Funktion fragt Knowledge an welchen Ablageort das Objekt gehört und
+verkleinert ihn. Dadurch soll das Platzieren von Objekten auf Tischkanten
+verhindert werden. Danach wird die Funktion fill-landing-zone-horizontally
+aufgerufen, die eine Pose zurück gibt. Außerdem wird Knowledge nach der 
+Z-Achse und Orientierung gefragt, wo das Objekt gegriffen werden soll. 
+Das wird in den Frame '/map' transformiert und die X- und Y-Achse
+werden mit den neuen Werten aus fill-landing-zone-horizontally überschrieben.
+
 @param object
-@return Gibt eine Pose in /map zurück um ein Objekt zu greifen
+@return Gibt die Pose eines Grippers in /map zurück um ein Objekt abzustellen
 \end{verbatim}
 
 \subsubsection{fill-landing-zone-horizontally()}
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 fill-landing-zone-horizontally()
-Beschreibung: Befüllt den Ablageort mit einem Objekt pro Aufruf,
-von Links nach Rechts auf der Y-Achse im Frame '/map'.
-Fragt Knowledge nach der Z-Achse und Pose wo das Objekt 
-gegriffen werden soll.
+
+Beschreibung: Es wird festgestellt in welchen Abstellbereich das Objekt gehört.
+Dann wird der Bereich mit dem gegebenen Objekt befüllt.
+Dies geschieht von positiv nach negativ auf der Y-Achse, im Frame '/map'.
+
 @param position width height
-@return Gibt eine Pose in /map zurück um ein Objekt zu greifen
+@return Gibt eine Pose in /map zurück um ein Objekt abzustellen
 \end{verbatim}
 
 \subsubsection{calculate-landing-zone-visualized()}
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 calculate-landing-zone-visualized()
-Beschreibung: Führt calculate-landing-zone() aus und visualisiert
-das Ergebnis, mit visualize-landing-zone().
+
+Beschreibung: Die Funktion führt calculate-landing-zone() aus und
+visualisiert das Ergebnis, mit visualize-landing-zone().
+
 @param object
 @return Gibt eine Pose in /map zurück um ein Objekt zu greifen
 \end{verbatim}
@@ -825,27 +862,21 @@ das Ergebnis, mit visualize-landing-zone().
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 visualize-landing-zone()
-Beschreibung: Führt vis-init() und publish-pose() aus um eine 
-Pose zu visualisieren.
+
+Beschreibung: Die Funktion führt vis-init() und publish-pose() aus
+um eine Pose zu visualisieren.
+
 @param pose
 @return 
-\end{verbatim}
-
-\subsubsection{check-which-storage-place()}
-\chapterauthor{Hauke Tietjen}
-\begin{verbatim}
-check-which-storage-place()
-Beschreibung: Findet heraus in welchem der vier Storageplaces
-sich die Y-Koordinate befindet.
-@param y
-@return Storageplace
 \end{verbatim}
 
 \subsubsection{vis-init()}
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 vis-init()
-Beschreibung: Startet den Marker-publisher.
+
+Beschreibung: Die Funktion startet den Marker-publisher.
+
 @param 
 @return 
 \end{verbatim}
@@ -853,9 +884,11 @@ Beschreibung: Startet den Marker-publisher.
 \subsubsection{publish-pose()}
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
-publish-pose
-Beschreibung: Publiziert einen Marker mit ID an der 
-angegebenen Pose mit den Dimensionen aus height und width.
+publish-pose()
+
+Beschreibung: Es wird ein Marker an der angegebenen Pose publiziert,
+mit ID und den Dimensionen aus height und width.
+
 @param pose id height width
 @return 
 \end{verbatim}
@@ -883,8 +916,10 @@ Die Datei 'error-hierarchy' aus dem Paket 'planning\_error' legt die Hierarchie 
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 custom-error()
+
 Beschreibung: Dieser Standardfehler erbt von 'error' während
 alle weiteren Fehler von diesem erben. 
+
 @param message
 @return 
 \end{verbatim}
@@ -893,14 +928,16 @@ alle weiteren Fehler von diesem erben.
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 vision-error()
+
 Beschreibung: Diese Fehlerklasse beschreibt Fehler, die im
 Zusammenhang mit Vision stehen. Vor der 
 Fehlernachricht wird 'vison error:' ausgegeben. 
+
 @param
 @return 
 \end{verbatim}
 
-Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' sind analog zu 'vison-error' und definieren weitere Fehler für andere Bereiche.
+Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' funktionieren analog zu 'vison-error' und definieren weitere Fehler, für andere Bereiche.
 
 
 \newpage
