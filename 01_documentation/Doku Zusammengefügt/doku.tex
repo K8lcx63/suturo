@@ -83,7 +83,7 @@ Das Ziel des Teams Motion ist es einen Actionserver zu implementieren, der versc
 \section{Probleme}
 \subsection{Routen können nicht richtig geplant werden}
 \chapterauthor{Vanessa Hassouna}
-Beim Fahren kollidiert der Roboter schnell (häufig) mit seinen Armen mit Küchenobjekten und dreht sich in einem Winkel, der problematisch für seinen verletzbaren Rücken sein kann.
+Beim Fahren kollidiert der Roboter häufig mit seinen Armen mit Küchenobjekten und dreht sich in einem Winkel, der problematisch für seinen verletzbaren Rücken sein kann.
 
 \textbf{Lösung}: Bevor der Pr2 zu dem gegebenem Punkt fährt, stellen wir sicher, dass sich der Roboter in einer entsprechenden sicheren Position befindet. Bis dahin sollte er sich um 90 Grad gedreht haben.
 
@@ -93,7 +93,7 @@ Beim Fahren kollidiert der Roboter schnell (häufig) mit seinen Armen mit Küche
 Die Informationen der gesehenen Objekte wird als \textbf{Message} übergeben. Diese beinhaltet ein Array aus \textbf{normal\_features}, ein Array aus \textbf{color\_features}, ein Array mit \textbf{object\_pose} und die Anzahl der gesehenen Objekte. 
 Um jedoch Objekte an Knowledge senden zu können, muss das Array zuerst zergliedert werden. \\
 
-\textbf{Lösung}: Alle erhaltenen Informationen werden auf dem "Param-Server" zwischengespeichert, erst danach werden diese miteinander konkateniert.
+\textbf{Lösung}: Alle erhaltenen Informationen werden auf dem Parameterserver zwischengespeichert, erst danach werden diese miteinander konkateniert.
 
 \subsection{Logik der Main wird zu groß und unübersichtlich}
 \chapterauthor{Vanessa Hassouna}
@@ -218,8 +218,8 @@ Jedes Mal, wenn der Kopf des Pr2 sich in einer bestimmten Position befindet, wir
 
 \begin{itemize}
 \item Die gegebenen Informationen werden extrahiert.
-\item Die beiden Arrays \textbf{normal\_features} und \textbf{color\_features} werden zergliedert und mit Hilfe von \textbf{object\_amount} identifiziert und auf dem "Param-Server" gespeichert.
-\item Die normal\_features und color\_features werden konkateniert auf dem "Param-Server" als \textbf{featuresX} gespeichert, wobei X hier die Nummer des Objektes darstellt.
+\item Die beiden Arrays \textbf{normal\_features} und \textbf{color\_features} werden zergliedert und mit Hilfe von \textbf{object\_amount} identifiziert und auf dem Parameterserver gespeichert.
+\item Die normal\_features und color\_features werden konkateniert auf dem Parameterserver als \textbf{featuresX} gespeichert, wobei X hier die Nummer des Objektes darstellt.
 \item Die \textbf{object\_pose} wird als Array global gespeichert.
 \end{itemize}
 
@@ -228,19 +228,19 @@ Jedes Mal, wenn der Kopf des Pr2 sich in einer bestimmten Position befindet, wir
 \subsubsection{Schritt 3: Weitergabe} 
 
 \begin{itemize} 
-\item Jetzt werden die gesehenen Objekte an Knowledge weitergegeben, hier bekommen wir für jedes gegebene Objekt ein Label als String zurück.
-\item Mit Hilfe des erhaltenen Labels rufen wir den Service '/vision\_suturo/objects\_pose' von Vision auf, der anhand von Objekt-Nummer und Label uns eine Pose zurück gibt.  
-\item Wenn die Pose bei uns angekommen ist, publishen wir auf ein Topic von Knowledge, damit das gesehene Objekt in der Wissensbasis gespeichert wird.
+\item Jetzt werden die gesehenen Objekte an Knowledge weitergegeben, diese geben für das Objekt ein Label zurück.
+\item Mit Hilfe des erhaltenen Labels wird der Service '/vision\_suturo/objects\_pose' von Vision aufgerufen, der anhand von Objekt-Nummer und Label eine Pose zurück gibt.  
+\item Wenn die Pose übergeben wurde, wird diese auf das Topic von Knowledge gepublished, damit das gesehene Objekt in der Wissensbasis gespeichert wird.
 \end{itemize}
 
 
 
 
 
-\subsubsection{Schritt 4: Welches Objekt soll ich greifen und wo soll es hin}
-Wir erfragen bei Knowledge welche Objekte wir greifen sollen, in dem wir den Service "knowledge\_msgs/ObjectsToPick" \\
-aufrufen. Als Antwort bekommen wir 2 Strings zurück.
-Mit der Funktion calculate-landing-zone-visualized() erhalten wir dann einen Standpunkt wohin das Objekt platziert werden soll. %X=HAUKES FUNKTION
+\subsubsection{Schritt 4: Welches Objekt wird gegriffen}
+Es wird bei Knowledge erfragt welche Objekte gegriffen werden sollen, in dem der Service "knowledge\_msgs/ObjectsToPick" 
+aufgerufen wird. Als Antwort werden 2 Strings zurück gegeben.
+Mit der Funktion calculate-landing-zone-visualized() wird der Standpunkt, wohin das Objekt platziert werden soll, zurückgegeben. %X=HAUKES FUNKTION
 Des Weiteren wird noch abgefragt wie das Objekt gegriffen werden soll. Diese Information wird dann weiter an Motion gegeben.
 
 \subsubsection{Schritt 5: Hinfahren zum gegebenen Ort}
@@ -432,8 +432,7 @@ Bewegt die Arme des Pr2 entweder in die Home-Position oder zu einem bestimmten P
 Die Quellcode-Datei 'motion-actions' im Paket 'planning\_motion'  ist ausschliesslich für die Kommunikation mit Modulen der Gruppe Motion zuständig. Dabei wird die Action '/motion' einmal für die Home-Position des Pr2, zum Bewegen des Armes zu einem bestimmten Punkt und zum Greifen genutzt.
 
 
-\subsubsection{call-Motion-\\
-Move-Arm-Homeposition()}
+\subsubsection{call-Motion-Move-Arm-Homeposition()}
 \chapterauthor{Vanessa Hassouna und Hauke Tietjen}
 \begin{verbatim}
 call-Motion-Move-Arm-Homeposition()
@@ -447,8 +446,8 @@ in die Homeposition fahren.
 
 
 
-\subsubsection{call-Motion-\\
-Move-Arm-To-Point (point-center-\\of-object \&optional (x 3))
+\subsubsection{call-Motion-Move-Arm-To-Point \\
+(point-center-of-object \&optional (x 3))
 }
 \chapterauthor{Vanessa Hassouna und Hauke Tietjen}
 \begin{verbatim}
@@ -501,16 +500,16 @@ x,y, und z werden als Koordinaten ausgehend von base_link behandelt.
 \end{verbatim}
 
 
-\subsubsection{move-Base-To-\\
-Point-Safe (x y z angle))
+\subsubsection{move-Base-To-Point-Safe (x y z angle))
 }
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
 move-Base-To-Point-Safe (x y z angle)
 
 Beschreibung: Diese Methode lässt den Roboter an eine vordefinierte 
-Position fahren, bei der er sich ungehindert drehen kannn.
+Position fahren, bei der er sich ungehindert drehen kann.
 Danach fährt der Pr2 zu dem gewünschten Punkt.
+
 @param: x y z angle
 @return: Successfull oder Aborted
 \end{verbatim}
@@ -530,8 +529,7 @@ wird die Basis bewegt. Der Punkt und die Rotation sind in Frame "map" anzugeben.
 \end{verbatim}
 
 
-\subsubsection{move-Robo-Into\\
--Homeposition ()}
+\subsubsection{move-Robo-Into-Homeposition ()}
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
 move-Robo-Into-Homeposition ()
@@ -640,7 +638,9 @@ Beschreibung: Published eine knowledge_msgs/PerceivedObject-msg
 \begin{verbatim}
 catch-Transformation (transform-listener tf-point-stamped endFrame)
 
-Beschreibung: Hier findet die eigentliche Transformation statt.
+Beschreibung: Hier findet die eigentliche Transformation, von der
+Funktion transformation-Vision-Point 
+pose amount &optional (endFrame "/base\_footprint"), statt.
 
 @param: transform-listener tf-point-stamped endFrame
 @return: Liefert eine transformierte tf-point-stamped
@@ -666,7 +666,7 @@ Beschreibung: Löst die Y-Koordinate einer GraspPose heraus.
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
 should-Robo-Use-Left-Or-Right-Arm (pose amount &optional
-(endFrame "/base\_footprint"))
+(endFrame "/base_footprint"))
 
 Beschreibung: Anhand der Y-Achse entscheidet der Roboter
 ob er den linken oder rechten Arm bewegen soll.
@@ -682,11 +682,11 @@ ob er den linken oder rechten Arm bewegen soll.
 disassemble-Vision-Call (visionclouds)
 
 Beschreibung: Extrahiert alle Informationen aus der 
-Visioncloud und speichert normal\_features, color\_features, 
-object\_amount und object\_pose auf den Param-Server.
+Visioncloud und speichert normal_features, color_features, 
+object_amount und object_pose auf den Parameterserver.
  
 @param: visionclouds
-@return: object\_pose
+@return: object_pose
 \end{verbatim}
 
 
@@ -698,8 +698,8 @@ object\_amount und object\_pose auf den Param-Server.
 set-Params-Features (normal-s color-s normal-e color-e amount)
 
 Beschreibung: Eine Hilfsfunktion für die Funktion "disassemble-Vision-Call", 
-um aus normal\_features und color\_features konkateniert ein features-X zu 
-erstellen. (Knowledge benötigt ein Array in dem zuerst color\_features 
+um aus normal_features und color_features konkateniert ein features-X zu 
+erstellen. (Knowledge benötigt ein Array in dem zuerst color_features 
 vorkommen und direkt im Anschluss normal_features)
 
 @param: normal-s color-s normal-e color-e amount
@@ -722,8 +722,7 @@ Beschreibung: Subscribed das Topic '/amcl_status'.
 \begin{verbatim}
 pose-cb (msg)
 
-Beschreibung: Callback-Funktion für "init-pr2" die durchgängig die Fluents
-*pr2-pose* aktualisiert.
+Beschreibung: Callback-Funktion für die Funktion init-pr2().
 
 @param: msg
 @return: geometry_msgs/Pose
@@ -745,13 +744,12 @@ Beschreibung: Ruft move-Base-To-Point-Safe mit angle-From-Pr2-Pose-To-Point auf.
 \begin{verbatim}
 angle-From-Pr2-Pose-To-Point (x-goal y-goal z-goal)
 
-Beschreibung: Berechnet von der aktuellen Position des Roboters um wie viel Grad
-er sich drehen muss, damit er zu einem Punkt fahren kann. Dafür wurde unter 
-anderem das Paket "Cram-Language" mit der Funktion 'atan' benutzt. 
-Da das Bewegen des Pr2 in dem Frame "\map" stattfindet, wurde hier zusätzlich 
-noch die aktuelle Drehung in der Welt gespeichert. Dies wird dann mit dem 
-Grad, um wie viel der Pr2 sich drehen muss, gegengerechnet, 
-so dass am Ende ein Winkel produziert wird, der innerhalb des Frames "\map" funktioniert.
+Beschreibung: Die Funktion arbeitet mit Hilfe des Packets Cram-Language um 
+einen Winkel zu berechnen, wie der Pr2 sich aus der aktuellen Position 
+in der Welt drehen muss, damit er einen gegebenen Punkt erreichen kann.
+Da der Roboter sich in dem Frame "map" bewegt, muss der Winkel noch mit der 
+aktuellen Orientierung des Pr2 subtrahiert werden, so dass am Ende
+ein Winkel resultiert der in dem Frame "map" funktioniert.
 
 @param: x-goal y-goal z-goal 
 @return: angle 
@@ -2203,7 +2201,7 @@ Der Visualization-Publisher ''publiziert'' (advertise) die extrahierten Cluster 
 \begin{itemize}
 
 
-\item[a] Laufen alle anderen Systeme (Vision,Knowledge und Motion), muss für Planning folgendes Repository hinzufügt werden: \url{https://github.com/menanuni/planning_suturo_1718.git}. 
+\item[a] Sind alle Systeme lauffähig (Vision,Knowledge und Motion), muss für Planning folgendes Repository hinzufügt werden: \url{https://github.com/menanuni/planning_suturo_1718.git}. 
 
 \item[b] Ist die Arbeitsumgebung vollständig gebaut, wird CRAM installiert \url{http://cram-system.org/installation}.
 
