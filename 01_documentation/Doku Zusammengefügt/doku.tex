@@ -83,7 +83,7 @@ Das Ziel des Teams Motion ist es einen Actionserver zu implementieren, der versc
 \section{Probleme}
 \subsection{Routen können nicht richtig geplant werden}
 \chapterauthor{Vanessa Hassouna}
-Beim Fahren kollidiert der Roboter häufig mit seinen Armen mit Küchenobjekten und dreht sich in einem Winkel, der problematisch für seinen verletzbaren Rücken sein kann.
+Beim Fahren kollidiert der Roboter häufig mit Küchenobjekten und dreht sich in einem Winkel, der problematisch für seinen verletzbaren Rücken sein kann.
 
 \textbf{Lösung}: Bevor der Pr2 zu dem gegebenem Punkt fährt, stellen wir sicher, dass sich der Roboter in einer entsprechenden sicheren Position befindet. Bis dahin sollte er sich um 90 Grad gedreht haben.
 
@@ -201,7 +201,7 @@ Alle dafür notwendigen Logiken, die auf Basis externer Daten entschieden werden
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
 main()
-Die Main startet eine 'ros-node' mit dem Namen \textit{planning\_main}.
+Die Main startet eine 'ros-node' mit dem Namen planning\_main.
 Diese Node läuft solange,bis die komplette Main einmalig durchlaufen wurde. 
 @return: T oder Nil 
 \end{verbatim}
@@ -214,7 +214,7 @@ Diese Node läuft solange,bis die komplette Main einmalig durchlaufen wurde.
 Der Pr2 begibt sich in die Homeposition, von der aus er Objekte sehen soll. 
 
 \subsubsection{Schritt 2: Suche nach Objekten}
-Jedes Mal, wenn der Kopf des Pr2 sich in einer bestimmten Position befindet, wird der Service \textit{/vision\_suturo/objects\_information} aufgerufen. Die gegebenen Information werden wie folgt bearbeitet:
+Jedes Mal, wenn der Kopf des Pr2 sich in einer bestimmten Position befindet, wird der Service /vision\_suturo/objects\_information aufgerufen. Die gegebenen Information werden wie folgt bearbeitet:
 
 \begin{itemize}
 \item Die gegebenen Informationen werden extrahiert.
@@ -640,7 +640,7 @@ catch-Transformation (transform-listener tf-point-stamped endFrame)
 
 Beschreibung: Hier findet die eigentliche Transformation, von der
 Funktion transformation-Vision-Point 
-pose amount &optional (endFrame "/base\_footprint"), statt.
+pose amount &optional (endFrame "/base_footprint"), statt.
 
 @param: transform-listener tf-point-stamped endFrame
 @return: Liefert eine transformierte tf-point-stamped
@@ -683,7 +683,7 @@ disassemble-Vision-Call (visionclouds)
 
 Beschreibung: Extrahiert alle Informationen aus der 
 Visioncloud und speichert normal_features, color_features, 
-object_amount und object_pose auf den Parameterserver.
+object_amount und object_pose auf dem Parameterserver.
  
 @param: visionclouds
 @return: object_pose
@@ -697,7 +697,7 @@ object_amount und object_pose auf den Parameterserver.
 \begin{verbatim}
 set-Params-Features (normal-s color-s normal-e color-e amount)
 
-Beschreibung: Eine Hilfsfunktion für die Funktion "disassemble-Vision-Call", 
+Beschreibung: Eine Hilfsfunktion für die Funktion disassemble-Vision-Call, 
 um aus normal_features und color_features konkateniert ein features-X zu 
 erstellen. (Knowledge benötigt ein Array in dem zuerst color_features 
 vorkommen und direkt im Anschluss normal_features)
