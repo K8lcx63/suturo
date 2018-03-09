@@ -1563,9 +1563,8 @@ Im Folgenden werden die \textit{Schnittstellen}, der \textit{Ablauf} des Teilsys
 \chapterauthor{Maximilian Bertram}
 Vom Typ '\textit{motion\_msgs/MovingCommand}': \\
 
-\noindent
-\begin{minipage}{\linewidth}
-\begin{lstlisting}[caption={Definition des MovingCommands},captionpos=b]
+\subsubsection*{Definition des MovingCommands}
+\begin{verbatim}
 #goal definition
 geometry_msgs/PoseStamped goal_pose
 uint8 command
@@ -1602,12 +1601,12 @@ uint8 UNMANAGEBLE_ERROR=3
 ---
 #feedback definition
 #bool finished
-\end{lstlisting}
-\end{minipage}
+\end{verbatim}
 
 Mit Hilfe der MovingCommandAction lassen sich alle von uns zur Verfügung gestellten Funktionen aufrufen. Es wurden Konstanten definiert, die die jeweilige Aktion beschreiben und in der Message-Definition vorhanden sind.
 
 \subsubsection{Aufgerufene Actions}
+\chapterauthor{Maximilian Bertram}
 Wird eine GRASP oder PLACE Aktion ausgeführt, wird über eine \\
 \textit{motion\_msgs::Gripper}-Message an den Actionserver des Knotens '\textit{simple\_gripper}' der Gripper entsprechend geöffnet oder geschlossen.(Siehe \textit{Abschnitt 1.3.1})\\
 
@@ -1616,7 +1615,7 @@ Wird eine GRASP oder PLACE Aktion ausgeführt, wird über eine \\
 \chapterauthor{RH, MB}
 \textbf{GetFixedKitchenObjects}\\
 Vom Typ '\textit{knowledge\_msgs/GetFixedKitchenObjects}': \\ 
-\begin{lstlisting}[caption={Definition des GetFixedKitchenObjects-Service},captionpos=b]
+\begin{verbatim}
 #This servicedefinition is for transfering the shape of the objects in the iai_kitchen.
 #The Motion-component calls this service for getting the shape of the kitchen-objects for it's planningscene.
 #The Knowledge-component reads these shapes out of an owl-file and returns the data described below.
@@ -1630,14 +1629,16 @@ string[] names
 geometry_msgs/Vector3[] bounding_boxes
 #The poses of the objects.
 geometry_msgs/Pose[] poses
-\end{lstlisting}
+\end{verbatim}
 
 \subsubsection{Benutzte Topics}
 \textbf{GraspAction und DropAction}
+\chapterauthor{Maximilian Bertram}
 
 Wird ein Objekt erfolgreich abgestellt oder gegriffen werden für den \textit{Beliefstate} von \textit{Knowledge} noch die entsprechenden \textit{Messages} gepublished: \\
 
-\begin{lstlisting}[caption={Definition der GraspObject.msg},captionpos=b]
+\subsubsection*{Definition der GraspObject.msg}
+\begin{verbatim}
 #A message which get's published by Motion-component after grasping an object.
 
 #The label of the grasped object.
@@ -1645,28 +1646,32 @@ string object_label
 
 #The gripper used. See 'Gripper.msg' for more details.
 Gripper gripper
-\end{lstlisting}
+\end{verbatim}
 
-\begin{lstlisting}[caption={Definition der DropObject.msg},captionpos=b]
+\subsubsection*{Definition der DropObject.msg}
+\begin{verbatim}
 #A message which get's published by Motion-component after dropping an object.
 
 #The gripper used. See 'Gripper.msg' for more details.
 Gripper gripper
-\end{lstlisting}
+\end{verbatim}
 
-\begin{lstlisting}[caption={Definition der Gripper.msg},captionpos=b]
+\subsubsection*{Definition der Gripper.msg}
+\begin{verbatim}
 #A message for defining constants for differencing between left and right gripper.
 
 uint8 gripper
 #constants for gripper
 uint8 LEFT_GRIPPER = 1
 uint8 RIGHT_GRIPPER = 2
-\end{lstlisting}
+\end{verbatim}
 
 \subsection{Schnittstellen - 'simple\_gripper'}
+\chapterauthor{Maximilian Bertram}
 \subsubsection{Angebotene Actions}
 Vom Typ '\textit{motion\_msgs/Gripper}': \\
-\begin{lstlisting}[caption={Definition der GripperAction},captionpos=b]
+\subsubsection*{Definition der GripperAction}
+\begin{verbatim}
 #goal definition
 #position of the space between the grippers in meters
 float64 position
@@ -1683,7 +1688,7 @@ bool successful
 ---
 #feedback definition
 #bool finished
-\end{lstlisting}
+\end{verbatim}
 \subsubsection{Aufgerufene Actions}
 Die GripperAction-Message wird entsprechend geparsed und eine \\
  \textit{pr2\_ controllers\_ msgs::Pr2GripperCommandAction} erzeugt und gepublished. \\
