@@ -130,7 +130,7 @@ Jedes Objekt muss mindestens eine GraspPose besitzen, an der es vom Roboter gegr
 \subsection{Segmentieren \& Extrahieren von mehreren Objekten}
 \chapterauthor{Tammo Wübbena}
 Die Objekte müssen klar von der restlichen wahrgenommenen Szene extrahiert und in einzelne Cluster aufgeteilt werden.\\
-\textbf{Lösung}: Die Planare werden so lange segmentiert, bis nur noch eine Fläche (der Tisch) übrig ist. Es werden dann nur die Punkte oberhalb der Tischfläche extrahiert. Dann werden die Objekte mit einer euclidean cluster extraction voneinander getrennt und als einzelne Objekte zwischengespeichert.
+\textbf{Lösung}: Die Planare werden so lang segmentiert, bis nur noch eine Fläche (der Tisch) übrig ist. Es werden dann nur die Punkte oberhalb der Tischfläche extrahiert. Dann werden die Objekte mit einer euclidean cluster extraction voneinander getrennt und als einzelne Objekte zwischengespeichert.
 
 \subsection{Features zur Klassifizierung ermitteln}
 \chapterauthor{Tammo Wübbena}
@@ -139,7 +139,7 @@ Normal- und Farb-Features werden zur Klassifizierung der ermittelten Objekte ben
 
 \subsection{Posen der Objekte bestimmen}
 \chapterauthor{Tammo Wübbena}
-Für eine sinnvolle Greifpose müssen die Punkt im Koordinatensystem sowie Rotation und Translation der Objekte bestimmt werden. 
+Für eine sinnvolle Greifpose müssen die Punket im Koordinatensystem sowie Rotation und Translation der Objekte bestimmt werden. 
 \textbf{Lösung}: Vision erhält von Knowledge die klassifizierten Labels und Nummern der Objekte, deren Pose dann mit einem Alignment-Algorithmus und einer Verfeinerung durch den Iterative Closest Point ermittelt werden.
 
 \subsection{Welche Gripper sind belegt}
@@ -2148,7 +2148,8 @@ Da die Länge der Features für ein Objekt immer gleich ist, kann durch die Anza
 \subsubsection{Service Server /vision\_suturo/objects\_poses}
 \begin{verbatim}
 poses.srv
-@request: string, uint8 (label of classified (recognized) object and its number in the array given by the ObjectsInfo.msg)
+@request: string, uint8 (label of classified (recognized) object and its number
+in the array given by the ObjectsInfo.msg)
 @response: ObjectsInfo msg (
 							poses (the pose of the requested object)
 							)
@@ -2288,7 +2289,7 @@ Folgendes muss zur .bashrc (oder zshrc) hinzugefügt werden:
 \textbf{Setup}
 
 \begin{itemize}
-\item gazebo installieren: \textit{sudo apt-get install ros-indigo-pr2-simulator}
+\item Gazebo installieren: \textit{sudo apt-get install ros-indigo-pr2-simulator}
 
 \item Sollten Probleme auftreten, könnte dies durch ein Update von gazebo auf v2.2.6 gelöst werden:
 \\
