@@ -25,8 +25,7 @@
 Im Rahmen unserer Bachelorprojektarbeit 'Suturo', haben wir die Chance ein intelligentes Robotersystem, am Roboter 'Pr2' von Willow Garage zu entwickeln. \\
 Dabei wurde in Absprache mit unseren Tutoren, eine Zielsetzung entwickelt, die wir im Rahmen des letzten Meilensteins verfolgt haben, aufbauend auf unseren Erfolgen des vorherigen Meilensteins. \\
 In den folgenden Abschnitten wollen wir allem voran einleitend auf planende Aspekte, sowie unsere Vorgehensweisen und Zielsetzungen eingehen. Daraufhin soll im Abschnitt zu unserer Schnittstellendokumentation, auf konkrete Lösungen der Projektgruppen eingegangen werden.\\ ~ \\
-Abschließend wollen wir einen Ausblick auf kommende Meilensteine, insbesondere im Hinblick auf die im April folgende Projektpräsentation, formulieren.\\
-Eine Installationsanleitung finden sie im letzten Abschnitt unserer Dokumentation.
+Abschliessend finden sie eine Installationsanleitung im letzten Abschnitt unserer Dokumentation.
 
 
 
@@ -957,7 +956,7 @@ Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-erro
 \section*{Methodendokumentation Gruppe Knowledge}
 \section{knowledge\_grasp}
 \chapterauthor{Max-Phillip Bahr}
-Das Knowledge\_Grasp-Paket dient dazu, die GraspPose zu einem erkannten Gegenstand aus der Ontologie auszulesen. Die GraspPose dient dazu dem PR2 mitzuteilen wie er einen Gegenstand greifen soll.
+Das Knowledge\_Grasp-Paket dient dazu, die GraspPose zu einem erkannten Gegenstand aus der Ontologie auszulesen. Die GraspPose dient dazu dem PR2 mitzuteilen wie ein Gegenstand zu greifen ist.
 
 \begin{figure}[!htb]
         \center{\includegraphics[width=\textwidth]
@@ -1234,7 +1233,7 @@ der Wissensbasis existiert.
 \subsubsection{pose\_stamped\_to\_position\_tupel - Python}
 \begin{verbatim}
 def pose_stamped_to_position_tupel(pose_stamped)
-Beschreibung: Übersetzt die Position eines PoseStamped in ein Tupel.
+Beschreibung: Übersetzt die Position eines PoseStamped in einen Tupel.
 @param pose_stamped: Der zu übersetzende PoseStamped.
 @return: Das resultierende Tupel.
 \end{verbatim}
@@ -1292,7 +1291,8 @@ Beschreibung: Spawnt ein Mesh in dem entsprechenden Objektkoordinatensystem.
 \subsubsection{main - Python}
 \begin{verbatim}
 __name__ == '__main__
-Beschreibung: Startet alle Service- Server und Subscriber die dieser Knoten benötigt.
+Beschreibung: Startet alle Service- Server und Subscriber die
+dieser Knoten benötigt.
 \end{verbatim}
 
 \subsubsection{object\_exists - Prolog}
@@ -1356,8 +1356,10 @@ werden müssen zurück.
 
 \subsubsection{get\_two\_objects\_on\_kitchen\_island\_counter\_with\_same\_storage\_place - Prolog}
 \begin{verbatim}
-get_two_objects_on_kitchen_island_counter_with_same_storage_place(Object1, Object2)
-Beschreibung: Gibt die zwei Objekte zurück, welche als nächstes verteilt werden sollen.
+get_two_objects_on_kitchen_island_counter_with_same_storage_place
+(Object1, Object2)
+Beschreibung: Gibt die zwei Objekte zurück, 
+welche als nächstes verteilt werden sollen.
 @param Object1: Das erste Objekt.
 @param Object2: Das zweite Objekt.
 \end{verbatim}
@@ -1489,7 +1491,8 @@ Beschreibung: Extrahiert aus einer Lagerfläche die Ausmaße.
 \begin{verbatim}
 storage_area(ObjectClass, StorageAreaIndividual)
 Beschreibung: Ermittelt zu einer Objektklasse die Lagerfläche.
-@param ObjectClass: Die Objektklasse zu der eine Lagerfläche ermittelt werden soll.
+@param ObjectClass: Die Objektklasse zu der eine Lagerfläche
+ermittelt werden soll.
 @param StorageAreaIndividual: Die ermittelte Lagerfläche.
 \end{verbatim}\label{func:apply3dfilter}
 
@@ -1497,7 +1500,8 @@ Beschreibung: Ermittelt zu einer Objektklasse die Lagerfläche.
 \begin{verbatim}
 storage_place(ObjectClass, [X, Y, Z], Width, Height)
 Beschreibung: Ermittelt zu einer Objektklasse den Lagerplatz.
-@param ObjectClass: Die Objektklasse zu der ein Lagerplatz ermittelt werden soll.
+@param ObjectClass: Die Objektklasse zu der
+ein Lagerplatz ermittelt werden soll.
 @param X: Die X- Koordinate des Lagerplatzes.
 @param Y: Die Y- Koordinate des Lagerplatzes.
 @param Z: Die Z- Koordinate des Lagerplatzes.
