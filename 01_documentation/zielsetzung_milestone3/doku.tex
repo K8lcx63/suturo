@@ -27,7 +27,7 @@ Die folgenden Verbesserungen wollen wir in den einzelnen Teilbereichen erreichen
 
 \subsection*{Reasoning}
 \begin{itemize}
-\item Der gesamt Ablauf des PR2 soll effizienter werden, hierfür soll der PR2 beide seine Gripper mit Objekten befüllen und diese transportieren um so die Zahl der Durchläufe, die benötigt wird um die Küchenzeile zu leeren, zu halbieren.
+\item Der gesamt Ablauf des PR2 soll effizienter werden, hierfür soll der PR2 beide Gripper mit Objekten befüllen und diese transportieren. Die Anzahl der Durchläufe, um die Küchenzeile zu leeren, lässt sich so halbieren.
 \item Mit dem Gewichtssensor soll der Gegendruck beim Abstellen des Objektes gemessen werden. Wir erhoffen uns dadurch besser entscheiden zu können, wann sich das Objekt stehend auf dem Tisch befindet und nicht unnötig Kraft gegen den Tisch einzusetzen.
 \item Es soll intelligent für jedes Objekt entschieden werden mit welcher Pose es sich am besten greifen lässt.
 \item Der PR2 soll entscheiden mit wie viel Kraft er ein Objekt greift (Kraft mit der die Gripper schließen) um beschädigte Objekte oder aus dem Gripper fallende Objekte zu vermeiden.
@@ -35,14 +35,14 @@ Die folgenden Verbesserungen wollen wir in den einzelnen Teilbereichen erreichen
 
 \subsection*{Klassifizieren von Objekten}
 \begin{itemize}
-\item Um das Netzwerk zu entlasten wird die Klassifizierung von Objekten in den Vision Node integriert. Die von \textit{Vision} ermittelten Features müssen dann nicht mehr an \textit{Planning} und \textit{Knowledge} weitergereicht werden.
+\item Um das Netzwerk zu entlasten wird die Klassifizierung von Objekten in den \textit{Vision Node} integriert. Die von \textit{Vision} ermittelten Features müssen dann nicht mehr an \textit{Planning} und \textit{Knowledge} weitergereicht werden.
 \end{itemize}
 
 \subsection*{Ablauf}
 \begin{itemize}
-\item Ist nicht mehr genug Platz am Abstellort vorhanden ist, wird der PR2 in Zukunft die bereits stehenden Objekte nach hinten schieben um so Platz für neue Objekte zu schaffen.
-\item Der PR2 soll sich generisch in der Welt bewegen können, so dass keine festen Punkte mehr zur Navigation benötigt werden. Insbesondere soll er generisch fahren könnten, wenn er die Objekte von der Küchenzeile zu den Storageplaces bringt.
-\item Die Motorik des PR2 soll verbessert werden. Insbesondere das Abstellen soll möglichst sanft funktionieren, so dass die Objekte nicht beschädigt werden und möglichst am definierten Punkt stehen.
+\item Ist nicht mehr genug Platz am Abstellort vorhanden, soll der PR2 in Zukunft die bereits dort stehenden Objekte nach hinten schieben, um so Platz für neue Objekte zu schaffen.
+\item Der PR2 soll sich generisch in der Welt bewegen können, so dass keine festen Punkte mehr zur Navigation benötigt werden. Insbesondere soll er generisch fahren, wenn er die Objekte von der Küchenzeile zu den \textit{Storageplaces} bringt.
+\item Die Motorik des PR2 soll verbessert werden. Insbesondere das Abstellen soll möglichst sanft vonstattengehen, so dass die Objekte nicht beschädigt werden und möglichst am definierten Punkt stehen.
 \end{itemize}
 
 \section{Zielsetzung des zweiten Meilensteins}
