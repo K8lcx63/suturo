@@ -22,14 +22,20 @@
 \newpage
 \section{Zielsetzung des dritten Meilensteins}
 \chapterauthor{Maximilian Bertram}
-Die Zielsetzung des dritten Meilensteins ist es den bisherigen Stand iterativ zu erweitern. Der Zielsetzung des letzten Meilensteins wird daher um folgende Punkte erweitert: \\
+Im dritten Meilenstein möchten wir zunächst die Ziele des zweiten Meilensteins vollständig erreichen. Dieser Stand soll dann noch hinsichtlich des Reasoning, der Klassifizierung und des Ablaufs optimiert werden.\\
+Die folgenden Verbesserungen wollen wir in den einzelnen Teilbereichen erreichen:
 
 \subsection*{Reasoning}
 \begin{itemize}
 \item Der gesamt Ablauf des PR2 soll effizienter werden, hierfür soll der PR2 beide seine Gripper mit Objekten befüllen und diese transportieren um so die Zahl der Durchläufe, die benötigt wird um die Küchenzeile zu leeren, zu halbieren.
-\item Mit dem Drucksensor soll der Druck beim Abstellen des Objektes gemessen werden, um so besser entscheiden zu können, wann sich das Objekt stehend auf dem Tisch befindet und nicht unnötig Kraft gegen den Tisch einzusetzen.
+\item Mit dem Gewichtssensor soll das verbleibende Gewicht beim Abstellen des Objektes gemessen werden, um besser entscheiden zu können, wann sich das Objekt stehend auf dem Tisch befindet und nicht unnötig Kraft gegen den Tisch einzusetzen.
 \item Es soll intelligent für jedes Objekt entschieden werden mit welcher Pose es sich am besten greifen lässt.
 \item Der PR2 soll entscheiden mit wie viel Kraft er ein Objekt greift (Kraft mit der die Gripper schließen) um beschädigte Objekte oder aus dem Gripper fallende Objekte zu vermeiden.
+\end{itemize}
+
+\subsection*{Klassifizieren von Objekten}
+\begin{itemize}
+\item Um das Netzwerk zu entlasten wird die Klassifizierung von Objekten in den Vision Node integriert. Die von \textit{Vision} ermittelten Features müssen dann nicht mehr an \textit{Planning} und \textit{Knowledge} weitergereicht werden.
 \end{itemize}
 
 \subsection*{Ablauf}
