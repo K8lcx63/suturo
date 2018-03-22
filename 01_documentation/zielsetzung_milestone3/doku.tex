@@ -1,0 +1,107 @@
+\documentclass{suturo}
+\usepackage{caption}
+\usepackage{titlesec}
+\begin{document}
+
+\newcommand\tab[1][1cm]{\hspace*{#1}}
+\begin{titlepage}
+	\centering
+	{\scshape\LARGE Sudo tidy up my room \glqq Suturo\grqq{} \par}
+	\vspace{1.5cm}
+	{\scshape\Large Meilenstein 3\par}
+	\vspace{1.5cm}
+	{\huge\bfseries Zielsetzung \par}
+	\vspace{2.5cm}
+	\vspace{2.5cm}
+	\vfill
+\end{titlepage}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\makeatletter
+\newcommand{\chapterauthor}[1]{%
+  {\parindent0pt\vspace*{-27pt}%
+  \linespread{0}\small\begin{flushright}von: #1\end{flushright}%
+  \par\nobreak\vspace*{0pt}}
+  \@afterheading%
+}
+\makeatother
+
+\tableofcontents
+\setcounter{tocdepth}{3}
+
+\newpage
+\section{Zielsetzung des dritten Meilensteins}
+\chapterauthor{Maximilian Bertram}
+Im dritten Meilenstein möchten wir zunächst die Ziele des zweiten Meilensteins vollständig erreichen. Dieser Stand soll dann noch hinsichtlich des Reasoning, der Klassifizierung und des Ablaufs optimiert werden.\\
+Die folgenden Verbesserungen wollen wir in den einzelnen Teilbereichen erreichen:
+
+\subsection{Reasoning}
+\begin{itemize}
+\item Der gesamt Ablauf des PR2 soll effizienter werden, hierfür soll der PR2 beide Gripper mit Objekten befüllen und diese transportieren. Die Anzahl der Durchläufe, um die Küchenzeile zu leeren, lässt sich so halbieren.
+\item Mit dem Gewichtssensor soll der Gegendruck beim Abstellen des Objektes gemessen werden. Wir erhoffen uns dadurch besser entscheiden zu können, wann sich das Objekt stehend auf dem Tisch befindet und nicht unnötig Kraft gegen den Tisch einzusetzen.
+\item Es soll intelligent für jedes Objekt entschieden werden mit welcher Pose es sich am besten greifen lässt.
+\item Der PR2 soll entscheiden mit wie viel Kraft er ein Objekt greift (Kraft mit der die Gripper schließen) um beschädigte Objekte oder aus dem Gripper fallende Objekte zu vermeiden.
+\end{itemize}
+
+\subsection{Klassifizieren von Objekten}
+\begin{itemize}
+\item Um das Netzwerk zu entlasten wird die Klassifizierung von Objekten in den \textit{Vision Node} integriert. Die von \textit{Vision} ermittelten Features müssen dann nicht mehr an \textit{Planning} und \textit{Knowledge} weitergereicht werden.
+\end{itemize}
+
+\subsection{Ablauf}
+\begin{itemize}
+\item Ist nicht mehr ausreichend Platz am Abstellort vorhanden, soll der PR2 in Zukunft die bereits dort stehenden Objekte nach hinten schieben, um so Platz für neue Objekte zu schaffen.
+\item Der PR2 soll sich generisch in der Welt bewegen können, so dass keine festen Punkte mehr zur Navigation benötigt werden. Insbesondere soll er generisch fahren, wenn er die Objekte von der Küchenzeile zu den \textit{Storageplaces} bringt.
+\item Die Motorik des PR2 soll verbessert werden. Insbesondere das Abstellen soll möglichst sanft vonstattengehen, so dass die Objekte nicht beschädigt werden und möglichst am definierten Punkt stehen.
+\end{itemize}
+
+\subsection{Evaluation \& Tests}
+\begin{itemize}
+\item Die korrekte Funktionalität des Motion Node soll mit Hilfe von \textit{Unittests} und \textit{rostests} validiert werden.
+\end{itemize}
+
+\newpage
+
+\section{Zielsetzung des zweiten Meilensteins}
+\chapterauthor{Kevin Störmer}
+\subsection{Prämisse}
+\begin{itemize}
+\item Der Pr2 befindet sich beliebig im Raum zwischen Küche und Küchenzeile.
+\item Auf der Küchenzeile befindet sich eine beliebige Anzahl Gegenstände aus einer festgelegten Menge. (Objektliste im Anhang)
+\item Es befinden sich keine Fremdkörper auf dem Boden der Küche, oder im Arbeitsbereich des Pr2.
+\end{itemize}
+
+
+\subsection{Ablauf}
+\begin{itemize}
+\item Der Pr2 fährt in Home-Position, dh. die Arme des Pr2 werden über den Kopf gefahren, und der Pr2 bewegt seine Basis in eine feste Position vor der Küchenzeile.
+\item Der Roboter fährt mit deinem Kopf eine Reihe festgelegter Punkte, anhand der Küchenzeile entlang.
+\item Nach jedem mit dem Kopf gefahrenen Schritt, versucht der Pr2 Objekte zu entdecken. 
+\item Entdeckte Objekte werden an die Wissenszentrale des Pr2 weitergeleitet und anhand eines Classifiers identifiziert.
+\item Die Wissenszentrale entscheidet, welche der gesehenen Objekt gegriffen werden sollen.
+\item Der Pr2 greift mit dem am besten geeigneten Gripper das gesuchte Objekt. 
+\item Befindet sich kein weiteres Objekt im Sichtfeld, bewegt der Pr2 seinen Kopf weiter. 
+\item Entdeckt der Pr2 nun ein weiteres Objekt, wird es mit dem freien Gripper gegriffen.
+\item Ist ein Objekt für den Pr2 nicht greifbar, versucht der Roboter durch geschicktes Umpositionieren der Basis das Objekt zu greifen.
+\item Sind beide Gripper des Pr2s gefüllt, wird in der Wissensbasis erfragt, an welchen Platz diese Objekte positioniert werden sollen.
+\item Der Roboter bewegt seine Basis so nah an die Ablegeposition eines der Objekte, wie möglich.
+\item Der Roboter bewegt seinen Gripper so, dass das Objekt an der vorgesehenen Stelle abgelegt wird.
+\item Ist ein Platz bereits belegt, wird das Objekt an eine freie Stelle innerhalb der Zone abgelegt.
+\item Nun wird das Objekt im anderen Gripper an seine vorgesehene Position gebracht
+\item Dies wird solang wiederholt bis die Küchenzeile leer ist.
+\item Sollte im laufe der Fahrt ein Gegenstand aus dem Gripper des Pr2 fallen, oder sollte der Roboter fälschlicherweise glauben beide seiner Gripper seien gefüllt , unterbricht der Pr2 seine Arbeit.
+\item Der Pr2 nimmt, nach Freigabe eines Menschen, seine Aufgabe wieder auf. Beginnt also damit, seine leeren Gripper zu füllen.
+\end{itemize}
+
+
+\subsection{Abschluss}
+\begin{itemize}
+\item Die Küchenzeile ist leer.
+\item Alle Objekte, welche ehemalig auf der Küchenzeile standen, befinden sich in den vorgesehenen Bereichen.
+\item Der Pr2 befindet sich in Home-Position
+\end{itemize}
+\end{document}
