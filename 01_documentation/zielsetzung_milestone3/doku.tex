@@ -30,13 +30,16 @@
 }
 \makeatother
 
+\tableofcontents
+\setcounter{tocdepth}{3}
+
 \newpage
 \section{Zielsetzung des dritten Meilensteins}
 \chapterauthor{Maximilian Bertram}
 Im dritten Meilenstein möchten wir zunächst die Ziele des zweiten Meilensteins vollständig erreichen. Dieser Stand soll dann noch hinsichtlich des Reasoning, der Klassifizierung und des Ablaufs optimiert werden.\\
 Die folgenden Verbesserungen wollen wir in den einzelnen Teilbereichen erreichen:
 
-\subsection*{Reasoning}
+\subsection{Reasoning}
 \begin{itemize}
 \item Der gesamt Ablauf des PR2 soll effizienter werden, hierfür soll der PR2 beide Gripper mit Objekten befüllen und diese transportieren. Die Anzahl der Durchläufe, um die Küchenzeile zu leeren, lässt sich so halbieren.
 \item Mit dem Gewichtssensor soll der Gegendruck beim Abstellen des Objektes gemessen werden. Wir erhoffen uns dadurch besser entscheiden zu können, wann sich das Objekt stehend auf dem Tisch befindet und nicht unnötig Kraft gegen den Tisch einzusetzen.
@@ -44,19 +47,19 @@ Die folgenden Verbesserungen wollen wir in den einzelnen Teilbereichen erreichen
 \item Der PR2 soll entscheiden mit wie viel Kraft er ein Objekt greift (Kraft mit der die Gripper schließen) um beschädigte Objekte oder aus dem Gripper fallende Objekte zu vermeiden.
 \end{itemize}
 
-\subsection*{Klassifizieren von Objekten}
+\subsection{Klassifizieren von Objekten}
 \begin{itemize}
 \item Um das Netzwerk zu entlasten wird die Klassifizierung von Objekten in den \textit{Vision Node} integriert. Die von \textit{Vision} ermittelten Features müssen dann nicht mehr an \textit{Planning} und \textit{Knowledge} weitergereicht werden.
 \end{itemize}
 
-\subsection*{Ablauf}
+\subsection{Ablauf}
 \begin{itemize}
 \item Ist nicht mehr ausreichend Platz am Abstellort vorhanden, soll der PR2 in Zukunft die bereits dort stehenden Objekte nach hinten schieben, um so Platz für neue Objekte zu schaffen.
 \item Der PR2 soll sich generisch in der Welt bewegen können, so dass keine festen Punkte mehr zur Navigation benötigt werden. Insbesondere soll er generisch fahren, wenn er die Objekte von der Küchenzeile zu den \textit{Storageplaces} bringt.
 \item Die Motorik des PR2 soll verbessert werden. Insbesondere das Abstellen soll möglichst sanft vonstattengehen, so dass die Objekte nicht beschädigt werden und möglichst am definierten Punkt stehen.
 \end{itemize}
 
-\subsection*{Evaluation \& Tests}
+\subsection{Evaluation \& Tests}
 \begin{itemize}
 \item Die korrekte Funktionalität des Motion Node soll mit Hilfe von \textit{Unittests} und \textit{rostests} validiert werden.
 \end{itemize}
