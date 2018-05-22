@@ -122,7 +122,7 @@ Die Gruppe Knowledge ist zuständig für das Klassifizieren und Abspeichern von 
 
 Das Ziel des Teams Motion ist es einen Actionserver zu implementieren, der verschiedene Aktionen für das Greifen, Abstellen und Umstoßen von Objekten anbietet. Jede der Aktionen soll mit jedem der vorhandenen \textit{Grippern} möglich sein, dabei soll der Roboter Objekte in seiner Umgebung berücksichtigen und seine Bewegungspfade so planen, dass keine Kollisionen entstehen. Ist eine kollisionsfreie Bewegung nicht möglich wird die Aktion mit einem entsprechenden Fehler abgebrochen.\\
 
-\section{Probleme}
+\section{Herausforderungen}
 \subsection{Routen können nicht richtig geplant werden}
 \chapterauthor{Vanessa Hassouna}
 Beim Fahren kollidiert der Roboter häufig mit Küchenobjekten und dreht sich in einem Winkel, der problematisch für seinen verletzbaren Rücken sein kann.
@@ -214,6 +214,11 @@ Zunächst wurde das Umstoßen eines Objektes einfach dadurch realisiert, dass de
 \chapterauthor{Roman Haak}
 Wir haben in einem \textit{branch} unseres Repositories angefangen zu \textit{refactoren}. In dem \textit{master-branch} wurde inzwischen weiterentwickelt. So kam es zu dem Problem, dass im master-branch stetig neue Funktionen hinzukamen, bzw. verändert wurden, welche dann in dem \textit{refactor-branch} wieder 'eingepflegt' werden mussten. Dadurch hat sich das \textit{refactoren} des Codes leider etwas in die Länge gezogen.\\
 \textbf{Lösung}: Werden neue Funktionen eingebaut, werden diese direkt in den refactorten branch eingebaut, sodass dadurch kein Zusatzaufwand entsteht. Absprache ist in jedem Fall sehr wichtig.
+
+\subsection{Tests & Validierung}
+\chapterauthor{Maximilian Bertram}
+Es gab nach größeren Änderungen am Code immer wieder Fehler der Funktionalität der Nodes, sowie build Probleme.
+\textbf{Lösung}: Es werden Tests für die Funktionen des Codes geschrieben, die beim \textit{Bauen} des Projektes durchlaufen und den Code auf die korrekte Funktionalität prüfen.
 
 \section*{Methodendokumentation Gruppe Planning}
 \section{Die Quellcode-Datei: main.lisp (planning\_main\_programm)}
