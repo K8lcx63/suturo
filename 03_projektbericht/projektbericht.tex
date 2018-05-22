@@ -50,12 +50,37 @@ Abschliessend finden sie eine Installationsanleitung im letzten Abschnitt unsere
 \newpage
 
 \section{Zielsetzung}
-\chapterauthor{Kevin Störmer}
-\subsection{Prämisse}
+
+
+\subsection{Allgemeine Zielsetzung}
+\chapterauthor{Maximilian Bertram}
+Unser Ziel war es zu erst eine Basis zu schaffen, auf der wir iterativ aufbauen konnten. Dazu war es nötig Nodes
+für die einzelnen Teilbereich, die für ein intelligentes Gesamtsystem notwendig sind zu schaffen. Hier zu zählt
+die Erkennung von Objekten, das kollisionsfreie Planen von Bewegungen, die Wissensrepräsentation über alle für den Gesamtablauf relevanten Fakten, sowie einem Plan, der den Ablauf skizziert und auf eventuelle Fehler reagieren kann. Das Ziel war es den Roboter intelligent Objekte aufräumen zu lassen und diese vom Arbeitsbereich der Küche auf vordefinierte Bereiche der anderen Küchenzeile zu stellen. Hier zu haben wir einige Prämissen getroffen, sowie Anforderungen entwickelt um den Gesamtablauf möglichst intelligent und reibungslos zu gestalten.
+
+\subsection{Prämissen}
+\chapterauthor{Kevin Störmer, Maximilian Bertram}
 \begin{itemize}
 \item Der Pr2 befindet sich beliebig im Raum zwischen Küche und Küchenzeile.
-\item Auf der Küchenzeile befindet sich eine beliebige Anzahl Gegenstände aus einer festgelegten Menge. (Objektliste im Anhang)
-\item Es befinden sich keine Fremdkörper auf dem Boden der Küche, oder im Arbeitsbereich des Pr2.
+\item Auf der Küchenzeile befindet sich eine beliebige Anzahl Gegenstände aus einer festgelegten Menge (Objektliste im Anhang.
+\item Es befinden sich keine Fremdkörper auf dem Boden der Küche, oder im Arbeitsbereich des PR2.
+\item Der Platz, an dem der PR2 die Objekte abstellen soll ist frei oder nur mit Objekten, die der PR2 kennt bestückt.
+\end{itemize}
+
+\subsection{Anforderungen}
+\chapterauthor{Maximilian Bertram}
+Um den Gesamtablauf besser zu definieren wurden folgende Anforderungen an den Ablauf gestellt:
+\begin{itemize}
+\item Es ist ein Set an Objekten bekannt, es spielt keine Rolle, welche der bekannten Objekte auf der Küchenzeile stehen.
+\item Der PR2 kennt verschiedene Greifposen und wählt die beste der ihm bekannten Greifposen aus, so dass es beim Greifen keine Kollisionen mit der Küche oder anderen Objekten gibt.
+\item Ist das Greifen mit obigen Einschränkungen nicht möglich, verändert der PR2 seine Position um das Objekt in einem anderen Winkel greifen zu können.
+\item Falls das Greifen immer noch nicht möglich ist, wird der Mensch um Hilfe gebeten um den Gesamtablauf nicht abbrechen zu müssen.
+\item Die Kraft, die zum Greifen genutzt wird, ist pro Objekt definierbar und so eingestellt, dass die Objekte nicht beschädigt werden.
+\item Es werden beide Gripper genutzt um den Gesamtablauf zu beschleunigen.
+\item Der PR2 ordnet die Objekte in verschiedene Kategorien um die Fahrwege zu optimieren.
+\item Es kommt zu keinen Kollisionen beim Fahren durch die Küche.
+\item Ist der Abstellplatz für das Objekt belegt, wird versucht das Objekt, welches sich auf dem gewünschten Abstellplatz befindet zu verschieben um so Platz für das neue Objekt zu schaffen.
+\item Die Klassifizierung der Objekte soll keinen unnötigen Traffic im Netzwerk erzeugen.
 \end{itemize}
 
 
