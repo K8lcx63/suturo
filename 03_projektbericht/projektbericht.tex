@@ -176,25 +176,34 @@ Um herauszufinden, welche Objekte als nächstes weggeräumt werden sollen muss k
 \textbf{Lösung}: Hier ist wieder der aktionsbasierte beliefstate das beste Mittel. Alle Objekte, welche nur wahrgenommen wurden und noch nicht gegriffen wurden müssen sich noch auf der Kücheninsel befinden. Mithilfe des storage\_place- Pakets werden dann die Objekte ermittelt, welche als nächstes weggeräumt werden sollen.
 
 \subsection{Kollisionsfreiheit beim Greifen eines Objektes}
-\chapterauthor{Maximilian Bertram, Roman Haak}
-Es war schwierig beim Greifen die Kollisionsfreiheit mit Objekten, die nicht zur \textit{Planningscene} gehören, zu garantieren.\\
-\textbf{Lösung}: Wir haben uns dazu entschieden, die Bewegung für das Greifen und Abstellen auf einer Höhe auszuführen, auf der sich kein anderes Objekt befindet. Zuerst wird der gewünschte \textit{Gripper} auf eine 'sichere' Höhe bewegt und dann über das Objekt gefahren. Dann wird der \textit{Gripper} geöffnet, richtig orientiert und nur auf einer Koordinatenachse (in negative Z-Richtung von '\textit{base\_footprint}') bewegt und so \textit{über} das Objekt geschoben.\\
+\chapterauthor{Roman Haak}
+Das kollisionsfreie Greifen von Objekten mit dem moveit-Framework lief leider nicht immer so, wie erwartet. Obwohl die Objekte der Küche und wahrgenommene Objekte korrekt zur Planningscene und Kollisionsmatrix hinzugefügt wurden, entstanden manchmal Kollisionen beim Ausführen von Bewegungen aus uns unersichtlichen Gründen. Die Kollision mit dem zu greifenden Objekt wurde von dem genutzten Bewegunsplaner immer erfolgreich verhindert. Die Kollision mit den Objekte der Küche jedoch nicht immer.\\
+\textbf{Lösung}: Leider haben wir keine Lösung für dieses Problem gefunden und gehen davon aus, dass es ein Problem des genutzten Frameworks ist. Bei dem moveit-Framework traten an einigen Stellen Probleme auf, zu denen es des öfteren auch im moveit-Repository erstellte 'issues' gab, die aber bislang noch nicht behoben wurden. So blieb es teilweise Glückssache, ob bei einer ausgeführten Bewegung ein kollisionsfreier Weg genutzt wurde oder nicht.
 
 \subsection{Unterschiede Simulation echter PR2}
 \chapterauthor{Roman Haak}
 Teilweise wurden Lösungen implementiert, die in der Simulation sehr gut funktionierten. Aber als sie dann auf dem echten Roboter ausprobiert wurden,
-funktionierten sie nicht mehr.\\
-\textbf{Lösung}: Leider gab es bei diesem Problem keine eindeutige Lösung. Lösungen mussten anders implementiert werden, bis sie auch auf dem echten Roboter funktionierten.
+funktionierten sie nicht mehr wie erwartet.\\
+\textbf{Lösung}: Das Problem lag im Endeffekt darin, dass die Basis des echten Roboters meist hochgefahren war, die Basis in der Simulation jedoch im initialen Zustand nicht. Abhilfe hat eine implementierte Klasse geschaffen, die die Basis des Roboters in der Simulation hochfährt.
 
 \subsection{'Deterministisches' Umstoßen eines Objektes}
 \chapterauthor{Roman Haak}
 Zunächst wurde das Umstoßen eines Objektes einfach dadurch realisiert, dass der Arm zu einem Punkt zwischen Roboter und Objekt gefahren wurde und danach zu dem Objekt. Dabei war es aber immer unterschiedlich, welchen Weg \textit{MoveIt} für die zweite Bewegung des Armes, also das Umstoßen, berechnet und ausgeführt hat.\\
 \textbf{Lösung}: Die Funktion wurde so umgeschrieben, dass erst zu einem 'Zwischenpunkt' gefahren wird. Dann wird von diesem 'Zwischenpunkt' bis zu dem Punkt, an den der Gripper als zweites gefahren werden soll, eine 10-Punkte-Trajektorie berechnet. Diese Trajektorie beschreibt dann den geraden Weg von dem 'Zwischenpunkt' zum 'Umstoßpunkt' am Objekt. Und somit ist sichergestellt, dass immer von vorne umgestoßen wird.
 
-\subsection{Synchronisierung \textit{refactoren} des Codes und Implementierung}
+\subsection{Verwalten der Planningscene}
 \chapterauthor{Roman Haak}
-Wir haben in einem \textit{branch} unseres Repositories angefangen zu \textit{refactoren}. In dem \textit{master-branch} wurde inzwischen weiterentwickelt. So kam es zu dem Problem, dass im master-branch stetig neue Funktionen hinzukamen, bzw. verändert wurden, welche dann in dem \textit{refactor-branch} wieder 'eingepflegt' werden mussten. Dadurch hat sich das \textit{refactoren} des Codes leider etwas in die Länge gezogen.\\
-\textbf{Lösung}: Werden neue Funktionen eingebaut, werden diese direkt in den refactorten branch eingebaut, sodass dadurch kein Zusatzaufwand entsteht. Absprache ist in jedem Fall sehr wichtig.
+Dadurch, dass das Greifen nun kollisionsfrei und nicht mehr 'aus sicherer Höhe' implementiert wurde, kam das Verwalten der Planningscene des moveit-Frameworks als neue Herausforderung dazu. Hier kam es hin und wieder zu Problemen, wie z.B., dass sobald ein Objekt gegriffen wurde und es an den Gripper angefügt wurde, die weitere Bewegung des Roboters durch den Bewegungsplaner verhindert wurde, weil sich der Startzustand in Kollision befand (durch eine Kollision des Objektes mit dem Tisch auf dem es stand).\\
+\textbf{Lösung}: Funktionen, die die Kollision zwischen gegriffenem Objekt und dem Tisch kurzzeitig erlaubten, bis das Objekt aus der Kollision 'herausgehoben' wurde, haben Abhilfe geschaffen.
+
+\subsection{Filtern und Selektieren der Greifposen}
+\chapterauthor{Roman Haak}
+Es wurden uns zum Greifen eines Objektes mehrere mögliche Greifposen zur Verfügung gestellt. Die Greifposen, die nicht erreichbar sind herauszufiltern und die übrig gebliebenen Greifposen nach bestimmten Kriterien zu ordnen, war eine neue Herausforderung.\\
+\textbf{Lösung}: Ob es kinematische Lösungen für das Erreichen einer bestimmten Pose gibt, wurde mit Hilfe eines Services berechnet. Das Ordnen der verbliebenen Posen wurde nach den zwei Kriterien 'Distanz des aktuellen und des gewünschten Zustandes' und 'Distanz zur nächsten Kollision des gewünschten Zustandes' realisiert.
+
+\subsection{Abstellen mit Drucksensor}
+\chapterauthor{Roman Haak}
+Das Abstellen mit dem Drucksensor funktionierte leider nicht, weil die gegriffenen Objekte aus dem Gripper rutschten und der Kraft-Drehmoment-Sensor des Roboters so keinen ausreichenden Druck detektierte. Leider fehlte am Ende die Zeit dieses Problem noch zu lösen.
 
 \subsection{Tests & Validierung}
 \chapterauthor{Maximilian Bertram}
