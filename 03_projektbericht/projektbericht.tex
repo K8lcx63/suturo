@@ -50,8 +50,6 @@ Abschliessend finden sie eine Installationsanleitung im letzten Abschnitt unsere
 \newpage
 
 \section{Zielsetzung}
-
-
 \subsection{Allgemeine Zielsetzung}
 \chapterauthor{Maximilian Bertram}
 Unser Ziel war es zu erst eine Basis zu schaffen, auf der wir iterativ aufbauen konnten. Dazu war es nötig Nodes
@@ -110,8 +108,9 @@ Um den Gesamtablauf besser zu definieren wurden folgende Anforderungen an den Ab
 \begin{itemize}
 \item Die Küchenzeile ist leer.
 \item Alle Objekte, welche ehemalig auf der Küchenzeile standen, befinden sich in den vorgesehenen Bereichen.
-\item Der Pr2 befindet sich in Home-Position
+\item Der Pr2 befindet sich in der Home-Position
 \end{itemize}
+
 \section{Aufgabenverteilung}
 \chapterauthor{Störmer, Hassouna, Bahr, Bertram, Haar}
 Die Aufgabe der Gruppe Planning, ist zum einen die Etablierung einer Kommunikationsschnittstelle zwischen den Funktionalitäten der anderen Gruppen, zum anderen die Entwicklung eigener Funktionalitäten. Die Gruppe möchte hier besonderen Wert auf die Navigation des Roboters in der Welt, Sicherheitskritischem Errorhandling und der Identifikation von Ablageorten für jedes bekannte Objekt. \\
@@ -120,7 +119,7 @@ Das Ziel der Gruppe Vision soll es sein, mehrere Objekte in einer wahrgenommenen
 
 Die Gruppe Knowledge ist zuständig für das Klassifizieren und Abspeichern von erkannten Gegenständen im Beliefstate, sowie das Bestimmen einer geeigneten GraspPose für jeden Gegenstand.\\
 
-Das Ziel des Teams Motion ist es einen Actionserver zu implementieren, der verschiedene Aktionen für das Greifen, Abstellen und Umstoßen von Objekten anbietet. Jede der Aktionen soll mit jedem der vorhandenen \textit{Grippern} möglich sein, dabei soll der Roboter Objekte in seiner Umgebung berücksichtigen und seine Bewegungspfade so planen, dass keine Kollisionen entstehen. Ist eine kollisionsfreie Bewegung nicht möglich wird die Aktion mit einem entsprechenden Fehler abgebrochen.\\
+Das Ziel des Teams Motion ist es einen Actionserver zu implementieren, der verschiedene Aktionen für das Greifen, Abstellen und Umstoßen von Objekten anbietet. Jede der Aktionen soll mit beiden \textit{Grippern} möglich sein, dabei soll der Roboter Objekte in seiner Umgebung berücksichtigen und seine Bewegungspfade so planen, dass beim Bewegen keine Kollisionen entstehen. Ist eine kollisionsfreie Bewegung nicht möglich wird die Aktion mit einem entsprechenden Fehler abgebrochen.\\
 
 \section{Herausforderungen}
 \subsection{Routen können nicht richtig geplant werden}
