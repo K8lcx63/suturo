@@ -4,7 +4,7 @@
 \usepackage{spverbatim}
 \usepackage{caption}
 \usepackage{graphicx}
-\usepackage{tabto}
+%\usepackage{tabto}
 \makeatletter
 \newcommand{\chapterauthor}[1]{%
   {\parindent0pt\vspace*{-27pt}%
@@ -2074,8 +2074,9 @@ Mit Hilfe der MovingCommandAction lassen sich alle von uns zur Verfügung gestel
 
 \subsubsection{Aufgerufene Actions}
 \chapterauthor{Maximilian Bertram}
-Wird eine GRASP oder PLACE Aktion ausgeführt, wird über eine \\
-\textit{motion\_msgs::Gripper}-Message an den Actionserver des Knotens '\textit{simple\_gripper}' der Gripper entsprechend geöffnet oder geschlossen.(Siehe !!!!-- TODO --!!!! Verweis auf Beschreibung zu unserer simple-Gripper-Node)\\
+\textbf{Gripper}\\
+Vom Typ '\textit{motion\_msgs/Gripper}': \\ \\
+Wird eine Greif- oder Abstellaktion ausgeführt, wird über eine Nachricht an den Actionserver des Knotens '\textit{simple\_gripper}' der Gripper entsprechend geöffnet oder geschlossen.\\(Siehe !!!!-- TODO --!!!! Verweis auf Beschreibung zu unserer simple-Gripper-Node ---!!!)\\
 
 
 \subsubsection{Aufgerufene Services}
@@ -2098,7 +2099,7 @@ string[] meshes
 string[] frames
 \end{verbatim}
 
-\subsubsection{Angebotene Topics}
+\subsubsection{Veröffentlichte Topics}
 \textbf{GraspAction und DropAction}
 \chapterauthor{Maximilian Bertram}
 
@@ -2207,70 +2208,58 @@ bool successful
 Die GripperAction-Message wird entsprechend geparsed und eine \\
  \textit{pr2\_ controllers\_ msgs::Pr2GripperCommandAction} erzeugt und gepublished. \\
 
+\newpage
+
 \subsection{Ablauf}
 \chapterauthor{Maximilian Bertram, Roman Haak}
-Der generelle Ablauf unseres Programms ist im Folgenden Ablaufdiagramm dargestellt.
+Der generelle Ablauf unseres Programms ist im Folgenden Ablaufdiagramm dargestellt.\\\\
 
 
 \begin{figure}[!htb]
-        \center{\includegraphics[width=\textwidth]
+        \center{\includegraphics[scale=0.5]
         {img/Ablaufdiagramm.png}
         \caption{\label{fig:motion_node_flow_chart} Ablaufdiagramm 'Motion'}}
 \end{figure}
 
 
-
+\newpage
 
 \subsection{Besonderheiten/Besondere Algorithmen}
-In diesem Abschnitt werden kurz erwähnenswerte Algorithmen beschrieben.
-Dabei wird zuerst der Algorithmus für das Umstoßen eines Objektes und anschließend der Algorithmus für das Greifen, bzw. Abstellen eines Objektes beschrieben.\\
+In diesem Abschnitt werden erwähnenswerte Algorithmen beschrieben.\\
+Dabei werden nacheinander mit Hilfe von Ablaufdiagrammen das Greifen, das Abstellen und das Schieben eines Objektes dargestellt.\\
 
-\subsubsection{Algorithmus für das Umstoßen eines Objektes}
+\subsubsection{Algorithmus für das Greifen eines Objektes}
 \chapterauthor{Roman Haak}
-Über die von unserem Teilsystem angebotene Action '\textit{moving}' kann das Kommando zum Umstoßen eines Objektes mit dem rechten oder mit dem linken \textit{Gripper} abgesetzt werden. Beim Aufruf wird dabei eine Pose übergeben, welche die Position des Mittelpunktes des umzustoßenden Objektes und die beabsichtigte Orientierung des \textit{Grippers} beinhaltet. \\Der Algorithmus, der das Umstoßen dann realisiert, arbeitet wie folgt:\\
 
-1. \textit{Berechne die Pose, zu der der Arm als erstes gefahren werden soll. Diese Pose wird folgendermaßen ermittelt:}\\
-\tab - die Orientierung wird von der beim Aufruf des Kommandos übergebenen Pose übernommen\\
-\tab - die Position ist die Position des Objektmittelpunkts, von der noch die Distanz\\ \tab   'DISTANCE\_BEFORE\_POKING' und 'GRIPPER\_LENGTH\_LEFT'\\ \tab bzw. 'GRIPPER\_LENGTH\_RIGHT' von der X-Koordinate im 'base\_footprint'-Frame \\ \tab abgezogen wird, wobei 'DISTANCE\_BEFORE\_POKING', 'GRIPPER\_LENGTH\_LEFT' \tab und 'GRIPPER\_LENGTH\_RIGHT' definierte Konstanten sind.\\
+\begin{figure}[!htb]
+        \center{\includegraphics[scale=0.3]
+        {img/grasping_flowchart.png}
+        \caption{\label{fig:motion_node_flow_chart_grasp} Ablaufdiagramm Greifen eines Objektes}}
+\end{figure}
 
-Der so errechnete Zielpunkt befindet sich also 'DISTANCE\_BEFORE\_POKING' plus 'GRIPPER\_LENGTH\_LEFT' bzw. 'GRIPPER\_LENGTH\_RIGHT' vor dem Objekt, aus Sicht des Roboters.\\
+\newpage
 
-2. \textit{Fahre mit dem rechten bzw. linken Arm zu der errechneten Pose.}\\
-
-3. \textit{Errechne nun einen Punkt, der etwas über dem Objektmittelpunkt liegt. Falls der linke Arm benutzt wird, verschiebe den Punkt zusätzlich noch um die Differenz zwischen 'GRIPPER\_LENGTH\_LEFT' und 'GRIPPER\_LENGTH\_RIGHT' hin zum Roboter. Damit soll erreicht werden, dass immer auf dieselbe Weise umgestoßen wird, egal ob der linke (längere) oder rechte Arm benutzt wird.}\\
-
-4. \textit{Berrechne eine 10-Punkte Trajektorie zwischen dem in Schritt 3 errechneten Punkt und der aktuellen Position des Armes.}\\
-\tab - Dies hat den Sinn, dass sichergestellt ist, dass das Objekt von\\ \tab vorne umgestoßen wird.\\
-
-5. \textit{Fahre den Arm entlang der gewünschten Trajektorie.}\\
-\tab - Das Objekt sollte nun umgestoßen worden sein.
-
-
-\subsubsection{Algorithmus für das Greifen/Abstellen eines Objektes}
+\subsubsection{Algorithmus für das Abstellen eines Objektes}
 \chapterauthor{Roman Haak}
-Über die von unserem Teilsystem angebotene Action '\textit{moving}' kann das Kommando zum Greifen/Abstellen eines Objektes mit dem rechten oder mit dem linken \textit{Gripper} abgesetzt werden. Beim Aufruf wird dabei eine Pose übergeben, welche die Position des Greifpunktes des zu greifenden Objektes, bzw. die Position, zu der der \textit{Gripper} hingefahren werden soll, um das Objekt abzustellen beinhaltet. Zusätzlich ist noch die beabsichtigte Orientierung des \textit{Grippers} angegeben. \\Der Algorithmus, der das Greifen bzw. Abstellen dann realisiert, ist dabei derselbe. Denn die beiden Aktionen Greifen und Abstellen unterscheiden sich prinzipiell nur daran, dass beim Greifen der \textit{Gripper} erst geöffnet und dann zum Greifen geschloßen wird und beim Abstellen der \textit{Gripper} zuerst bereits geschloßen ist und beim Abstellen des Objektes dann geöffnet werden muss. Zu dieser Unterscheidung reichen also Fallunterscheidungen innerhalb des Algorithmus. \\Der Algorithmus arbeitet dabei wie folgt:\\
 
-1. \textit{Hebe den gewünschten Arm auf die Höhe 'TABLE\_HEIGHT' + 'MAXIMUM\_OBJECT\_HEIGHT' + 'GRIPPER\_LENGTH\_LEFT' + 'DISTANCE\_BEFORE\_GRASPING'.}\\
-\tab - Da wir es in unserem aktuellen Stand des Gesamtsystems noch nicht geschafft haben, \\ \tab beim Greifen die Kollisionsfreiheit sicherzustellen, haben wir uns entschieden das Greifen\\ \tab aus einer Höhe zu realisieren, auf der sich sicher kein Objekt befindet.\\
+\begin{figure}[!htb]
+        \center{\includegraphics[scale=0.5]
+        {img/placing_flowchart.png}
+        \caption{\label{fig:motion_node_flow_chart_place} Ablaufdiagramm Abstellen eines Objektes}}
+\end{figure}
 
-2. \textit{Bewege den Arm auf dieser Höhe über das zu greifende/abzustellende Objekt.}\\
+\newpage
 
-3. \textit{Ändere die Orientierung des Armes zu der Orientierung, die in der übergebenen Pose beinhaltet ist.}\\
-\tab - Die übergebene Orientierung ist in dem aktuellen Stand die, bei der der \textit{Gripper} nach \\ \tab unten orientiert ist, damit das Objekt so gegriffen werden kann.\\
+\subsubsection{Algorithmus für das Schieben eines Objektes}
+\chapterauthor{Roman Haak}
 
-4. \textit{Hier findet eine Fallunterscheidung statt.}\\
-\tab - Soll ein Objekt gegriffen werden, öffne den \textit{Gripper}.\\
-\tab - Soll ein Objekt abgestellt werden, lass den \textit{Gripper}, wie er ist.\\
+\begin{figure}[!htb]
+        \center{\includegraphics[scale=0.5]
+        {img/poking_flowchart.png}
+        \caption{\label{fig:motion_node_flow_chart_poke} Ablaufdiagramm Schieben eines Objektes}}
+\end{figure}
 
-5. \textit{Fahre mit dem Arm zu der Position, welche in der Pose angegeben ist.}\\
-
-6. \textit{Hier findet wieder eine Fallunterscheidung statt.}\\
-\tab - Soll ein Objekt gegriffen werden, schließe den \textit{Gripper}.\\
-\tab - Soll ein Objekt abgestellt werden, öffne den \textit{Gripper}.\\
-
-7. \textit{Hebe den Arm wieder auf die am Anfang errechnete Höhe an, um das Objekt zu heben, bzw. "vom Objekt wegzufahren".}\\
-\tab - Das Objekt sollte nun entweder an dem gewünschten Platz stehen, bzw. sich in dem\\ \tab \textit{Gripper} des Roboters befinden.
-
+\newpage
 
 \subsection{Tests \& Evaluation}
 \chapterauthor{MB, RH}
