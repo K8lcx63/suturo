@@ -4,7 +4,7 @@
 \usepackage{spverbatim}
 \usepackage{caption}
 \usepackage{graphicx}
-
+\usepackage{tabto}
 \makeatletter
 \newcommand{\chapterauthor}[1]{%
   {\parindent0pt\vspace*{-27pt}%
@@ -205,7 +205,7 @@ Es wurden uns zum Greifen eines Objektes mehrere mögliche Greifposen zur Verfü
 \chapterauthor{Roman Haak}
 Das Abstellen mit dem Drucksensor funktionierte leider nicht, weil die gegriffenen Objekte aus dem Gripper rutschten und der Kraft-Drehmoment-Sensor des Roboters so keinen ausreichenden Druck detektierte. Leider fehlte am Ende die Zeit dieses Problem noch zu lösen.
 
-\subsection{Tests & Validierung}
+\subsection{Tests \& Validierung}
 \chapterauthor{Maximilian Bertram}
 Es gab nach größeren Änderungen am Code immer wieder Fehler der Funktionalität der Nodes, sowie build Probleme.
 Fehler in der Funktionalität sind leider erst beim testen auf dem Roboter aufgefallen, hier durch hatten wir eine extreme lange \textit{Time-To-Fail}, dies verlängerte die Entwicklungszeit unnötig und hinderte uns daran in dieser Zeit neue Features zu implementieren.
@@ -1765,7 +1765,7 @@ string object_label
 \chapterauthor{Roman Haak}
 
 Kann ein Objekt nicht durch den Roboter abgestellt werden, wird der Mensch um Hilfe gefragt. Hat der Mensch dem Roboter das Objekt aus dem Gripper genommen, werden Daten über den Vorgang über dieses Topic veröffentlicht. Diese werden genutzt, um das 'abgestellte' Objekt aus unserer Planningscene zu entfernen, weil es für die Bewegungsplanung ab diesem Zeitpunkt nicht mehr relevant ist.\\ Dabei besteht die Nachricht lediglich aus einem String, der den Namen des entfernten Objektes enthält.
-\end{verbatim}
+
 
 
 
