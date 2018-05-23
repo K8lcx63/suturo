@@ -254,51 +254,19 @@ Diese Node läuft solange,bis die komplette Main einmalig durchlaufen wurde.
 
 \subsection{Programmablauf}
 \chapterauthor{Vanessa Hassouna}
-\subsubsection{Schritt 1: Vorbereiten des Roboters}
-Der Pr2 begibt sich in die Homeposition, von der aus er Objekte sehen soll. 
-
-\subsubsection{Schritt 2: Suche nach Objekten}
-Jedes Mal, wenn der Kopf des Pr2 sich in einer bestimmten Position befindet, wird der Service /vision\_suturo/objects\_information aufgerufen. Die gegebenen Information werden wie folgt bearbeitet:
-
-\begin{itemize}
-\item Die gegebenen Informationen werden extrahiert.
-\item Die beiden Arrays \textbf{normal\_features} und \textbf{color\_features} werden zergliedert und mit Hilfe von \textbf{object\_amount} identifiziert und auf dem Parameterserver gespeichert.
-\item Die normal\_features und color\_features werden konkateniert auf dem Parameterserver als \textbf{featuresX} gespeichert, wobei X hier die Nummer des Objektes darstellt.
-\item Die \textbf{object\_pose} wird als Array global gespeichert.
-\end{itemize}
 
 
-
-\subsubsection{Schritt 3: Weitergabe} 
-
-\begin{itemize} 
-\item Jetzt werden die gesehenen Objekte an Knowledge weitergegeben, diese geben für das Objekt ein Label zurück.
-\item Mit Hilfe des erhaltenen Labels wird der Service '/vision\_suturo/objects\_pose' von Vision aufgerufen, der anhand von Objekt-Nummer und Label eine Pose zurück gibt.  
-\item Wenn die Pose übergeben wurde, wird diese auf das Topic von Knowledge gepublished, damit das gesehene Objekt in der Wissensbasis gespeichert wird.
-\end{itemize}
+\begin{figure}[!htb]
+        \center{\includegraphics[width=1.0\textwidth]
+        {img/vanessa_main.png}
+        \caption{} Main-Diagramm von Vanessa.lisp}
+\end{figure}
 
 
 
 
 
-\subsubsection{Schritt 4: Welches Objekt wird gegriffen}
-Es wird bei Knowledge erfragt welche Objekte gegriffen werden sollen, in dem der Service "knowledge\_msgs/ObjectsToPick" 
-aufgerufen wird. Als Antwort werden 2 Strings zurück gegeben.
-Mit der Funktion calculate-landing-zone-visualized() wird der Standpunkt, wohin das Objekt platziert werden soll, zurückgegeben. %X=HAUKES FUNKTION
-Des Weiteren wird noch abgefragt wie das Objekt gegriffen werden soll. Diese Information wird dann weiter an Motion gegeben.
-
-\subsubsection{Schritt 5: Hinfahren zum gegebenen Ort}
-Mit Hilfe des Punktes wird berechnet wo der Roboter hinfahren muss. 
- 
-\subsubsection{Schritt 6: Abstellen und weiter}
-Das Objekt wird abgestellt.
-Danach fährt der Pr2 wieder zu seiner Homeposition und sucht die nächsten Objekte.
-
-
-
-
-
-
+%müsste eigendlich wieder ausgelagert werden, kann von mir aus aber auch drin bleiben -v
 \subsubsection{find-Object(x z)}
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
@@ -356,7 +324,7 @@ wird aufgerufen.
 @return: Successfull oder Aborted
 \end{verbatim}
 
-
+%ausgelagert in planning_old
 \subsubsection{check-Points-Is-Equal (msg-one msg-two delta))}
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
@@ -387,21 +355,21 @@ planning\_knowledge)}
 \subsection{API}
 \chapterauthor{Vanessa Hassouna}
 \subsubsection{Serviceclients}
-1. 'svm\_classifier/classify' \\
-Gibt uns ein Label als String für ein Objekt zurück.\\
 
-2. 'beliefstate/objects\_to\_pick'\\
+1. 'beliefstate/objects\_to\_pick'\\
 Gibt uns zwei Strings zurück. Diese sind leer, wenn kein Objekt mehr gegriffen werden soll oder es kein Objekt mehr zum Greifen gibt.
 
-3. 'beliefstate/gripper\_empty'\\
+2. 'beliefstate/gripper\_empty'\\
 Wir können erfragen, welcher Gripper frei ist.\\
 
-4. 'kitchen\_mode\_service/get\_fixed\_kitchen\_objects'\\
+3. 'kitchen\_mode\_service/get\_fixed\_kitchen\_objects'\\
 
-5. 'storage\_place\_service/storage\_place'\\
+4. 'storage\_place\_service/storage\_place'\\
 
-6. 'knowledge\_grasp/knowledge\_grasp'\\
-%?
+5. 'knowledge\_grasp/knowledge\_grasp'\\
+
+6. 'beliefstate/objects\_attached\_to\_gripper\\
+
 \subsubsection{Topics}
 1. 'beliefstate/perceive\_action'\\
 Wenn ein Objekt wahrgenommen wurde, publishen wir diese Information.
@@ -544,20 +512,6 @@ x,y, und z werden als Koordinaten ausgehend von base_link behandelt.
 \end{verbatim}
 
 
-\subsubsection{move-Base-To-Point-Safe (x y z angle))
-}
-\chapterauthor{Vanessa Hassouna}
-\begin{verbatim}
-move-Base-To-Point-Safe (x y z angle)
-
-Beschreibung: Diese Methode lässt den Roboter an eine vordefinierte 
-Position fahren, bei der er sich ungehindert drehen kann.
-Danach fährt der Pr2 zu dem gewünschten Punkt.
-
-@param: x y z angle
-@return: Successfull oder Aborted
-\end{verbatim}
-
 
 \subsubsection{move-Base-To-\\
 Point (x y z angle)}
@@ -585,16 +539,6 @@ von uns vordefinierten Punkten, die als Homeposition dienen.
 \end{verbatim}
 
 
-\subsubsection{init-Robo-Moving ()}
-\chapterauthor{Vanessa Hassouna}
-\begin{verbatim}
-init-Robo-Moving ()
-
-Beschreibung: Diese Hilfsfunktion dient dazu,
-die Initialisierung für das Fahren in der Simulation zu übernehmen.
-
-@return: Successfull oder Aborted
-\end{verbatim}
 
 \subsubsection{init-Action-Client-Base ()}
 \chapterauthor{Vanessa Hassouna}
@@ -621,7 +565,6 @@ Beschreibung: Diese Hilfsfunktion dient dazu, den Action-Client zu erhalten.
 
 
 
-
 \section{Die Quellcode-Datei: external-logic.lisp (planning\_logic)}
 \subsection{Architekturbild}
 \chapterauthor{Vanessa Hassouna}
@@ -639,10 +582,9 @@ Beschreibung: Diese Hilfsfunktion dient dazu, den Action-Client zu erhalten.
 \subsubsection{Topics}
 1. 'joint\_states' \\
 Subscribed das Topic und speichert die Werte des Grippers.\\
- %vielleicht willst du hier was schreiben?
  
 2. 'robot\_pose' \\
-Subscribed das Topic und gibt uns die Position des Roboters.
+Subscribed das Topic und gibt uns die Position des Roboters zurück.
 \subsection{Beschreibung des Teilsystems}
 
 \subsubsection{\"Ubersicht}
@@ -676,6 +618,32 @@ Beschreibung: Published eine knowledge_msgs/PerceivedObject-msg
 @return: int amountOfListeners
 \end{verbatim}
 
+
+\subsubsection{ publish-Text (string)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+publish-Text (string)
+
+Beschreibung: Publish a text in RVIZ with a given string.
+
+@param:string
+\end{verbatim}
+
+
+\subsubsection{publish-Pose-JaMilch ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+publish-Pose-JaMilch ()
+
+Beschreibung: This function is only for the demo scenario purpose.
+Here a "JaMilch" is percieved and published to Team Knowledge also a new param
+will be created on the Ros Param Server.
+
+@param:string
+\end{verbatim}
+
+
+
 \subsubsection{catch-Transformation \\
 (transform-listener tf-point-stamped endFrame)}
 \chapterauthor{Vanessa Hassouna}
@@ -701,55 +669,107 @@ Beschreibung: Löst die Y-Koordinate einer GraspPose heraus.
 @return: float y
 \end{verbatim}
 
-%KOMMT NOCH(defun let-Robo-Try-To-Poke (point-for-motion number-for-arm)
-%KOMMT NOCH (defun try-To-Poke-Different-Location(point-for-motion number-for-arm)
 
-
-\subsubsection{should-Robo-Use-Left-Or-Right-Arm(pose amount \\
+\subsubsection{transformation-XYZ (x y z startFrame\\
 \&optional (endFrame '/base\_footprint'))}
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
-should-Robo-Use-Left-Or-Right-Arm (pose amount &optional
-(endFrame "/base_footprint"))
+transformation-XYZ (x y z startFrame &optional (endFrame "/base_footprint"))
 
-Beschreibung: Anhand der Y-Achse entscheidet der Roboter
-ob er den linken oder rechten Arm bewegen soll.
+Beschreibung: Transforms a point with standart ( 0 0 0 1) quaternion.
 
-@param: pose object-number &optional endFrame
-@return: 3 oder 2 (3 = links 2 = Rechts)
+@param: x y z startFrame &optional (endFrame "/base_footprint")
+@return: Liefert eine transformierte tf-pose-stamped
 \end{verbatim}
 
 
-\subsubsection{disassemble-Vision-Call (visionclouds)}
+\subsubsection{ transformation-Pose-Stamped \\
+(pose \&optional (endFrame '/base\_footprint')) }
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
-disassemble-Vision-Call (visionclouds)
+ transformation-Pose-Stamped (pose &optional (endFrame "/base_footprint")) 
 
-Beschreibung: Extrahiert alle Informationen aus der 
-Visioncloud und speichert normal_features, color_features, 
-object_amount und object_pose auf dem Parameterserver.
- 
-@param: visionclouds
-@return: object_pose
+Beschreibung: Transform a Pose-Stamped-msgs with an optional Frame,\\
+ default is base_footprint.
+
+@param: x y z startFrame &optional (endFrame '/base_footprint')
+@return: Liefert eine transformierte tf-pose-stamped
 \end{verbatim}
 
 
 
-\subsubsection{set-Params-Features \\
-(normal-s color-s normal-e color-e amount)}
+
+\subsubsection{make-Object-Pose-For-Handshake (label)}
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
-set-Params-Features (normal-s color-s normal-e color-e amount)
+make-Object-Pose-For-Handshake (label)
 
-Beschreibung: Eine Hilfsfunktion für die Funktion disassemble-Vision-Call, 
-um aus normal_features und color_features konkateniert ein features-X zu 
-erstellen. (Knowledge benötigt ein Array in dem zuerst color_features 
-vorkommen und direkt im Anschluss normal_features)
+Beschreibung: Making a msg from the point of an object for \\
+the handshake function.
 
-@param: normal-s color-s normal-e color-e amount
-@return: Nil
+@param: label
+@return: T oder Nil
 \end{verbatim}
 
+\subsubsection{ percieve-Objetcs ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+percieve-Objetcs ()
+
+Beschreibung: Calling vision_sutuo service to percieve objects,\\
+while looping for the array-total-size through all the percieved \\
+objects will be published and saved on to the Paramserver.
+Another param named counter is logging how many objects has been seen.
+
+@return: T oder Nil
+\end{verbatim}
+
+\subsubsection{ percieve-Objects-And-Search (label)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+ percieve-Objects-And-Search (label)
+
+Beschreibung: searching for the given object if its still there.
+
+@param: label
+@return: T oder Nil
+\end{verbatim}
+
+
+\subsubsection{get-Information-About-Object (label)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+get-Information-About-Object (label)
+
+Beschreibung: Transforming the point of the label to frame "map" return \\
+value is the transformed y value.
+
+@param: label
+@return: Transformed pose
+\end{verbatim}
+
+\subsubsection{save-Object (label object\_pose)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+save-Object (label object_pose)
+
+Beschreibung: The given object (label) will be set as a new param on the Paramserver
+, but keep in mind only the Point will be saved. The label will be the name of the param.
+
+@param: label object_pose
+@return: T oder Nil
+\end{verbatim}
+
+
+\subsubsection{init-Marker ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+init-Marker ()
+
+Beschreibung: Subscribed das Topic '/visualization_markers'.
+
+@return: geometry_msgs/Pose
+\end{verbatim}
 
 \subsubsection{init-pr2()}
 \chapterauthor{Vanessa Hassouna}
@@ -777,8 +797,8 @@ Beschreibung: Callback-Funktion für die Funktion init-pr2().
 \begin{verbatim}
 move-pr2 (x y z)
 
-Beschreibung: Ruft move-Base-To-Point-Safe mit angle-From-Pr2-Pose-To-Point auf.
-
+Beschreibung: Bewegt den Roboter zu einem Punkt, wenn dieser hinter\\
+dem Roboter liegt begiebt dieser sich erst in eine Safeposition.
 @param: x y z 
 @return: Successfull oder Aborted
 \end{verbatim}
@@ -800,8 +820,22 @@ ein Winkel resultiert der in dem Frame "map" funktioniert.
 \end{verbatim}
 
 
-\subsubsection{try-To-Poke-Different-Location\\
-(point-for-motion number-for-arm)}
+\subsubsection{should-Robo-Use-Left-Or-Right-Arm(pose amount \\
+\&optional (endFrame '/base\_footprint'))}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+should-Robo-Use-Left-Or-Right-Arm (pose amount &optional
+(endFrame "/base_footprint"))
+
+Beschreibung: Anhand der Y-Achse entscheidet der Roboter
+ob er den linken oder rechten Arm bewegen soll.
+
+@param: pose object-number &optional endFrame
+@return: 3 oder 2 (3 = links 2 = Rechts)
+\end{verbatim}
+
+\subsubsection{ try-To-Grab-Or-Place-Different-Location\\
+(x y z w label command)}
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
 try-To-Poke-Different-Location\\
@@ -810,12 +844,108 @@ try-To-Poke-Different-Location\\
 Beschreibung: Die Funktion lässt den Roboter 
 anhand vorgegebener Positionen seine Drehung sowie seine
 Position ändern, wenn er ein Objekt nicht erreichen kann.
+Achtung die X-, Y-, Z- und W-Werte müssen in dem Frame "map" angegeben werden.
+Der Roboter selber bewegt sich in dem Map base\_footprint.
 
-@param: point-for-motion number-for-arm
+@param: x, y, z, w, label, command
 @return: T oder Nil
 
 
 \end{verbatim}
+
+\subsubsection{  grab-Or-Place-Object (label x y angle arm-first \\
+arm-first-homeposi grab-string \&optional \\
+arm-second arm-second-homeposi)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim} 
+grab-Or-Place-Object (label x y angle arm-first 
+arm-first-homeposi grab-string &optional arm-second arm-second-homeposi)
+
+Beschreibung: Trying to grab or place, if the given grab-string
+ is equal to grab the pr2 will also try to grab it with another arm and different places.
+
+@param: label x y angle arm-first arm-first-homeposi grab-string &optiona\\
+arm-second arm-second-homeposi
+@return: T oder Nil
+\end{verbatim}
+
+
+
+\subsubsection{ trying-To-Grab (label x y angle arm-first arm-first-homeposi \\
+grab-string arm-second arm-second-homeposi)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim} 
+ trying-To-Grab (label x y angle arm-first arm-first-homeposi
+ grab-string arm-second arm-second-homeposi)
+
+Beschreibung: Calling grab-or-place-object, \\
+if the counter is bigger than 0 the pr2 wil first change the Position.
+
+@param: Label x y angle arm-first arm-first-homeposi \\
+grab-string arm-second arm-second-homeposi
+@return: T oder Nil
+\end{verbatim}
+
+\subsubsection{how-Many-Gripper ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim} 
+how-Many-Gripper ()
+
+Beschreibung: Looping through the emtpy-gripper server and\\
+setting the variable left and right to T(1) or nil (0).
+
+@return: T oder Nil
+\end{verbatim}
+
+
+\subsubsection{calculate-Object-And-Pr2-Distance (label)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim} 
+calculate-Object-And-Pr2-Distance (label)
+
+Beschreibung: Calculating the distance from the given\\
+object to 2 different locations.
+
+@param: label
+@return: T oder Nil
+\end{verbatim}
+
+
+\subsubsection{distance (xa ya xb yb)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+distance (xa ya xb yb)
+
+ Beschreibung:calctulating the distance between two 2d-vectors.
+
+@param: xa ya xb yb (vektor1 vektor2)
+@return: distance
+\end{verbatim}
+
+
+\subsubsection{set-First-Posi ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+set-First-Posi ()
+
+ Beschreibung: Setting global x y and angle to the first position.
+
+@return: T oder Nil
+\end{verbatim}
+
+
+\subsubsection{set-Second-Posi ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+set-Second-Posi ()
+
+ Beschreibung: Setting global x y and angle to the second position.
+
+@return: T oder Nil
+\end{verbatim}
+
+
+
 
 
 \subsubsection{init-gripper-states ()}
@@ -989,6 +1119,50 @@ Fehlernachricht wird 'vison error:' ausgegeben.
 \end{verbatim}
 
 Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' funktionieren analog zu 'vison-error' und definieren weitere Fehler, für andere Bereiche.
+
+
+\section{Die Quellcode-Datei: old.lisp (planning\_old)}
+
+\subsubsection{disassemble-Vision-Call (visionclouds)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+disassemble-Vision-Call (visionclouds)
+
+Beschreibung: Extrahiert alle Informationen aus der 
+Visioncloud und speichert normal_features, color_features, 
+object_amount und object_pose auf dem Parameterserver.
+ 
+@param: visionclouds
+@return: object_pose
+\end{verbatim}
+
+
+
+\subsubsection{set-Params-Features \\
+(normal-s color-s normal-e color-e amount)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+set-Params-Features (normal-s color-s normal-e color-e amount)
+
+Beschreibung: Eine Hilfsfunktion für die Funktion disassemble-Vision-Call, 
+um aus normal_features und color_features konkateniert ein features-X zu 
+erstellen. (Knowledge benötigt ein Array in dem zuerst color_features 
+vorkommen und direkt im Anschluss normal_features)
+
+@param: normal-s color-s normal-e color-e amount
+@return: Nil
+\end{verbatim}
+
+
+
+
+
+
+
+
+
+
+
 
 
 \newpage
