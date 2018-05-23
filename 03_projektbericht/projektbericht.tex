@@ -2079,7 +2079,7 @@ Mit Hilfe der MovingCommandAction lassen sich alle von uns zur Verfügung gestel
 \chapterauthor{Maximilian Bertram}
 \textbf{Gripper}\\
 Vom Typ '\textit{motion\_msgs/Gripper}': \\ \\
-Wird eine Greif- oder Abstellaktion ausgeführt, wird über eine Nachricht an den Actionserver des Knotens '\textit{simple\_gripper}' der Gripper entsprechend geöffnet oder geschlossen.\\(Siehe !!!!-- TODO --!!!! Verweis auf Beschreibung zu unserer simple-Gripper-Node ---!!!)\\
+Wird eine Greif- oder Abstellaktion ausgeführt, wird über eine Nachricht an den Actionserver des Knotens '\textit{simple\_gripper}' der Gripper entsprechend geöffnet oder geschlossen.\\(Siehe Kapitel \ref{interfaceSimpleGripper} für Beschreibung des Actionservers.)\\
 
 
 \subsubsection{Aufgerufene Services}
@@ -2196,6 +2196,7 @@ Kann ein Objekt nicht durch den Roboter abgestellt werden, wird der Mensch um Hi
 \subsubsection{Angebotene Actions}
 Vom Typ '\textit{motion\_msgs/Gripper}': \\
 \subsubsection*{Definition der GripperAction}
+\label{interfaceSimpleGripper}
 \begin{verbatim}
 #goal definition
 #position of the space between the grippers in meters
