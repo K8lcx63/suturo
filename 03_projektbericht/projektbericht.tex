@@ -1998,7 +1998,7 @@ Das Bewegen der anderen, zum Erfüllen der Zielsetzung benötigten Teile des Rob
 von der Gruppe '\textit{Motion}' übernommen.\\
 Dabei realisiert \textit{Motion} im Wesentlichen das Greifen, Abstellen und Verschieben von Objekten.
 
-In \textit{Abbildung 1} Bild sieht man die Architektur des Teilsystems der Gruppe '\textit{Motion}'. Dabei gibt es zwei Knoten '\textit{suturo\_motion\_main}' und '\textit{simple\_gripper}'.\\
+In Abbildung \ref{fig:motion_node} sieht man die Architektur des Teilsystems der Gruppe '\textit{Motion}'. Dabei gibt es zwei Knoten '\textit{suturo\_motion\_main}' und '\textit{simple\_gripper}'.\\
 
 \begin{figure}[!htb]
         \center{\includegraphics[width=\textwidth]
@@ -2006,10 +2006,12 @@ In \textit{Abbildung 1} Bild sieht man die Architektur des Teilsystems der Grupp
         \caption{\label{fig:motion_node} Architektur des Teilsystems der Gruppe 'Motion'}}
 \end{figure}
 
-Der Knoten '\textit{suturo\_motion\_main}' ist für das Verarbeiten eingehender Kommandos zum Bewegen der Arme bzw. eines Endeffektors zuständig. Dabei gibt es Kommandos für das Fahren der Arme in eine initiale Position oder eine Position, welche nach dem Greifen eines Objektes eingenommen wird. Zusätzlich Kommandos für das Bewegen der Arme zu einer bestimmten Pose oder das Umstubsen, Greifen oder Abstellen eines bestimmten Objektes mit einer gegebenen Pose.\\
+Der Knoten '\textit{suturo\_motion\_main}' ist für das Verarbeiten eingehender Kommandos zum Bewegen der Arme bzw. der Endeffektoren zuständig. Dabei gibt es Kommandos für das Fahren der Arme in vordefinierte Posen oder in eine übergebene Pose. Zusätzlich können komplexere Operationen, wie das Schieben, Greifen oder Abstellen eines bestimmten Objektes ausgeführt werden.\\
 Der Knoten '\textit{simple\_gripper}' wird dabei benutzt, um das Öffnen und Schließen des Endeffektors zu realisieren. Dieser Knoten wird von dem Hauptknoten '\textit{suturo\_motion\_main}' über einen Actionserver aufgerufen.\\
 
 Im Folgenden werden die \textit{Schnittstellen}, der \textit{Ablauf} des Teilsystems und besonders \textit{hervorzuhebende} \textit{Algorithmen} beschrieben.\\
+
+\newpage
 
 \subsection{Schnittstellen - 'suturo\_motion\_main'}
 \subsubsection{Angebotene Actions}
@@ -2052,7 +2054,8 @@ float64 FORCE_DEFAULT=35
 # When the object gets placed somewhere, another message is published.
 # These messages get published for knowledge's beliefstate, so that
 # the knowledge component knows when an object get's grasped/placed somewhere.
-# Additionaly required for some planningscene operations when grasping, placing or poking an object.
+# Additionaly required for some planningscene operations when grasping, 
+# placing or poking an object.
 string grasped_object_label
 
 ---
@@ -2084,9 +2087,12 @@ Wird eine Greif- oder Abstellaktion ausgeführt, wird über eine Nachricht an de
 \textbf{GetFixedKitchenObjects}\\
 Vom Typ '\textit{knowledge\_msgs/GetFixedKitchenObjects}': \\ 
 \begin{verbatim}
-#This servicedefinition is for transfering the shape of the objects in the iai_kitchen.
-#The Motion-component calls this service for getting the shape of the kitchen-objects for it's planningscene.
-#The Knowledge-component reads these shapes out of an owl-file and returns the data described below.
+#This servicedefinition is for transfering the shape of the objects in
+#the iai_kitchen.
+#The Motion-component calls this service for getting the shape of the 
+#kitchen-objects for it's planningscene.
+#The Knowledge-component reads these shapes out of an owl-file and 
+#returns the data described below.
 
 ---
 
@@ -2094,7 +2100,8 @@ Vom Typ '\textit{knowledge\_msgs/GetFixedKitchenObjects}': \\
 string[] names
 #The path to the meshes of the kitchen objects
 string[] meshes
-#The names of the tf-frames of the kitchen objects. The kitchen object meshes get spawned
+#The names of the tf-frames of the kitchen objects. The kitchen object 
+#meshes get spawned
 #at the position of the corresponding frames.
 string[] frames
 \end{verbatim}
@@ -2134,6 +2141,8 @@ uint8 LEFT_GRIPPER = 1
 uint8 RIGHT_GRIPPER = 2
 \end{verbatim}
 
+\newpage
+
 \subsubsection{Benutzte Topics}
 \textbf{PerceivedObjectBoundingBox}
 \chapterauthor{Roman Haak}
@@ -2160,10 +2169,11 @@ Kann ein Objekt nicht durch den Roboter gegriffen werden, wird der Mensch um Hil
 
 \subsubsection*{Definition der SpawnAttachedObject.msg}
 \begin{verbatim}
-#A message which get's published by knowledge when an object is put in the gripper of the robot by a human.
-#In which gripper the object was put can be determined by looking in the header's frame id. If the pose is given in 
-#the 'l_gripper_tool_frame', the object is in the left gripper and in the right gripper, if 'r_gripper_tool_frame' is
-#the referenced frame.
+#A message which get's published by knowledge when an object is put
+#in the gripper of the robot by a human.
+#In which gripper the object was put can be determined by looking 
+#in the header's frame id. The pose is given in the corresponding
+#grippers tip frame.
 
 #The pose of the object. 
 geometry_msgs/PoseStamped pose

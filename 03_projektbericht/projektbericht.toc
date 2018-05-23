@@ -236,74 +236,75 @@
 \contentsline {subsubsection}{\numberline {18.3.3}Schritt 3: Ermitteln des Lagerplatzes}{54}
 \contentsline {subsubsection}{\numberline {18.3.4}Schritt 4: Zur\IeC {\"u}ckgeben der Antwort}{54}
 \contentsline {subsection}{\numberline {18.4}\IeC {\"U}bersicht des Teilsystems}{55}
-\contentsline {subsection}{\numberline {18.5}Schnittstellen - 'suturo\_motion\_main'}{55}
-\contentsline {subsubsection}{\numberline {18.5.1}Angebotene Actions}{55}
+\contentsline {subsection}{\numberline {18.5}Schnittstellen - 'suturo\_motion\_main'}{56}
+\contentsline {subsubsection}{\numberline {18.5.1}Angebotene Actions}{56}
 \contentsline {subsubsection}{\numberline {18.5.2}Aufgerufene Actions}{57}
 \contentsline {subsubsection}{\numberline {18.5.3}Aufgerufene Services}{57}
-\contentsline {subsubsection}{\numberline {18.5.4}Angebotene Topics}{57}
-\contentsline {subsubsection}{\numberline {18.5.5}Benutzte Topics}{58}
-\contentsline {subsection}{\numberline {18.6}Schnittstellen - 'simple\_gripper'}{59}
-\contentsline {subsubsection}{\numberline {18.6.1}Angebotene Actions}{59}
-\contentsline {subsubsection}{\numberline {18.6.2}Aufgerufene Actions}{59}
-\contentsline {subsection}{\numberline {18.7}Ablauf}{60}
-\contentsline {subsection}{\numberline {18.8}Besonderheiten/Besondere Algorithmen}{60}
-\contentsline {subsubsection}{\numberline {18.8.1}Algorithmus f\IeC {\"u}r das Umsto\IeC {\ss }en eines Objektes}{60}
-\contentsline {subsubsection}{\numberline {18.8.2}Algorithmus f\IeC {\"u}r das Greifen/Abstellen eines Objektes}{61}
-\contentsline {subsection}{\numberline {18.9}Tests \& Evaluation}{61}
-\contentsline {section}{\numberline {19}Vision}{63}
-\contentsline {subsection}{\numberline {19.1}Vorwort Vision}{63}
-\contentsline {subsection}{\numberline {19.2}\IeC {\"U}berblick Vision}{63}
-\contentsline {subsection}{\numberline {19.3}Beschreibung des Teilsystems}{63}
-\contentsline {subsubsection}{\numberline {19.3.1}Abk\IeC {\"u}rzungen durch short\_types.h}{63}
-\contentsline {subsubsection}{\numberline {19.3.2}preprocessCloud}{63}
-\contentsline {subsubsection}{\numberline {19.3.3}segmentPlanes}{64}
-\contentsline {subsubsection}{\numberline {19.3.4}findCluster}{64}
-\contentsline {subsubsection}{\numberline {19.3.5}findCenterGazebo}{64}
-\contentsline {subsubsection}{\numberline {19.3.6}findPoses}{64}
-\contentsline {subsubsection}{\numberline {19.3.7}estimateSurfaceNormals}{64}
-\contentsline {subsubsection}{\numberline {19.3.8}apply3DFilter}{64}
-\contentsline {subsubsection}{\numberline {19.3.9}estimatePlaneIndices}{65}
-\contentsline {subsubsection}{\numberline {19.3.10}extractCluster}{65}
-\contentsline {subsubsection}{\numberline {19.3.11}mlsFilter}{65}
-\contentsline {subsubsection}{\numberline {19.3.12}voxelGridFilter}{65}
-\contentsline {subsubsection}{\numberline {19.3.13}outlierRemoval}{65}
-\contentsline {subsubsection}{\numberline {19.3.14}cvfhRecognition}{66}
-\contentsline {subsubsection}{\numberline {19.3.15}euclideanClusterExtraction}{66}
-\contentsline {subsubsection}{\numberline {19.3.16}SACInitialAlignment}{66}
-\contentsline {subsubsection}{\numberline {19.3.17}iterativeClosestPoint}{66}
-\contentsline {subsubsection}{\numberline {19.3.18}produceColorHist}{66}
-\contentsline {subsubsection}{\numberline {19.3.19}getAllFeatures}{67}
-\contentsline {subsubsection}{\numberline {19.3.20}getCVFHFeatures}{67}
-\contentsline {subsubsection}{\numberline {19.3.21}getColorFeatures}{67}
-\contentsline {subsubsection}{\numberline {19.3.22}getTargetByLabel}{67}
-\contentsline {subsubsection}{\numberline {19.3.23}sub\_kinect\_callback}{67}
-\contentsline {subsubsection}{\numberline {19.3.24}start\_node}{68}
-\contentsline {subsubsection}{\numberline {19.3.25}getObjects}{68}
-\contentsline {subsubsection}{\numberline {19.3.26}extractAbovePlane}{68}
-\contentsline {subsubsection}{\numberline {19.3.27}transform}{68}
-\contentsline {subsection}{\numberline {19.4}Schnittstellen}{69}
-\contentsline {subsubsection}{\numberline {19.4.1}Service Server /vision\_suturo/objects\_information}{69}
-\contentsline {subsubsection}{\numberline {19.4.2}Service Server /vision\_suturo/objects\_poses}{69}
-\contentsline {subsubsection}{\numberline {19.4.3}Subscriber REAL\_KINECT\_POINTS\_FRAME}{70}
-\contentsline {subsection}{\numberline {19.5}Programmablauf}{70}
-\contentsline {subsubsection}{\numberline {19.5.1}Schritt 1: Erkennen der Punktwolke}{70}
-\contentsline {subsubsection}{\numberline {19.5.2}Schritt 2: Service-Aufruf \textit {/vision\_suturo/objects\_information}}{70}
-\contentsline {subsubsection}{\numberline {19.5.3}Schritt 3: Vorbereiten auf die Extraktion}{70}
-\contentsline {subsubsection}{\numberline {19.5.4}Schritt 3b: Ausweichen auf Simulationsdaten}{71}
-\contentsline {subsubsection}{\numberline {19.5.5}Schritt 4: Cluster Extraktion}{71}
-\contentsline {subsubsection}{\numberline {19.5.6}Schritt 5: Berechnen von Features und Posen}{71}
-\contentsline {subsubsection}{\numberline {19.5.7}Schritt 6: Bef\IeC {\"u}llen der MSG}{71}
-\contentsline {subsubsection}{\numberline {19.5.8}Schritt 7: Ermitteln der Pose}{71}
-\contentsline {section}{\numberline {20}Nutzungsbeschreibung}{72}
-\contentsline {subsection}{\numberline {20.1}Installation und Ausf\IeC {\"u}hrung von Planning}{72}
-\contentsline {subsubsection}{\numberline {20.1.1}Installation}{72}
-\contentsline {subsubsection}{\numberline {20.1.2}Ausf\IeC {\"u}hrung}{72}
-\contentsline {subsection}{\numberline {20.2}Installation und Ausf\IeC {\"u}hrung von Motion}{72}
-\contentsline {subsubsection}{\numberline {20.2.1}Installationsanleitung}{72}
-\contentsline {subsubsection}{\numberline {20.2.2}Starten der Nodes}{73}
-\contentsline {subsection}{\numberline {20.3}Installation und Ausf\IeC {\"u}hrung von Vision}{73}
-\contentsline {subsubsection}{\numberline {20.3.1}Installation (mit gazebo)}{73}
-\contentsline {subsubsection}{\numberline {20.3.2}Ausf\"uhrung}{74}
-\contentsline {subsection}{\numberline {20.4}Installation und Ausf\IeC {\"u}hrung von Knowledge}{75}
-\contentsline {subsubsection}{\numberline {20.4.1}Installation}{75}
-\contentsline {subsubsection}{\numberline {20.4.2}Ausf\IeC {\"u}hrung}{75}
+\contentsline {subsubsection}{\numberline {18.5.4}Ver\IeC {\"o}ffentlichte Topics}{58}
+\contentsline {subsubsection}{\numberline {18.5.5}Benutzte Topics}{59}
+\contentsline {subsection}{\numberline {18.6}Schnittstellen - 'simple\_gripper'}{60}
+\contentsline {subsubsection}{\numberline {18.6.1}Angebotene Actions}{60}
+\contentsline {subsubsection}{\numberline {18.6.2}Aufgerufene Actions}{60}
+\contentsline {subsection}{\numberline {18.7}Ablauf}{61}
+\contentsline {subsection}{\numberline {18.8}Besonderheiten/Besondere Algorithmen}{62}
+\contentsline {subsubsection}{\numberline {18.8.1}Algorithmus f\IeC {\"u}r das Greifen eines Objektes}{62}
+\contentsline {subsubsection}{\numberline {18.8.2}Algorithmus f\IeC {\"u}r das Abstellen eines Objektes}{63}
+\contentsline {subsubsection}{\numberline {18.8.3}Algorithmus f\IeC {\"u}r das Schieben eines Objektes}{64}
+\contentsline {subsection}{\numberline {18.9}Tests \& Evaluation}{65}
+\contentsline {section}{\numberline {19}Vision}{66}
+\contentsline {subsection}{\numberline {19.1}Vorwort Vision}{66}
+\contentsline {subsection}{\numberline {19.2}\IeC {\"U}berblick Vision}{66}
+\contentsline {subsection}{\numberline {19.3}Beschreibung des Teilsystems}{66}
+\contentsline {subsubsection}{\numberline {19.3.1}Abk\IeC {\"u}rzungen durch short\_types.h}{66}
+\contentsline {subsubsection}{\numberline {19.3.2}preprocessCloud}{67}
+\contentsline {subsubsection}{\numberline {19.3.3}segmentPlanes}{67}
+\contentsline {subsubsection}{\numberline {19.3.4}findCluster}{67}
+\contentsline {subsubsection}{\numberline {19.3.5}findCenterGazebo}{67}
+\contentsline {subsubsection}{\numberline {19.3.6}findPoses}{67}
+\contentsline {subsubsection}{\numberline {19.3.7}estimateSurfaceNormals}{68}
+\contentsline {subsubsection}{\numberline {19.3.8}apply3DFilter}{68}
+\contentsline {subsubsection}{\numberline {19.3.9}estimatePlaneIndices}{68}
+\contentsline {subsubsection}{\numberline {19.3.10}extractCluster}{68}
+\contentsline {subsubsection}{\numberline {19.3.11}mlsFilter}{68}
+\contentsline {subsubsection}{\numberline {19.3.12}voxelGridFilter}{69}
+\contentsline {subsubsection}{\numberline {19.3.13}outlierRemoval}{69}
+\contentsline {subsubsection}{\numberline {19.3.14}cvfhRecognition}{69}
+\contentsline {subsubsection}{\numberline {19.3.15}euclideanClusterExtraction}{69}
+\contentsline {subsubsection}{\numberline {19.3.16}SACInitialAlignment}{69}
+\contentsline {subsubsection}{\numberline {19.3.17}iterativeClosestPoint}{70}
+\contentsline {subsubsection}{\numberline {19.3.18}produceColorHist}{70}
+\contentsline {subsubsection}{\numberline {19.3.19}getAllFeatures}{70}
+\contentsline {subsubsection}{\numberline {19.3.20}getCVFHFeatures}{70}
+\contentsline {subsubsection}{\numberline {19.3.21}getColorFeatures}{70}
+\contentsline {subsubsection}{\numberline {19.3.22}getTargetByLabel}{71}
+\contentsline {subsubsection}{\numberline {19.3.23}sub\_kinect\_callback}{71}
+\contentsline {subsubsection}{\numberline {19.3.24}start\_node}{71}
+\contentsline {subsubsection}{\numberline {19.3.25}getObjects}{71}
+\contentsline {subsubsection}{\numberline {19.3.26}extractAbovePlane}{71}
+\contentsline {subsubsection}{\numberline {19.3.27}transform}{72}
+\contentsline {subsection}{\numberline {19.4}Schnittstellen}{72}
+\contentsline {subsubsection}{\numberline {19.4.1}Service Server /vision\_suturo/objects\_information}{72}
+\contentsline {subsubsection}{\numberline {19.4.2}Service Server /vision\_suturo/objects\_poses}{73}
+\contentsline {subsubsection}{\numberline {19.4.3}Subscriber REAL\_KINECT\_POINTS\_FRAME}{73}
+\contentsline {subsection}{\numberline {19.5}Programmablauf}{73}
+\contentsline {subsubsection}{\numberline {19.5.1}Schritt 1: Erkennen der Punktwolke}{73}
+\contentsline {subsubsection}{\numberline {19.5.2}Schritt 2: Service-Aufruf \textit {/vision\_suturo/objects\_information}}{74}
+\contentsline {subsubsection}{\numberline {19.5.3}Schritt 3: Vorbereiten auf die Extraktion}{74}
+\contentsline {subsubsection}{\numberline {19.5.4}Schritt 3b: Ausweichen auf Simulationsdaten}{74}
+\contentsline {subsubsection}{\numberline {19.5.5}Schritt 4: Cluster Extraktion}{74}
+\contentsline {subsubsection}{\numberline {19.5.6}Schritt 5: Berechnen von Features und Posen}{74}
+\contentsline {subsubsection}{\numberline {19.5.7}Schritt 6: Bef\IeC {\"u}llen der MSG}{74}
+\contentsline {subsubsection}{\numberline {19.5.8}Schritt 7: Ermitteln der Pose}{75}
+\contentsline {section}{\numberline {20}Nutzungsbeschreibung}{76}
+\contentsline {subsection}{\numberline {20.1}Installation und Ausf\IeC {\"u}hrung von Planning}{76}
+\contentsline {subsubsection}{\numberline {20.1.1}Installation}{76}
+\contentsline {subsubsection}{\numberline {20.1.2}Ausf\IeC {\"u}hrung}{76}
+\contentsline {subsection}{\numberline {20.2}Installation und Ausf\IeC {\"u}hrung von Motion}{76}
+\contentsline {subsubsection}{\numberline {20.2.1}Installationsanleitung}{76}
+\contentsline {subsubsection}{\numberline {20.2.2}Starten der Nodes}{77}
+\contentsline {subsection}{\numberline {20.3}Installation und Ausf\IeC {\"u}hrung von Vision}{77}
+\contentsline {subsubsection}{\numberline {20.3.1}Installation (mit gazebo)}{77}
+\contentsline {subsubsection}{\numberline {20.3.2}Ausf\"uhrung}{78}
+\contentsline {subsection}{\numberline {20.4}Installation und Ausf\IeC {\"u}hrung von Knowledge}{79}
+\contentsline {subsubsection}{\numberline {20.4.1}Installation}{79}
+\contentsline {subsubsection}{\numberline {20.4.2}Ausf\IeC {\"u}hrung}{79}
