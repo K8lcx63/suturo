@@ -93,15 +93,43 @@ Um den Gesamtablauf besser zu definieren wurden folgende Anforderungen an den Ab
 \item Der Pr2 befindet sich in der Home-Position
 \end{itemize}
 
-\section{Aufgabenverteilung}
-\chapterauthor{Störmer, Hassouna, Bahr, Bertram, Haar}
-Die Aufgabe der Gruppe Planning, ist zum einen die Etablierung einer Kommunikationsschnittstelle zwischen den Funktionalitäten der anderen Gruppen, zum anderen die Entwicklung eigener Funktionalitäten. Die Gruppe möchte hier besonderen Wert auf die Navigation des Roboters in der Welt, Sicherheitskritischem Errorhandling und der Identifikation von Ablageorten für jedes bekannte Objekt. \\
 
-Das Ziel der Gruppe Vision soll es sein, mehrere Objekte in einer wahrgenommenen Szene zu erkennen und zu segmentieren .Diese Objekte sollen extrahiert werden und die Posen der einzelnen Cluster zur weiteren Verarbeitung übergeben werden. \\
+\section{Textuelle Beschreibung des Gesamtsystems}
+\subsection{Das Gesamtsystem}
+\chapterauthor{Haak}
+\textbf{-----------------!!!!TODO ARCHITEKTURBILD EINFÜGEN!!!!-----------------------}\\ \\
+Im Gesamtsystem gibt es im Wesentlichen die vier Komponenten \textit{Knowledge}, \textit{Planning}, \textit{Motion} und \textit{Vision}, die zwecks Erfüllung der gesetzten Ziele miteinander interagieren.\\
+Im Folgenden werden zunächst die Funktionen der einzelnen Komponenten näher erläutert und anschließend darauf eingegangen,
+wie sich die Interaktion zwischen den einzelnen Komponenten gestaltet.
+\subsection{Die Untergruppen}
+\chapterauthor{Störmer, Hassouna, Bahr, Bertram, Haar, Haak}
+Die Aufgabe der Gruppe \textit{Planning}, ist zum einen die Etablierung einer Kommunikationsschnittstelle zwischen den Funktionalitäten der anderen Gruppen, zum anderen die Entwicklung eigener Funktionalitäten. Die Gruppe möchte hier besonderen Wert auf die Navigation des Roboters in der Welt, Sicherheitskritischem Errorhandling und der Identifikation von Ablageorten für jedes bekannte Objekt. \\
 
-Die Gruppe Knowledge ist zuständig für das Klassifizieren und Abspeichern von erkannten Gegenständen im Beliefstate, sowie das Bestimmen einer geeigneten GraspPose für jeden Gegenstand.\\
+Das Ziel der Gruppe \textit{Vision} soll es sein, mehrere Objekte in einer wahrgenommenen Szene zu erkennen und zu segmentieren. Diese Objekte sollen extrahiert werden und die Posen der einzelnen Cluster zur weiteren Verarbeitung übergeben werden. \\
 
-Das Ziel des Teams Motion ist es einen Actionserver zu implementieren, der verschiedene Aktionen für das Greifen, Abstellen und Umstoßen von Objekten anbietet. Jede der Aktionen soll mit beiden \textit{Grippern} möglich sein, dabei soll der Roboter Objekte in seiner Umgebung berücksichtigen und seine Bewegungspfade so planen, dass beim Bewegen keine Kollisionen entstehen. Ist eine kollisionsfreie Bewegung nicht möglich wird die Aktion mit einem entsprechenden Fehler abgebrochen.\\
+Die Gruppe \textit{Knowledge} ist zuständig für das Klassifizieren und Abspeichern von erkannten Gegenständen im Beliefstate, sowie das Bestimmen einer geeigneten Greifpose für jeden Gegenstand.\\
+
+Das Ziel des Teams \textit{Motion} ist es, Aktionen für das Greifen, Abstellen und Verschieben von Objekten anzubieten. Jede der Aktionen soll mit beiden \textit{Grippern} möglich sein. Der Roboter soll Objekte in seiner Umgebung berücksichtigen und seine Bewegungspfade so planen, dass beim Bewegen keine Kollisionen entstehen.\\
+\subsection{Interaktion der Untergruppen}
+\chapterauthor{Haak}
+Um die Interaktion der Untergruppen schematisch darzustellen, wird hier einmal grob der Programmablauf skizziert.\\
+
+Zunächst wird die (\textit{main}) der \textit{Planning}-Komponente gestartet, welche den gesamten Programmablauf steuert. Die Kommunikation der Untergruppen beschränkt sich also bis auf wenige Ausnahmen darauf, dass die Komponente \textit{Planning} mit den anderen Komponenten interagiert, die Komponenten \textit{Knowledge}, \textit{Motion} und \textit{Vision} untereinander jedoch nicht.\\
+
+Die \textit{main} ruft als erstes die \textit{Vision}-Komponente auf, um Objekte
+der Umgebung wahrzunehmen, wobei die Objekte, die zum Bestand der Küche gehören dabei aussegmentiert werden. Die wahrgenommenen Objekte werden
+klassifiziert und deren Pose bestimmt. \\
+Im zweiten Schritt wird \textit{Knowledge} über die wahrgenommenen Objekte informiert und entscheidet, welche der Objekte mit welchem Arm gegriffen werden sollen.\\
+Nun wird \textit{Motion} veranlasst, die beiden Objekte zu greifen.\\
+Wurden Objekte gegriffen, wird der Roboter durch \textit{Planning} zu einer anderen Position gefahren, von wo aus die Objekte abgestellt werden sollen.\\
+Durch \textit{Planning} und \textit{Knowledge} wird dann ermittelt, welches Objekte an welcher Stelle genau abgestellt werden soll.\\
+An \textit{Motion} wird das Kommando abgesetzt, die beiden Objekte an den beiden berechneten Positionen abzustellen.\\
+Wurden die Objekte erfolgreich abgestellt, wird der Roboter von \textit{Planning} zurück zu der ursprünglichen Position bewegt, um denselben Ablauf erneut
+zu starten, falls noch weitere Objekte vorhanden sind.\\
+Sollte der Sonderfall eintreten, dass ein Objekt nicht gegriffen oder abgestellt werden kann, veranlasst \textit{Planning} den Roboter, einen Menschen um
+Hilfe beim Greifen bzw. Abstellen des Objektes zu bitten.\\
+
+
 
 \section{Herausforderungen}
 \subsection{Routen können nicht richtig geplant werden}
