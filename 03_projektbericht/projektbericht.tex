@@ -1119,7 +1119,244 @@ Fehlernachricht wird 'vison error:' ausgegeben.
 \end{verbatim}
 
 Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' funktionieren analog zu 'vison-error' und definieren weitere Fehler, für andere Bereiche.
+\newpage
+\section{Die Quellcode-Datei: interaction.lisp (planning\_interaction)}
+\subsection{Architekturbild}
+\chapterauthor{Kevin Störmer}
 
+
+
+\begin{figure}[!htb]
+	\center{\includegraphics[width=1.0\textwidth]
+		{img/diag_planning_interaction.png}
+		\caption{} Architektur der Quellcode-Datei planning-interaction.lisp}
+\end{figure}
+
+
+
+\subsection{API}
+\chapterauthor{Kevin Störmmer}
+\subsubsection{Topics}
+1. '/planning\_interaction/wrench\_force\_magnitude' \\
+Published auf dem Topic den Betrag des Kraeftevektors des Handgelenkes.\\ \\
+2. '/planning\_interaction/wrench\_handshake\_detection' \\
+Published auf dem Topic eine 15 wenn Ein Handshake wahrgenommen wird.\\ \\
+3. '/beliefstate/grasp\_object\_human\_interaction' \\
+Published für Knowledge eine Message, wenn ein Objekt von einem Menschen in den Gripper gelegt wird.\\ \\
+4. '/beliefstate/delete\_object\_human\_interaction' \\
+Published für Knowledge eine Message wenn ein Objekt aus dem Gripper des Pr2 entfernt wird.\\ \\
+5. '/ft/l\_gripper\_motor\_zeroed' \\
+Subscribed auf den Topic um die kalibrierten Handgelenkswerte des Pr2 zu bekommen.\\ \\
+\subsubsection{Actionserver}
+1. '/sound\_play' \\
+Nutzt die Soundplay Action, des Sound\_Play Paketes um dem Pr2 eine Stimme zu synthetisieren.\\ \\
+\subsection{Beschreibung des Teilsystems}
+\subsubsection{\"Ubersicht}
+\chapterauthor{Kevin Störmer}
+Die Datei interaction.lisp ist zuständig dafür, Situationen aufzuloesen, die nicht vom Code abgedeckt werden, oder die für den Roboter physikalisch nicht möglich sind.\\
+Dabei soll vorallem auf Sicherheit der Interaktion und Einfachheit in der Implementation geachtet werden. Fokus liegt dabei auch auf dem Feststellen von Handshake-Actions sodass dem Menschen eine Interaktionsschnittstelle gegeben wird.\\
+Wie in der folgenden Illustration gezeigt, werden Sicherheitskritische Aspekte dabei von den oeffentlichen Funktionen getrennt.
+\begin{figure}[!htb]
+	\center{\includegraphics[width=1.0\textwidth]
+		{img/ablauf_planning_interaction.png}
+		\caption{} Ablauf der Initialisierung}
+\end{figure}
+
+\subsubsection{init-interaction()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+init-interaction()
+Beschreibung: Initialisiert das Paket. Startet alle Subkomponenten, 
+und teilt dem Nutzer mit falls Abhängigkeiten fehlen.
+@return true wenn richtig initalisiert
+\end{verbatim}
+
+\subsubsection{ask-human-to-move-object()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+ask-human-to-move-object()
+Beschreibung: Fehlerfallabdeckung für den Fall das der Pr2 ein Objekt
+nicht greifen kann. Pr2 zeigt dann auf das Objekt, und ruft 
+einen Menschen zu Hilfe.
+Dieser kann dann das Objekt in den Gripper des Pr2 legen 
+und ihm die Hand schütteln. Der Roboter nimmt dann seine Arbeit 
+wieder auf.
+@param pose label force moving command statement1 statement2
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{ask-human-to-take-object ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+ask-human-to-take-object ()
+Beschreibung: Fehlerfallabdeckung für den Fall das der Pr2 ein Objekt 
+nicht ablegen kann. Der Pr2 fährt dann an einen Ort an dem er gut 
+mit dem Menschen interagieren kann. Dort streckt er seine Arme aus 
+und verweist auf den Gripper in dem das Objekt steckt, 
+welches er loswerden möchte. \\
+Nach einem Händeschütteln, wird das Objekt freigegeben 
+und als abgelegt behandelt. Der PR2 nimmt dann seine Arbeit wieder auf.
+@param label moving-command
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{check-gripper()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+check-gripper()
+Beschreibung: Anpassbare Funktion für beliebige Fehlerfälle. Es kann 
+eine Funktion übergeben werden, welche dann in einer sicheren 
+Umgebung aufgerufen wird. Nebenbei werden die beiden Gripper gecheckt, 
+sodass nichts aus dem Gripper fallen kann währenddessen. Wenn kein 
+Fehlschlag passiert, läuft die mitgegebene Funktion normal durch.
+@param errormsg func args r l)
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{decide-gripper()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+decide-gripper()
+Beschreibung: Da Motion merkwürdige Magic-Numbers für ihre Actions verwendet, 
+wird diese Funktion gebraucht um von der Einen auf die Andere schliessen zu 
+können.
+@param moving-command
+@return magic-number für die Gripper-Action
+\end{verbatim}
+
+\subsubsection{drive-to-human ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+drive-to-human ()
+Beschreibung: Fährt zu Ort für menschliche Interaction an der Iai Holz-Küche.
+@param -
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{say ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+say ()
+Beschreibung: Nutzt das sound\_play Paket um einen String in 
+gesprochene Sprache zu synthetisieren und auf dem Pr2 auszugeben.
+@param message
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{wait-for-handshake ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+wait-for-handshake ()
+Beschreibung: Anpassbare Funktion zur Konfiguration eigener Fehlerfälle. 
+Pr2 führt stoppt seine Aufgabe, und gibt mitgegebene Errormessage aus. 
+Danach wartet er auf einen Handshake und führt dann die mitgegebene 
+Funktion aus.
+@param func args errormsg
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{build-pointing-pose ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+build-pointing-pose ()
+Beschreibung: Baut die Pointing-Pose aus den einzelnen Berechnungen 
+zusammen. Diese Pose wird gebraucht um auf ein Objekt zu zeigen.
+@param pose
+@return Pose die auf das Objekt zeigt
+\end{verbatim}
+
+\subsubsection{get-pointing-pose ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+get-pointing-pose ()
+Beschreibung: Baut die Pointing-Pose zusammen, ohne Quaternion. 
+Verarbeitet die Daten aus 'get-vektor-pr2-reachable' 
+(beschrieben nachfolgend). 
+@param pose
+@return Pointing-Pose ohne Quaternion
+\end{verbatim}
+
+\subsubsection{get-vektor-pr2-reachable ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+get-vektor-pr2-reachable ()
+Beschreibung: Rechnet in Abhängigkeit von Arm und Gegebenem 
+Vektor den nähesten Punkt aus den der Pr2 erreichen kann
+@param vektor
+@return erreichbarer Punkt
+\end{verbatim}
+
+\subsubsection{calculate-pointing-quaternion ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+calculate-pointing-quaternion ()
+Beschreibung: Berechnet aus einer gegebenen Object-Pose das 
+Quaternion was benötigt wird um auf ein Objekt zu zeigen. 
+@param object-pos
+@return quaternion, welches zum pointen gebraucht wird
+\end{verbatim}
+
+\subsubsection{get-directional-vector ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+get-directional-vector ()
+Beschreibung: Berechnet aus 2 Punkten im Raum den Richtungsvektor in Richtung 
+des 2ten Punktes.
+@param Vektor1 Vektor2
+@return Richtungsvektor
+\end{verbatim}
+
+\subsubsection{vectors-to-matrix ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+vectors-to-matrix ()
+Beschreibung: Baut und berechnet aus 3 Punkten oder Vektoren im Raum eine 
+Transformationsmatrix.
+@param Vektor-x Vector-y Vector-z
+@return 3x3 Tansformationsmatrix
+\end{verbatim}
+
+\newpage
+
+\subsubsection{calculate-wrench-magnitude ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+calculate-wrench-magnitude ()
+Beschreibung: Berechnet Betrag der Wrench-Force-Daten und published sie. 
+Ausserdem wird immer genau dann auf dem Handshake-detection gepublished, 
+wenn ein Handschlag festgestellt wird. (Callback-Funktion)
+@param msg
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\begin{figure}[!htb]
+	\center{\includegraphics[width=1.0\textwidth]
+		{img/detection_planning_interaction.png}
+		\caption{} Detection eines Handshakes, wie in calculate-wrench-magnitude}
+\end{figure}
+
+
+\subsubsection{put-object-in-hand ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+put-object-in-hand ()
+Beschreibung: Simple Methode um Knowledge mitzuteilen, wenn ein Objekt 
+in den Gripper gelegt wird.
+@param gripper label
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{drop-object-in-hand ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+drop-object-in-hand ()
+Beschreibung: Simple Methode um Knowledge mitzuteilen, wenn ein Objekt 
+aus dem Gripper gelegt wird.
+@param label
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\newpage
 
 \section{Die Quellcode-Datei: old.lisp (planning\_old)}
 
