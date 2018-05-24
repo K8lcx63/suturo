@@ -865,20 +865,26 @@ Publiziert Marker zur Visualisierung von Landezonen.
 \subsection{Beschreibung des Teilsystems}
 \subsubsection{\"Ubersicht}
 \chapterauthor{Hauke Tietjen}
-Die Datei 'objects' aus dem Paket 'planning\_objects' dient dazu, aus den von Knowledge vorgegebenen Ablageorten für Objekte, Punkte zu bestimmen, die geeignet sind um Objekte auf ihnen abzustellen. Dabei werden Platzmangel, Kollision und das Herunterfallen von Objekten berücksichtigt. Zusätzlich lassen sich die finalen Positionen in Rviz visualisieren.
+Die Datei 'objects' aus dem Paket 'planning\_objects' dient dazu, aus den von Knowledge vorgegebenen Ablageorten für Objekte, Punkte zu bestimmen, die geeignet sind um Objekte auf ihnen abzustellen. Dabei werden Platzmangel und die Kollision von Objekten berücksichtigt. Zusätzlich lassen sich die finalen Positionen in Rviz visualisieren. Außerdem können Objekte nach hinten verschoben werden um Platz für neue zu schaffen.
 
 \subsubsection{calculate-landing-zone()}
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
 calculate-landing-zone()
 
-Beschreibung: Die Funktion fragt Knowledge an welchen Ablageort das Objekt gehört und
-verkleinert ihn. Dadurch soll das Platzieren von Objekten auf Tischkanten
-verhindert werden. Danach wird die Funktion fill-landing-zone-horizontally
-aufgerufen, die eine Pose zurück gibt. Außerdem wird Knowledge nach der 
-Z-Achse und Orientierung gefragt, wo das Objekt gegriffen werden soll. 
-Das wird in den Frame '/map' transformiert und die X- und Y-Achse
-werden mit den neuen Werten aus fill-landing-zone-horizontally überschrieben.
+Beschreibung: Zuerst wird überprüft ob der Parameter 'object' korrekt 
+geschrieben wurde. Falls nicht wird ein Fehler ausgegeben. 
+Die globale variable '*current-object-lable*' wird mit dem Parameter 
+'object' befüllt. Die Funktion fragt Knowledge an welchen Ablageort 
+das Objekt gehört und verkleinert ihn. Dadurch soll das Platzieren von 
+Objekten auf Tischkanten und Wänden verhindert werden. Danach wird die 
+Funktion fill-landing-zone-horizontally aufgerufen, die eine Pose 
+zurück gibt. Die X- und Y-Koordinaten dieser Pose werden an Knowledge, 
+mit einer weiteren Message welche die Grippernummer enthält,
+ weitergegeben. Knowledge gibt dann eine entsprechende Greifpose für 
+ das Objekt zurück. Die Pose wird mit dem String der die Kapazität 
+des storage place beschreibt in eine Liste geschrieben und diese
+zurückgegeben.
 
 @param object
 @return Gibt die Pose eines Grippers in /map zurück um ein Objekt abzustellen

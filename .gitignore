@@ -8,3 +8,7 @@ cmake-build-debug
 *.log
 *.pdf
 *.synctex.gz
+
+03_projektbericht/projektbericht\.toc
+
+03_projektbericht/projektbericht\.tex\.bak
