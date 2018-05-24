@@ -2629,6 +2629,53 @@ Beschreibung: Transformiert eine Punktwolke in einen anderen frame.
 @return Transformierte Punktwolke
 \end{verbatim}\label{func:transform}
 
+\subsection*{classifier}
+\chapterauthor {Alexander Link (Doku \& Code)}
+
+\subsubsection{train}
+\begin{verbatim}
+bool classifier::train(std::string directory, bool update)
+Beschreibung: Trainiert der Klassifizierer unter Verwendung von .csv-Dateien,
+die sich in den Unterordnern des gegebenen Pfades befinden. Jeder Unterordner
+sollte nach dem jeweiligen Label benannt sein.
+@param directory: Der Pfad, der Unterordner mit .csv-Dateien enthält
+@param update: True lässt den Klassifizierer neu trainieren. False führt dazu,
+dass er Daten eines vorhergegangenen Trainings lädt.
+@return True wenn erfolgreich, ansonsten false.
+\end{verbatim}\label{func:train}
+
+\subsubsection{classify}
+\begin{verbatim}
+std::string classifier::classify(std::vector<uint64_t> color_features,
+std::vector<float> cvfh_features)
+Beschreibung: Klassifiziert eine einzelne Punktwolke anhand ihrer Features.
+classifier::train() muss zuerst erfolgreich aufgerufen worden sein.
+@param color_features: Errechnet durch produceColorHist()
+@param cvfh_features: Errechnet durch cvfhRecognition()
+@return Das Label des klassifizierten Objekts. War die Klassifizierung
+nicht erfolgreich, wird ein leerer String zurückgegeben.
+\end{verbatim}\label{func:classify}
+
+\subsubsection{has\_suffix}
+\begin{verbatim}
+bool classifier::has_suffix(std::string s, std::string suffix)
+Beschreibung: Entscheidet, ob ein String einen suffix enthält.
+@param s: String
+@param suffix: String, der im String s enthalten sein soll
+@return true, wenn s in suffix enthalten ist. Ansonsten false.
+\end{verbatim}\label{func:hassuffix}
+
+\subsubsection{read\_from\_file}
+\begin{verbatim}
+std::vector<float> classifier::read_from_file(std::string full_path, 
+std::vector<float> parsedCsv)
+Beschreibung: Extrahiert Features aus einer .csv-Datei
+@param full_path: Pfad zur .csv-Datei
+@param parsedCsv: Float-Vektor, an die die Features angehängt werden
+@return parsedCsv + neue floats aus .csv-Datei
+\end{verbatim}\label{func:readfromfile}
+
+
 \subsection*{saving}
 \chapterauthor{Alexander Link (Doku), Beide (Code)}
 Hilfsfunktionen zum Speichern von Punktwolken als .PCD-Dateien.
@@ -2650,6 +2697,7 @@ void savePointCloud(pcl::PointCloud<pcl::PointXYZ>::Ptr objects,
                     pcl::PointCloud<pcl::PointXYZ>::Ptr kinect,
                     pcl::PointCloud<pcl::Normal>::Ptr normals);
 \end{verbatim}
+
 
 \subsection*{viewer}
 \chapterauthor{Alexander Link (Doku), Tammo Wübbena (Code)}
