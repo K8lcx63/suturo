@@ -4,7 +4,7 @@
 \usepackage{spverbatim}
 \usepackage{caption}
 \usepackage{graphicx}
-\usepackage{tabto}
+%\usepackage{tabto}
 \makeatletter
 \newcommand{\chapterauthor}[1]{%
   {\parindent0pt\vspace*{-27pt}%
@@ -93,15 +93,43 @@ Um den Gesamtablauf besser zu definieren wurden folgende Anforderungen an den Ab
 \item Der Pr2 befindet sich in der Home-Position
 \end{itemize}
 
-\section{Aufgabenverteilung}
-\chapterauthor{Störmer, Hassouna, Bahr, Bertram, Haar}
-Die Aufgabe der Gruppe Planning, ist zum einen die Etablierung einer Kommunikationsschnittstelle zwischen den Funktionalitäten der anderen Gruppen, zum anderen die Entwicklung eigener Funktionalitäten. Die Gruppe möchte hier besonderen Wert auf die Navigation des Roboters in der Welt, Sicherheitskritischem Errorhandling und der Identifikation von Ablageorten für jedes bekannte Objekt. \\
 
-Das Ziel der Gruppe Vision soll es sein, mehrere Objekte in einer wahrgenommenen Szene zu erkennen und zu segmentieren .Diese Objekte sollen extrahiert werden und die Posen der einzelnen Cluster zur weiteren Verarbeitung übergeben werden. \\
+\section{Textuelle Beschreibung des Gesamtsystems}
+\subsection{Das Gesamtsystem}
+\chapterauthor{Haak}
+\textbf{-----------------!!!!TODO ARCHITEKTURBILD EINFÜGEN!!!!-----------------------}\\ \\
+Im Gesamtsystem gibt es im Wesentlichen die vier Komponenten \textit{Knowledge}, \textit{Planning}, \textit{Motion} und \textit{Vision}, die zwecks Erfüllung der gesetzten Ziele miteinander interagieren.\\
+Im Folgenden werden zunächst die Funktionen der einzelnen Komponenten näher erläutert und anschließend darauf eingegangen,
+wie sich die Interaktion zwischen den einzelnen Komponenten gestaltet.
+\subsection{Die Untergruppen}
+\chapterauthor{Störmer, Hassouna, Bahr, Bertram, Haar, Haak}
+Die Aufgabe der Gruppe \textit{Planning}, ist zum einen die Etablierung einer Kommunikationsschnittstelle zwischen den Funktionalitäten der anderen Gruppen, zum anderen die Entwicklung eigener Funktionalitäten. Die Gruppe möchte hier besonderen Wert auf die Navigation des Roboters in der Welt, Sicherheitskritischem Errorhandling und der Identifikation von Ablageorten für jedes bekannte Objekt. \\
 
-Die Gruppe Knowledge ist zuständig für das Klassifizieren und Abspeichern von erkannten Gegenständen im Beliefstate, sowie das Bestimmen einer geeigneten GraspPose für jeden Gegenstand.\\
+Das Ziel der Gruppe \textit{Vision} soll es sein, mehrere Objekte in einer wahrgenommenen Szene zu erkennen und zu segmentieren. Diese Objekte sollen extrahiert werden und die Posen der einzelnen Cluster zur weiteren Verarbeitung übergeben werden. \\
 
-Das Ziel des Teams Motion ist es einen Actionserver zu implementieren, der verschiedene Aktionen für das Greifen, Abstellen und Umstoßen von Objekten anbietet. Jede der Aktionen soll mit beiden \textit{Grippern} möglich sein, dabei soll der Roboter Objekte in seiner Umgebung berücksichtigen und seine Bewegungspfade so planen, dass beim Bewegen keine Kollisionen entstehen. Ist eine kollisionsfreie Bewegung nicht möglich wird die Aktion mit einem entsprechenden Fehler abgebrochen.\\
+Die Gruppe \textit{Knowledge} ist zuständig für das Klassifizieren und Abspeichern von erkannten Gegenständen im Beliefstate, sowie das Bestimmen einer geeigneten Greifpose für jeden Gegenstand.\\
+
+Das Ziel des Teams \textit{Motion} ist es, Aktionen für das Greifen, Abstellen und Verschieben von Objekten anzubieten. Jede der Aktionen soll mit beiden \textit{Grippern} möglich sein. Der Roboter soll Objekte in seiner Umgebung berücksichtigen und seine Bewegungspfade so planen, dass beim Bewegen keine Kollisionen entstehen.\\
+\subsection{Interaktion der Untergruppen}
+\chapterauthor{Haak}
+Um die Interaktion der Untergruppen schematisch darzustellen, wird hier einmal grob der Programmablauf skizziert.\\
+
+Zunächst wird die (\textit{main}) der \textit{Planning}-Komponente gestartet, welche den gesamten Programmablauf steuert. Die Kommunikation der Untergruppen beschränkt sich also bis auf wenige Ausnahmen darauf, dass die Komponente \textit{Planning} mit den anderen Komponenten interagiert, die Komponenten \textit{Knowledge}, \textit{Motion} und \textit{Vision} untereinander jedoch nicht.\\
+
+Die \textit{main} ruft als erstes die \textit{Vision}-Komponente auf, um Objekte
+der Umgebung wahrzunehmen, wobei die Objekte, die zum Bestand der Küche gehören dabei aussegmentiert werden. Die wahrgenommenen Objekte werden
+klassifiziert und deren Pose bestimmt. \\
+Im zweiten Schritt wird \textit{Knowledge} über die wahrgenommenen Objekte informiert und entscheidet, welche der Objekte mit welchem Arm gegriffen werden sollen.\\
+Nun wird \textit{Motion} veranlasst, die beiden Objekte zu greifen.\\
+Wurden Objekte gegriffen, wird der Roboter durch \textit{Planning} zu einer anderen Position gefahren, von wo aus die Objekte abgestellt werden sollen.\\
+Durch \textit{Planning} und \textit{Knowledge} wird dann ermittelt, welches Objekte an welcher Stelle genau abgestellt werden soll.\\
+An \textit{Motion} wird das Kommando abgesetzt, die beiden Objekte an den beiden berechneten Positionen abzustellen.\\
+Wurden die Objekte erfolgreich abgestellt, wird der Roboter von \textit{Planning} zurück zu der ursprünglichen Position bewegt, um denselben Ablauf erneut
+zu starten, falls noch weitere Objekte vorhanden sind.\\
+Sollte der Sonderfall eintreten, dass ein Objekt nicht gegriffen oder abgestellt werden kann, veranlasst \textit{Planning} den Roboter, einen Menschen um
+Hilfe beim Greifen bzw. Abstellen des Objektes zu bitten.\\
+
+
 
 \section{Herausforderungen}
 \subsection{Routen können nicht richtig geplant werden}
@@ -254,51 +282,19 @@ Diese Node läuft solange,bis die komplette Main einmalig durchlaufen wurde.
 
 \subsection{Programmablauf}
 \chapterauthor{Vanessa Hassouna}
-\subsubsection{Schritt 1: Vorbereiten des Roboters}
-Der Pr2 begibt sich in die Homeposition, von der aus er Objekte sehen soll. 
-
-\subsubsection{Schritt 2: Suche nach Objekten}
-Jedes Mal, wenn der Kopf des Pr2 sich in einer bestimmten Position befindet, wird der Service /vision\_suturo/objects\_information aufgerufen. Die gegebenen Information werden wie folgt bearbeitet:
-
-\begin{itemize}
-\item Die gegebenen Informationen werden extrahiert.
-\item Die beiden Arrays \textbf{normal\_features} und \textbf{color\_features} werden zergliedert und mit Hilfe von \textbf{object\_amount} identifiziert und auf dem Parameterserver gespeichert.
-\item Die normal\_features und color\_features werden konkateniert auf dem Parameterserver als \textbf{featuresX} gespeichert, wobei X hier die Nummer des Objektes darstellt.
-\item Die \textbf{object\_pose} wird als Array global gespeichert.
-\end{itemize}
 
 
-
-\subsubsection{Schritt 3: Weitergabe} 
-
-\begin{itemize} 
-\item Jetzt werden die gesehenen Objekte an Knowledge weitergegeben, diese geben für das Objekt ein Label zurück.
-\item Mit Hilfe des erhaltenen Labels wird der Service '/vision\_suturo/objects\_pose' von Vision aufgerufen, der anhand von Objekt-Nummer und Label eine Pose zurück gibt.  
-\item Wenn die Pose übergeben wurde, wird diese auf das Topic von Knowledge gepublished, damit das gesehene Objekt in der Wissensbasis gespeichert wird.
-\end{itemize}
+\begin{figure}[!htb]
+        \center{\includegraphics[width=1.0\textwidth]
+        {img/vanessa_main.png}
+        \caption{} Main-Diagramm von Vanessa.lisp}
+\end{figure}
 
 
 
 
 
-\subsubsection{Schritt 4: Welches Objekt wird gegriffen}
-Es wird bei Knowledge erfragt welche Objekte gegriffen werden sollen, in dem der Service "knowledge\_msgs/ObjectsToPick" 
-aufgerufen wird. Als Antwort werden 2 Strings zurück gegeben.
-Mit der Funktion calculate-landing-zone-visualized() wird der Standpunkt, wohin das Objekt platziert werden soll, zurückgegeben. %X=HAUKES FUNKTION
-Des Weiteren wird noch abgefragt wie das Objekt gegriffen werden soll. Diese Information wird dann weiter an Motion gegeben.
-
-\subsubsection{Schritt 5: Hinfahren zum gegebenen Ort}
-Mit Hilfe des Punktes wird berechnet wo der Roboter hinfahren muss. 
- 
-\subsubsection{Schritt 6: Abstellen und weiter}
-Das Objekt wird abgestellt.
-Danach fährt der Pr2 wieder zu seiner Homeposition und sucht die nächsten Objekte.
-
-
-
-
-
-
+%müsste eigendlich wieder ausgelagert werden, kann von mir aus aber auch drin bleiben -v
 \subsubsection{find-Object(x z)}
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
@@ -356,7 +352,7 @@ wird aufgerufen.
 @return: Successfull oder Aborted
 \end{verbatim}
 
-
+%ausgelagert in planning_old
 \subsubsection{check-Points-Is-Equal (msg-one msg-two delta))}
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
@@ -387,21 +383,21 @@ planning\_knowledge)}
 \subsection{API}
 \chapterauthor{Vanessa Hassouna}
 \subsubsection{Serviceclients}
-1. 'svm\_classifier/classify' \\
-Gibt uns ein Label als String für ein Objekt zurück.\\
 
-2. 'beliefstate/objects\_to\_pick'\\
+1. 'beliefstate/objects\_to\_pick'\\
 Gibt uns zwei Strings zurück. Diese sind leer, wenn kein Objekt mehr gegriffen werden soll oder es kein Objekt mehr zum Greifen gibt.
 
-3. 'beliefstate/gripper\_empty'\\
+2. 'beliefstate/gripper\_empty'\\
 Wir können erfragen, welcher Gripper frei ist.\\
 
-4. 'kitchen\_mode\_service/get\_fixed\_kitchen\_objects'\\
+3. 'kitchen\_mode\_service/get\_fixed\_kitchen\_objects'\\
 
-5. 'storage\_place\_service/storage\_place'\\
+4. 'storage\_place\_service/storage\_place'\\
 
-6. 'knowledge\_grasp/knowledge\_grasp'\\
-%?
+5. 'knowledge\_grasp/knowledge\_grasp'\\
+
+6. 'beliefstate/objects\_attached\_to\_gripper\\
+
 \subsubsection{Topics}
 1. 'beliefstate/perceive\_action'\\
 Wenn ein Objekt wahrgenommen wurde, publishen wir diese Information.
@@ -544,20 +540,6 @@ x,y, und z werden als Koordinaten ausgehend von base_link behandelt.
 \end{verbatim}
 
 
-\subsubsection{move-Base-To-Point-Safe (x y z angle))
-}
-\chapterauthor{Vanessa Hassouna}
-\begin{verbatim}
-move-Base-To-Point-Safe (x y z angle)
-
-Beschreibung: Diese Methode lässt den Roboter an eine vordefinierte 
-Position fahren, bei der er sich ungehindert drehen kann.
-Danach fährt der Pr2 zu dem gewünschten Punkt.
-
-@param: x y z angle
-@return: Successfull oder Aborted
-\end{verbatim}
-
 
 \subsubsection{move-Base-To-\\
 Point (x y z angle)}
@@ -585,16 +567,6 @@ von uns vordefinierten Punkten, die als Homeposition dienen.
 \end{verbatim}
 
 
-\subsubsection{init-Robo-Moving ()}
-\chapterauthor{Vanessa Hassouna}
-\begin{verbatim}
-init-Robo-Moving ()
-
-Beschreibung: Diese Hilfsfunktion dient dazu,
-die Initialisierung für das Fahren in der Simulation zu übernehmen.
-
-@return: Successfull oder Aborted
-\end{verbatim}
 
 \subsubsection{init-Action-Client-Base ()}
 \chapterauthor{Vanessa Hassouna}
@@ -621,7 +593,6 @@ Beschreibung: Diese Hilfsfunktion dient dazu, den Action-Client zu erhalten.
 
 
 
-
 \section{Die Quellcode-Datei: external-logic.lisp (planning\_logic)}
 \subsection{Architekturbild}
 \chapterauthor{Vanessa Hassouna}
@@ -639,10 +610,9 @@ Beschreibung: Diese Hilfsfunktion dient dazu, den Action-Client zu erhalten.
 \subsubsection{Topics}
 1. 'joint\_states' \\
 Subscribed das Topic und speichert die Werte des Grippers.\\
- %vielleicht willst du hier was schreiben?
  
 2. 'robot\_pose' \\
-Subscribed das Topic und gibt uns die Position des Roboters.
+Subscribed das Topic und gibt uns die Position des Roboters zurück.
 \subsection{Beschreibung des Teilsystems}
 
 \subsubsection{\"Ubersicht}
@@ -676,6 +646,32 @@ Beschreibung: Published eine knowledge_msgs/PerceivedObject-msg
 @return: int amountOfListeners
 \end{verbatim}
 
+
+\subsubsection{ publish-Text (string)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+publish-Text (string)
+
+Beschreibung: Publish a text in RVIZ with a given string.
+
+@param:string
+\end{verbatim}
+
+
+\subsubsection{publish-Pose-JaMilch ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+publish-Pose-JaMilch ()
+
+Beschreibung: This function is only for the demo scenario purpose.
+Here a "JaMilch" is percieved and published to Team Knowledge also a new param
+will be created on the Ros Param Server.
+
+@param:string
+\end{verbatim}
+
+
+
 \subsubsection{catch-Transformation \\
 (transform-listener tf-point-stamped endFrame)}
 \chapterauthor{Vanessa Hassouna}
@@ -701,55 +697,107 @@ Beschreibung: Löst die Y-Koordinate einer GraspPose heraus.
 @return: float y
 \end{verbatim}
 
-%KOMMT NOCH(defun let-Robo-Try-To-Poke (point-for-motion number-for-arm)
-%KOMMT NOCH (defun try-To-Poke-Different-Location(point-for-motion number-for-arm)
 
-
-\subsubsection{should-Robo-Use-Left-Or-Right-Arm(pose amount \\
+\subsubsection{transformation-XYZ (x y z startFrame\\
 \&optional (endFrame '/base\_footprint'))}
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
-should-Robo-Use-Left-Or-Right-Arm (pose amount &optional
-(endFrame "/base_footprint"))
+transformation-XYZ (x y z startFrame &optional (endFrame "/base_footprint"))
 
-Beschreibung: Anhand der Y-Achse entscheidet der Roboter
-ob er den linken oder rechten Arm bewegen soll.
+Beschreibung: Transforms a point with standart ( 0 0 0 1) quaternion.
 
-@param: pose object-number &optional endFrame
-@return: 3 oder 2 (3 = links 2 = Rechts)
+@param: x y z startFrame &optional (endFrame "/base_footprint")
+@return: Liefert eine transformierte tf-pose-stamped
 \end{verbatim}
 
 
-\subsubsection{disassemble-Vision-Call (visionclouds)}
+\subsubsection{ transformation-Pose-Stamped \\
+(pose \&optional (endFrame '/base\_footprint')) }
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
-disassemble-Vision-Call (visionclouds)
+ transformation-Pose-Stamped (pose &optional (endFrame "/base_footprint")) 
 
-Beschreibung: Extrahiert alle Informationen aus der 
-Visioncloud und speichert normal_features, color_features, 
-object_amount und object_pose auf dem Parameterserver.
- 
-@param: visionclouds
-@return: object_pose
+Beschreibung: Transform a Pose-Stamped-msgs with an optional Frame,\\
+ default is base_footprint.
+
+@param: x y z startFrame &optional (endFrame '/base_footprint')
+@return: Liefert eine transformierte tf-pose-stamped
 \end{verbatim}
 
 
 
-\subsubsection{set-Params-Features \\
-(normal-s color-s normal-e color-e amount)}
+
+\subsubsection{make-Object-Pose-For-Handshake (label)}
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
-set-Params-Features (normal-s color-s normal-e color-e amount)
+make-Object-Pose-For-Handshake (label)
 
-Beschreibung: Eine Hilfsfunktion für die Funktion disassemble-Vision-Call, 
-um aus normal_features und color_features konkateniert ein features-X zu 
-erstellen. (Knowledge benötigt ein Array in dem zuerst color_features 
-vorkommen und direkt im Anschluss normal_features)
+Beschreibung: Making a msg from the point of an object for \\
+the handshake function.
 
-@param: normal-s color-s normal-e color-e amount
-@return: Nil
+@param: label
+@return: T oder Nil
 \end{verbatim}
 
+\subsubsection{ percieve-Objetcs ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+percieve-Objetcs ()
+
+Beschreibung: Calling vision_sutuo service to percieve objects,\\
+while looping for the array-total-size through all the percieved \\
+objects will be published and saved on to the Paramserver.
+Another param named counter is logging how many objects has been seen.
+
+@return: T oder Nil
+\end{verbatim}
+
+\subsubsection{ percieve-Objects-And-Search (label)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+ percieve-Objects-And-Search (label)
+
+Beschreibung: searching for the given object if its still there.
+
+@param: label
+@return: T oder Nil
+\end{verbatim}
+
+
+\subsubsection{get-Information-About-Object (label)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+get-Information-About-Object (label)
+
+Beschreibung: Transforming the point of the label to frame "map" return \\
+value is the transformed y value.
+
+@param: label
+@return: Transformed pose
+\end{verbatim}
+
+\subsubsection{save-Object (label object\_pose)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+save-Object (label object_pose)
+
+Beschreibung: The given object (label) will be set as a new param on the Paramserver
+, but keep in mind only the Point will be saved. The label will be the name of the param.
+
+@param: label object_pose
+@return: T oder Nil
+\end{verbatim}
+
+
+\subsubsection{init-Marker ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+init-Marker ()
+
+Beschreibung: Subscribed das Topic '/visualization_markers'.
+
+@return: geometry_msgs/Pose
+\end{verbatim}
 
 \subsubsection{init-pr2()}
 \chapterauthor{Vanessa Hassouna}
@@ -777,8 +825,8 @@ Beschreibung: Callback-Funktion für die Funktion init-pr2().
 \begin{verbatim}
 move-pr2 (x y z)
 
-Beschreibung: Ruft move-Base-To-Point-Safe mit angle-From-Pr2-Pose-To-Point auf.
-
+Beschreibung: Bewegt den Roboter zu einem Punkt, wenn dieser hinter\\
+dem Roboter liegt begiebt dieser sich erst in eine Safeposition.
 @param: x y z 
 @return: Successfull oder Aborted
 \end{verbatim}
@@ -800,8 +848,22 @@ ein Winkel resultiert der in dem Frame "map" funktioniert.
 \end{verbatim}
 
 
-\subsubsection{try-To-Poke-Different-Location\\
-(point-for-motion number-for-arm)}
+\subsubsection{should-Robo-Use-Left-Or-Right-Arm(pose amount \\
+\&optional (endFrame '/base\_footprint'))}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+should-Robo-Use-Left-Or-Right-Arm (pose amount &optional
+(endFrame "/base_footprint"))
+
+Beschreibung: Anhand der Y-Achse entscheidet der Roboter
+ob er den linken oder rechten Arm bewegen soll.
+
+@param: pose object-number &optional endFrame
+@return: 3 oder 2 (3 = links 2 = Rechts)
+\end{verbatim}
+
+\subsubsection{ try-To-Grab-Or-Place-Different-Location\\
+(x y z w label command)}
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
 try-To-Poke-Different-Location\\
@@ -810,12 +872,108 @@ try-To-Poke-Different-Location\\
 Beschreibung: Die Funktion lässt den Roboter 
 anhand vorgegebener Positionen seine Drehung sowie seine
 Position ändern, wenn er ein Objekt nicht erreichen kann.
+Achtung die X-, Y-, Z- und W-Werte müssen in dem Frame "map" angegeben werden.
+Der Roboter selber bewegt sich in dem Map base\_footprint.
 
-@param: point-for-motion number-for-arm
+@param: x, y, z, w, label, command
 @return: T oder Nil
 
 
 \end{verbatim}
+
+\subsubsection{  grab-Or-Place-Object (label x y angle arm-first \\
+arm-first-homeposi grab-string \&optional \\
+arm-second arm-second-homeposi)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim} 
+grab-Or-Place-Object (label x y angle arm-first 
+arm-first-homeposi grab-string &optional arm-second arm-second-homeposi)
+
+Beschreibung: Trying to grab or place, if the given grab-string
+ is equal to grab the pr2 will also try to grab it with another arm and different places.
+
+@param: label x y angle arm-first arm-first-homeposi grab-string &optiona\\
+arm-second arm-second-homeposi
+@return: T oder Nil
+\end{verbatim}
+
+
+
+\subsubsection{ trying-To-Grab (label x y angle arm-first arm-first-homeposi \\
+grab-string arm-second arm-second-homeposi)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim} 
+ trying-To-Grab (label x y angle arm-first arm-first-homeposi
+ grab-string arm-second arm-second-homeposi)
+
+Beschreibung: Calling grab-or-place-object, \\
+if the counter is bigger than 0 the pr2 wil first change the Position.
+
+@param: Label x y angle arm-first arm-first-homeposi \\
+grab-string arm-second arm-second-homeposi
+@return: T oder Nil
+\end{verbatim}
+
+\subsubsection{how-Many-Gripper ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim} 
+how-Many-Gripper ()
+
+Beschreibung: Looping through the emtpy-gripper server and\\
+setting the variable left and right to T(1) or nil (0).
+
+@return: T oder Nil
+\end{verbatim}
+
+
+\subsubsection{calculate-Object-And-Pr2-Distance (label)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim} 
+calculate-Object-And-Pr2-Distance (label)
+
+Beschreibung: Calculating the distance from the given\\
+object to 2 different locations.
+
+@param: label
+@return: T oder Nil
+\end{verbatim}
+
+
+\subsubsection{distance (xa ya xb yb)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+distance (xa ya xb yb)
+
+ Beschreibung:calctulating the distance between two 2d-vectors.
+
+@param: xa ya xb yb (vektor1 vektor2)
+@return: distance
+\end{verbatim}
+
+
+\subsubsection{set-First-Posi ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+set-First-Posi ()
+
+ Beschreibung: Setting global x y and angle to the first position.
+
+@return: T oder Nil
+\end{verbatim}
+
+
+\subsubsection{set-Second-Posi ()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+set-Second-Posi ()
+
+ Beschreibung: Setting global x y and angle to the second position.
+
+@return: T oder Nil
+\end{verbatim}
+
+
+
 
 
 \subsubsection{init-gripper-states ()}
@@ -995,6 +1153,287 @@ Fehlernachricht wird 'vison error:' ausgegeben.
 \end{verbatim}
 
 Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' funktionieren analog zu 'vison-error' und definieren weitere Fehler, für andere Bereiche.
+\newpage
+\section{Die Quellcode-Datei: interaction.lisp (planning\_interaction)}
+\subsection{Architekturbild}
+\chapterauthor{Kevin Störmer}
+
+
+
+\begin{figure}[!htb]
+	\center{\includegraphics[width=1.0\textwidth]
+		{img/diag_planning_interaction.png}
+		\caption{} Architektur der Quellcode-Datei planning-interaction.lisp}
+\end{figure}
+
+
+
+\subsection{API}
+\chapterauthor{Kevin Störmmer}
+\subsubsection{Topics}
+1. '/planning\_interaction/wrench\_force\_magnitude' \\
+Published auf dem Topic den Betrag des Kraeftevektors des Handgelenkes.\\ \\
+2. '/planning\_interaction/wrench\_handshake\_detection' \\
+Published auf dem Topic eine 15 wenn Ein Handshake wahrgenommen wird.\\ \\
+3. '/beliefstate/grasp\_object\_human\_interaction' \\
+Published für Knowledge eine Message, wenn ein Objekt von einem Menschen in den Gripper gelegt wird.\\ \\
+4. '/beliefstate/delete\_object\_human\_interaction' \\
+Published für Knowledge eine Message wenn ein Objekt aus dem Gripper des Pr2 entfernt wird.\\ \\
+5. '/ft/l\_gripper\_motor\_zeroed' \\
+Subscribed auf den Topic um die kalibrierten Handgelenkswerte des Pr2 zu bekommen.\\ \\
+\subsubsection{Actionserver}
+1. '/sound\_play' \\
+Nutzt die Soundplay Action, des Sound\_Play Paketes um dem Pr2 eine Stimme zu synthetisieren.\\ \\
+\subsection{Beschreibung des Teilsystems}
+\subsubsection{\"Ubersicht}
+\chapterauthor{Kevin Störmer}
+Die Datei interaction.lisp ist zuständig dafür, Situationen aufzuloesen, die nicht vom Code abgedeckt werden, oder die für den Roboter physikalisch nicht möglich sind.\\
+Dabei soll vorallem auf Sicherheit der Interaktion und Einfachheit in der Implementation geachtet werden. Fokus liegt dabei auch auf dem Feststellen von Handshake-Actions sodass dem Menschen eine Interaktionsschnittstelle gegeben wird.\\
+Wie in der folgenden Illustration gezeigt, werden Sicherheitskritische Aspekte dabei von den oeffentlichen Funktionen getrennt.
+\begin{figure}[!htb]
+	\center{\includegraphics[width=1.0\textwidth]
+		{img/ablauf_planning_interaction.png}
+		\caption{} Ablauf der Initialisierung}
+\end{figure}
+
+\subsubsection{init-interaction()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+init-interaction()
+Beschreibung: Initialisiert das Paket. Startet alle Subkomponenten, 
+und teilt dem Nutzer mit falls Abhängigkeiten fehlen.
+@return true wenn richtig initalisiert
+\end{verbatim}
+
+\subsubsection{ask-human-to-move-object()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+ask-human-to-move-object()
+Beschreibung: Fehlerfallabdeckung für den Fall das der Pr2 ein Objekt
+nicht greifen kann. Pr2 zeigt dann auf das Objekt, und ruft 
+einen Menschen zu Hilfe.
+Dieser kann dann das Objekt in den Gripper des Pr2 legen 
+und ihm die Hand schütteln. Der Roboter nimmt dann seine Arbeit 
+wieder auf.
+@param pose label force moving command statement1 statement2
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{ask-human-to-take-object ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+ask-human-to-take-object ()
+Beschreibung: Fehlerfallabdeckung für den Fall das der Pr2 ein Objekt 
+nicht ablegen kann. Der Pr2 fährt dann an einen Ort an dem er gut 
+mit dem Menschen interagieren kann. Dort streckt er seine Arme aus 
+und verweist auf den Gripper in dem das Objekt steckt, 
+welches er loswerden möchte. \\
+Nach einem Händeschütteln, wird das Objekt freigegeben 
+und als abgelegt behandelt. Der PR2 nimmt dann seine Arbeit wieder auf.
+@param label moving-command
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{check-gripper()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+check-gripper()
+Beschreibung: Anpassbare Funktion für beliebige Fehlerfälle. Es kann 
+eine Funktion übergeben werden, welche dann in einer sicheren 
+Umgebung aufgerufen wird. Nebenbei werden die beiden Gripper gecheckt, 
+sodass nichts aus dem Gripper fallen kann währenddessen. Wenn kein 
+Fehlschlag passiert, läuft die mitgegebene Funktion normal durch.
+@param errormsg func args r l)
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{decide-gripper()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+decide-gripper()
+Beschreibung: Da Motion merkwürdige Magic-Numbers für ihre Actions verwendet, 
+wird diese Funktion gebraucht um von der Einen auf die Andere schliessen zu 
+können.
+@param moving-command
+@return magic-number für die Gripper-Action
+\end{verbatim}
+
+\subsubsection{drive-to-human ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+drive-to-human ()
+Beschreibung: Fährt zu Ort für menschliche Interaction an der Iai Holz-Küche.
+@param -
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{say ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+say ()
+Beschreibung: Nutzt das sound\_play Paket um einen String in 
+gesprochene Sprache zu synthetisieren und auf dem Pr2 auszugeben.
+@param message
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{wait-for-handshake ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+wait-for-handshake ()
+Beschreibung: Anpassbare Funktion zur Konfiguration eigener Fehlerfälle. 
+Pr2 führt stoppt seine Aufgabe, und gibt mitgegebene Errormessage aus. 
+Danach wartet er auf einen Handshake und führt dann die mitgegebene 
+Funktion aus.
+@param func args errormsg
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{build-pointing-pose ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+build-pointing-pose ()
+Beschreibung: Baut die Pointing-Pose aus den einzelnen Berechnungen 
+zusammen. Diese Pose wird gebraucht um auf ein Objekt zu zeigen.
+@param pose
+@return Pose die auf das Objekt zeigt
+\end{verbatim}
+
+\subsubsection{get-pointing-pose ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+get-pointing-pose ()
+Beschreibung: Baut die Pointing-Pose zusammen, ohne Quaternion. 
+Verarbeitet die Daten aus 'get-vektor-pr2-reachable' 
+(beschrieben nachfolgend). 
+@param pose
+@return Pointing-Pose ohne Quaternion
+\end{verbatim}
+
+\subsubsection{get-vektor-pr2-reachable ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+get-vektor-pr2-reachable ()
+Beschreibung: Rechnet in Abhängigkeit von Arm und Gegebenem 
+Vektor den nähesten Punkt aus den der Pr2 erreichen kann
+@param vektor
+@return erreichbarer Punkt
+\end{verbatim}
+
+\subsubsection{calculate-pointing-quaternion ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+calculate-pointing-quaternion ()
+Beschreibung: Berechnet aus einer gegebenen Object-Pose das 
+Quaternion was benötigt wird um auf ein Objekt zu zeigen. 
+@param object-pos
+@return quaternion, welches zum pointen gebraucht wird
+\end{verbatim}
+
+\subsubsection{get-directional-vector ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+get-directional-vector ()
+Beschreibung: Berechnet aus 2 Punkten im Raum den Richtungsvektor in Richtung 
+des 2ten Punktes.
+@param Vektor1 Vektor2
+@return Richtungsvektor
+\end{verbatim}
+
+\subsubsection{vectors-to-matrix ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+vectors-to-matrix ()
+Beschreibung: Baut und berechnet aus 3 Punkten oder Vektoren im Raum eine 
+Transformationsmatrix.
+@param Vektor-x Vector-y Vector-z
+@return 3x3 Tansformationsmatrix
+\end{verbatim}
+
+\newpage
+
+\subsubsection{calculate-wrench-magnitude ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+calculate-wrench-magnitude ()
+Beschreibung: Berechnet Betrag der Wrench-Force-Daten und published sie. 
+Ausserdem wird immer genau dann auf dem Handshake-detection gepublished, 
+wenn ein Handschlag festgestellt wird. (Callback-Funktion)
+@param msg
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\begin{figure}[!htb]
+	\center{\includegraphics[width=1.0\textwidth]
+		{img/detection_planning_interaction.png}
+		\caption{} Detection eines Handshakes, wie in calculate-wrench-magnitude}
+\end{figure}
+
+
+\subsubsection{put-object-in-hand ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+put-object-in-hand ()
+Beschreibung: Simple Methode um Knowledge mitzuteilen, wenn ein Objekt 
+in den Gripper gelegt wird.
+@param gripper label
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\subsubsection{drop-object-in-hand ()}
+\chapterauthor{Kevin Störmer}
+\begin{verbatim}
+drop-object-in-hand ()
+Beschreibung: Simple Methode um Knowledge mitzuteilen, wenn ein Objekt 
+aus dem Gripper gelegt wird.
+@param label
+@return Kein definierter Rückgabewert
+\end{verbatim}
+
+\newpage
+
+\section{Die Quellcode-Datei: old.lisp (planning\_old)}
+
+\subsubsection{disassemble-Vision-Call (visionclouds)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+disassemble-Vision-Call (visionclouds)
+
+Beschreibung: Extrahiert alle Informationen aus der 
+Visioncloud und speichert normal_features, color_features, 
+object_amount und object_pose auf dem Parameterserver.
+ 
+@param: visionclouds
+@return: object_pose
+\end{verbatim}
+
+
+
+\subsubsection{set-Params-Features \\
+(normal-s color-s normal-e color-e amount)}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+set-Params-Features (normal-s color-s normal-e color-e amount)
+
+Beschreibung: Eine Hilfsfunktion für die Funktion disassemble-Vision-Call, 
+um aus normal_features und color_features konkateniert ein features-X zu 
+erstellen. (Knowledge benötigt ein Array in dem zuerst color_features 
+vorkommen und direkt im Anschluss normal_features)
+
+@param: normal-s color-s normal-e color-e amount
+@return: Nil
+\end{verbatim}
+
+
+
+
+
+
+
+
+
+
+
 
 
 \newpage
@@ -1593,7 +2032,7 @@ Das Bewegen der anderen, zum Erfüllen der Zielsetzung benötigten Teile des Rob
 von der Gruppe '\textit{Motion}' übernommen.\\
 Dabei realisiert \textit{Motion} im Wesentlichen das Greifen, Abstellen und Verschieben von Objekten.
 
-In \textit{Abbildung 1} Bild sieht man die Architektur des Teilsystems der Gruppe '\textit{Motion}'. Dabei gibt es zwei Knoten '\textit{suturo\_motion\_main}' und '\textit{simple\_gripper}'.\\
+In Abbildung \ref{fig:motion_node} sieht man die Architektur des Teilsystems der Gruppe '\textit{Motion}'. Dabei gibt es zwei Knoten '\textit{suturo\_motion\_main}' und '\textit{simple\_gripper}'.\\
 
 \begin{figure}[!htb]
         \center{\includegraphics[width=\textwidth]
@@ -1601,10 +2040,12 @@ In \textit{Abbildung 1} Bild sieht man die Architektur des Teilsystems der Grupp
         \caption{\label{fig:motion_node} Architektur des Teilsystems der Gruppe 'Motion'}}
 \end{figure}
 
-Der Knoten '\textit{suturo\_motion\_main}' ist für das Verarbeiten eingehender Kommandos zum Bewegen der Arme bzw. eines Endeffektors zuständig. Dabei gibt es Kommandos für das Fahren der Arme in eine initiale Position oder eine Position, welche nach dem Greifen eines Objektes eingenommen wird. Zusätzlich Kommandos für das Bewegen der Arme zu einer bestimmten Pose oder das Umstubsen, Greifen oder Abstellen eines bestimmten Objektes mit einer gegebenen Pose.\\
+Der Knoten '\textit{suturo\_motion\_main}' ist für das Verarbeiten eingehender Kommandos zum Bewegen der Arme bzw. der Endeffektoren zuständig. Dabei gibt es Kommandos für das Fahren der Arme in vordefinierte Posen oder in eine übergebene Pose. Zusätzlich können komplexere Operationen, wie das Schieben, Greifen oder Abstellen eines bestimmten Objektes ausgeführt werden.\\
 Der Knoten '\textit{simple\_gripper}' wird dabei benutzt, um das Öffnen und Schließen des Endeffektors zu realisieren. Dieser Knoten wird von dem Hauptknoten '\textit{suturo\_motion\_main}' über einen Actionserver aufgerufen.\\
 
 Im Folgenden werden die \textit{Schnittstellen}, der \textit{Ablauf} des Teilsystems und besonders \textit{hervorzuhebende} \textit{Algorithmen} beschrieben.\\
+
+\newpage
 
 \subsection{Schnittstellen - 'suturo\_motion\_main'}
 \subsubsection{Angebotene Actions}
@@ -1647,7 +2088,8 @@ float64 FORCE_DEFAULT=35
 # When the object gets placed somewhere, another message is published.
 # These messages get published for knowledge's beliefstate, so that
 # the knowledge component knows when an object get's grasped/placed somewhere.
-# Additionaly required for some planningscene operations when grasping, placing or poking an object.
+# Additionaly required for some planningscene operations when grasping, 
+# placing or poking an object.
 string grasped_object_label
 
 ---
@@ -1669,8 +2111,9 @@ Mit Hilfe der MovingCommandAction lassen sich alle von uns zur Verfügung gestel
 
 \subsubsection{Aufgerufene Actions}
 \chapterauthor{Maximilian Bertram}
-Wird eine GRASP oder PLACE Aktion ausgeführt, wird über eine \\
-\textit{motion\_msgs::Gripper}-Message an den Actionserver des Knotens '\textit{simple\_gripper}' der Gripper entsprechend geöffnet oder geschlossen.(Siehe !!!!-- TODO --!!!! Verweis auf Beschreibung zu unserer simple-Gripper-Node)\\
+\textbf{Gripper}\\
+Vom Typ '\textit{motion\_msgs/Gripper}': \\ \\
+Wird eine Greif- oder Abstellaktion ausgeführt, wird über eine Nachricht an den Actionserver des Knotens '\textit{simple\_gripper}' der Gripper entsprechend geöffnet oder geschlossen.\\(Siehe Kapitel \ref{interfaceSimpleGripper} für Beschreibung des Actionservers.)\\
 
 
 \subsubsection{Aufgerufene Services}
@@ -1678,9 +2121,12 @@ Wird eine GRASP oder PLACE Aktion ausgeführt, wird über eine \\
 \textbf{GetFixedKitchenObjects}\\
 Vom Typ '\textit{knowledge\_msgs/GetFixedKitchenObjects}': \\ 
 \begin{verbatim}
-#This servicedefinition is for transfering the shape of the objects in the iai_kitchen.
-#The Motion-component calls this service for getting the shape of the kitchen-objects for it's planningscene.
-#The Knowledge-component reads these shapes out of an owl-file and returns the data described below.
+#This servicedefinition is for transfering the shape of the objects in
+#the iai_kitchen.
+#The Motion-component calls this service for getting the shape of the 
+#kitchen-objects for it's planningscene.
+#The Knowledge-component reads these shapes out of an owl-file and 
+#returns the data described below.
 
 ---
 
@@ -1688,12 +2134,13 @@ Vom Typ '\textit{knowledge\_msgs/GetFixedKitchenObjects}': \\
 string[] names
 #The path to the meshes of the kitchen objects
 string[] meshes
-#The names of the tf-frames of the kitchen objects. The kitchen object meshes get spawned
+#The names of the tf-frames of the kitchen objects. The kitchen object 
+#meshes get spawned
 #at the position of the corresponding frames.
 string[] frames
 \end{verbatim}
 
-\subsubsection{Angebotene Topics}
+\subsubsection{Veröffentlichte Topics}
 \textbf{GraspAction und DropAction}
 \chapterauthor{Maximilian Bertram}
 
@@ -1728,6 +2175,8 @@ uint8 LEFT_GRIPPER = 1
 uint8 RIGHT_GRIPPER = 2
 \end{verbatim}
 
+\newpage
+
 \subsubsection{Benutzte Topics}
 \textbf{PerceivedObjectBoundingBox}
 \chapterauthor{Roman Haak}
@@ -1754,10 +2203,11 @@ Kann ein Objekt nicht durch den Roboter gegriffen werden, wird der Mensch um Hil
 
 \subsubsection*{Definition der SpawnAttachedObject.msg}
 \begin{verbatim}
-#A message which get's published by knowledge when an object is put in the gripper of the robot by a human.
-#In which gripper the object was put can be determined by looking in the header's frame id. If the pose is given in 
-#the 'l_gripper_tool_frame', the object is in the left gripper and in the right gripper, if 'r_gripper_tool_frame' is
-#the referenced frame.
+#A message which get's published by knowledge when an object is put
+#in the gripper of the robot by a human.
+#In which gripper the object was put can be determined by looking 
+#in the header's frame id. The pose is given in the corresponding
+#grippers tip frame.
 
 #The pose of the object. 
 geometry_msgs/PoseStamped pose
@@ -1780,6 +2230,7 @@ Kann ein Objekt nicht durch den Roboter abgestellt werden, wird der Mensch um Hi
 \subsubsection{Angebotene Actions}
 Vom Typ '\textit{motion\_msgs/Gripper}': \\
 \subsubsection*{Definition der GripperAction}
+\label{interfaceSimpleGripper}
 \begin{verbatim}
 #goal definition
 #position of the space between the grippers in meters
@@ -1802,70 +2253,58 @@ bool successful
 Die GripperAction-Message wird entsprechend geparsed und eine \\
  \textit{pr2\_ controllers\_ msgs::Pr2GripperCommandAction} erzeugt und gepublished. \\
 
+\newpage
+
 \subsection{Ablauf}
 \chapterauthor{Maximilian Bertram, Roman Haak}
-Der generelle Ablauf unseres Programms ist im Folgenden Ablaufdiagramm dargestellt.
+Der generelle Ablauf unseres Programms ist im Folgenden Ablaufdiagramm dargestellt.\\\\
 
 
 \begin{figure}[!htb]
-        \center{\includegraphics[width=\textwidth]
+        \center{\includegraphics[scale=0.5]
         {img/Ablaufdiagramm.png}
         \caption{\label{fig:motion_node_flow_chart} Ablaufdiagramm 'Motion'}}
 \end{figure}
 
 
-
+\newpage
 
 \subsection{Besonderheiten/Besondere Algorithmen}
-In diesem Abschnitt werden kurz erwähnenswerte Algorithmen beschrieben.
-Dabei wird zuerst der Algorithmus für das Umstoßen eines Objektes und anschließend der Algorithmus für das Greifen, bzw. Abstellen eines Objektes beschrieben.\\
+In diesem Abschnitt werden erwähnenswerte Algorithmen beschrieben.\\
+Dabei werden nacheinander mit Hilfe von Ablaufdiagrammen das Greifen, das Abstellen und das Schieben eines Objektes dargestellt.\\
 
-\subsubsection{Algorithmus für das Umstoßen eines Objektes}
+\subsubsection{Algorithmus für das Greifen eines Objektes}
 \chapterauthor{Roman Haak}
-Über die von unserem Teilsystem angebotene Action '\textit{moving}' kann das Kommando zum Umstoßen eines Objektes mit dem rechten oder mit dem linken \textit{Gripper} abgesetzt werden. Beim Aufruf wird dabei eine Pose übergeben, welche die Position des Mittelpunktes des umzustoßenden Objektes und die beabsichtigte Orientierung des \textit{Grippers} beinhaltet. \\Der Algorithmus, der das Umstoßen dann realisiert, arbeitet wie folgt:\\
 
-1. \textit{Berechne die Pose, zu der der Arm als erstes gefahren werden soll. Diese Pose wird folgendermaßen ermittelt:}\\
-\tab - die Orientierung wird von der beim Aufruf des Kommandos übergebenen Pose übernommen\\
-\tab - die Position ist die Position des Objektmittelpunkts, von der noch die Distanz\\ \tab   'DISTANCE\_BEFORE\_POKING' und 'GRIPPER\_LENGTH\_LEFT'\\ \tab bzw. 'GRIPPER\_LENGTH\_RIGHT' von der X-Koordinate im 'base\_footprint'-Frame \\ \tab abgezogen wird, wobei 'DISTANCE\_BEFORE\_POKING', 'GRIPPER\_LENGTH\_LEFT' \tab und 'GRIPPER\_LENGTH\_RIGHT' definierte Konstanten sind.\\
+\begin{figure}[!htb]
+        \center{\includegraphics[scale=0.3]
+        {img/grasping_flowchart.png}
+        \caption{\label{fig:motion_node_flow_chart_grasp} Ablaufdiagramm Greifen eines Objektes}}
+\end{figure}
 
-Der so errechnete Zielpunkt befindet sich also 'DISTANCE\_BEFORE\_POKING' plus 'GRIPPER\_LENGTH\_LEFT' bzw. 'GRIPPER\_LENGTH\_RIGHT' vor dem Objekt, aus Sicht des Roboters.\\
+\newpage
 
-2. \textit{Fahre mit dem rechten bzw. linken Arm zu der errechneten Pose.}\\
-
-3. \textit{Errechne nun einen Punkt, der etwas über dem Objektmittelpunkt liegt. Falls der linke Arm benutzt wird, verschiebe den Punkt zusätzlich noch um die Differenz zwischen 'GRIPPER\_LENGTH\_LEFT' und 'GRIPPER\_LENGTH\_RIGHT' hin zum Roboter. Damit soll erreicht werden, dass immer auf dieselbe Weise umgestoßen wird, egal ob der linke (längere) oder rechte Arm benutzt wird.}\\
-
-4. \textit{Berrechne eine 10-Punkte Trajektorie zwischen dem in Schritt 3 errechneten Punkt und der aktuellen Position des Armes.}\\
-\tab - Dies hat den Sinn, dass sichergestellt ist, dass das Objekt von\\ \tab vorne umgestoßen wird.\\
-
-5. \textit{Fahre den Arm entlang der gewünschten Trajektorie.}\\
-\tab - Das Objekt sollte nun umgestoßen worden sein.
-
-
-\subsubsection{Algorithmus für das Greifen/Abstellen eines Objektes}
+\subsubsection{Algorithmus für das Abstellen eines Objektes}
 \chapterauthor{Roman Haak}
-Über die von unserem Teilsystem angebotene Action '\textit{moving}' kann das Kommando zum Greifen/Abstellen eines Objektes mit dem rechten oder mit dem linken \textit{Gripper} abgesetzt werden. Beim Aufruf wird dabei eine Pose übergeben, welche die Position des Greifpunktes des zu greifenden Objektes, bzw. die Position, zu der der \textit{Gripper} hingefahren werden soll, um das Objekt abzustellen beinhaltet. Zusätzlich ist noch die beabsichtigte Orientierung des \textit{Grippers} angegeben. \\Der Algorithmus, der das Greifen bzw. Abstellen dann realisiert, ist dabei derselbe. Denn die beiden Aktionen Greifen und Abstellen unterscheiden sich prinzipiell nur daran, dass beim Greifen der \textit{Gripper} erst geöffnet und dann zum Greifen geschloßen wird und beim Abstellen der \textit{Gripper} zuerst bereits geschloßen ist und beim Abstellen des Objektes dann geöffnet werden muss. Zu dieser Unterscheidung reichen also Fallunterscheidungen innerhalb des Algorithmus. \\Der Algorithmus arbeitet dabei wie folgt:\\
 
-1. \textit{Hebe den gewünschten Arm auf die Höhe 'TABLE\_HEIGHT' + 'MAXIMUM\_OBJECT\_HEIGHT' + 'GRIPPER\_LENGTH\_LEFT' + 'DISTANCE\_BEFORE\_GRASPING'.}\\
-\tab - Da wir es in unserem aktuellen Stand des Gesamtsystems noch nicht geschafft haben, \\ \tab beim Greifen die Kollisionsfreiheit sicherzustellen, haben wir uns entschieden das Greifen\\ \tab aus einer Höhe zu realisieren, auf der sich sicher kein Objekt befindet.\\
+\begin{figure}[!htb]
+        \center{\includegraphics[scale=0.5]
+        {img/placing_flowchart.png}
+        \caption{\label{fig:motion_node_flow_chart_place} Ablaufdiagramm Abstellen eines Objektes}}
+\end{figure}
 
-2. \textit{Bewege den Arm auf dieser Höhe über das zu greifende/abzustellende Objekt.}\\
+\newpage
 
-3. \textit{Ändere die Orientierung des Armes zu der Orientierung, die in der übergebenen Pose beinhaltet ist.}\\
-\tab - Die übergebene Orientierung ist in dem aktuellen Stand die, bei der der \textit{Gripper} nach \\ \tab unten orientiert ist, damit das Objekt so gegriffen werden kann.\\
+\subsubsection{Algorithmus für das Schieben eines Objektes}
+\chapterauthor{Roman Haak}
 
-4. \textit{Hier findet eine Fallunterscheidung statt.}\\
-\tab - Soll ein Objekt gegriffen werden, öffne den \textit{Gripper}.\\
-\tab - Soll ein Objekt abgestellt werden, lass den \textit{Gripper}, wie er ist.\\
+\begin{figure}[!htb]
+        \center{\includegraphics[scale=0.5]
+        {img/poking_flowchart.png}
+        \caption{\label{fig:motion_node_flow_chart_poke} Ablaufdiagramm Schieben eines Objektes}}
+\end{figure}
 
-5. \textit{Fahre mit dem Arm zu der Position, welche in der Pose angegeben ist.}\\
-
-6. \textit{Hier findet wieder eine Fallunterscheidung statt.}\\
-\tab - Soll ein Objekt gegriffen werden, schließe den \textit{Gripper}.\\
-\tab - Soll ein Objekt abgestellt werden, öffne den \textit{Gripper}.\\
-
-7. \textit{Hebe den Arm wieder auf die am Anfang errechnete Höhe an, um das Objekt zu heben, bzw. "vom Objekt wegzufahren".}\\
-\tab - Das Objekt sollte nun entweder an dem gewünschten Platz stehen, bzw. sich in dem\\ \tab \textit{Gripper} des Roboters befinden.
-
+\newpage
 
 \subsection{Tests \& Evaluation}
 \chapterauthor{MB, RH}
@@ -2343,6 +2782,8 @@ Der Visualization-Publisher ''publiziert'' (advertise) die extrahierten Cluster 
 \url{https://github.com/menanuni/motion_suturo_1718} \\
 \url{https://github.com/menanuni/msgs_suturo_1718} \\
 \url{https://github.com/menanuni/knowledge_suturo_1718} \\
+\url{https://github.com/menanuni/vision_suturo_1718} \\
+\url{https://github.com/menanuni/common_suturo1718} \\
 
 \item[b] Es muss das MoveIt Framework installiert werden, dazu im Terminal: \\
 \textit{sudo apt-get update} \\
