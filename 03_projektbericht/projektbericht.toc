@@ -21,23 +21,22 @@
 \contentsline {subsection}{\numberline {4.8}Segmentieren \& Extrahieren von mehreren Objekten}{15}
 \contentsline {subsection}{\numberline {4.9}Features zur Klassifizierung ermitteln}{15}
 \contentsline {subsection}{\numberline {4.10}Posen der Objekte bestimmen}{15}
-\contentsline {subsection}{\numberline {4.11}Posen haben falsche Orientierung}{15}
-\contentsline {subsection}{\numberline {4.12}Welche Gripper sind belegt}{15}
-\contentsline {subsection}{\numberline {4.13}Welche Objekte sollen wegger\IeC {\"a}umt werden}{15}
-\contentsline {subsection}{\numberline {4.14}Kollisionsfreiheit beim Greifen eines Objektes}{16}
-\contentsline {subsection}{\numberline {4.15}Unterschiede Simulation echter PR2}{16}
-\contentsline {subsection}{\numberline {4.16}'Deterministisches' Umsto\IeC {\ss }en eines Objektes}{16}
-\contentsline {subsection}{\numberline {4.17}Verwalten der Planningscene}{16}
-\contentsline {subsection}{\numberline {4.18}Filtern und Selektieren der Greifposen}{17}
-\contentsline {subsection}{\numberline {4.19}Abstellen mit Drucksensor}{17}
-\contentsline {subsection}{\numberline {4.20}Tests \& Validierung}{17}
+\contentsline {subsection}{\numberline {4.11}Welche Gripper sind belegt}{15}
+\contentsline {subsection}{\numberline {4.12}Welche Objekte sollen wegger\IeC {\"a}umt werden}{15}
+\contentsline {subsection}{\numberline {4.13}Kollisionsfreiheit beim Greifen eines Objektes}{16}
+\contentsline {subsection}{\numberline {4.14}Unterschiede Simulation echter PR2}{16}
+\contentsline {subsection}{\numberline {4.15}'Deterministisches' Umsto\IeC {\ss }en eines Objektes}{16}
+\contentsline {subsection}{\numberline {4.16}Verwalten der Planningscene}{16}
+\contentsline {subsection}{\numberline {4.17}Filtern und Selektieren der Greifposen}{16}
+\contentsline {subsection}{\numberline {4.18}Abstellen mit Drucksensor}{17}
+\contentsline {subsection}{\numberline {4.19}Tests \& Validierung}{17}
 \contentsline {section}{\numberline {5}Die Quellcode-Datei: main.lisp (planning\_main\_programm)}{17}
 \contentsline {subsection}{\numberline {5.1}Architekturbild}{17}
-\contentsline {subsection}{\numberline {5.2}Beschreibung des Teilsystems}{18}
-\contentsline {subsubsection}{\numberline {5.2.1}\"Ubersicht}{18}
+\contentsline {subsection}{\numberline {5.2}Beschreibung des Teilsystems}{17}
+\contentsline {subsubsection}{\numberline {5.2.1}\"Ubersicht}{17}
 \contentsline {subsubsection}{\numberline {5.2.2}main ()}{18}
 \contentsline {subsection}{\numberline {5.3}Programmablauf}{18}
-\contentsline {subsubsection}{\numberline {5.3.1}find-Object(x z)}{19}
+\contentsline {subsubsection}{\numberline {5.3.1}find-Object(x z)}{18}
 \contentsline {section}{\numberline {6}Die Quellcode-Datei: vision\_communicate.lisp (planning\_vision)}{20}
 \contentsline {subsection}{\numberline {6.1}Architekturbild}{20}
 \contentsline {subsection}{\numberline {6.2}API}{20}
@@ -159,172 +158,159 @@
 \contentsline {section}{\numberline {15}knowledge\_grasp}{45}
 \contentsline {subsection}{\numberline {15.1}Beschreibung des Teilsystems}{45}
 \contentsline {subsubsection}{\numberline {15.1.1}find\_grasp\_pose - Prolog}{45}
-\contentsline {subsubsection}{\numberline {15.1.2}find\_grasp\_individual - Prolog}{45}
-\contentsline {subsubsection}{\numberline {15.1.3}build\_grasp\_tuple - Prolog}{46}
-\contentsline {subsubsection}{\numberline {15.1.4}build\_pose\_list - Prolog}{46}
-\contentsline {subsubsection}{\numberline {15.1.5}evaluate\_pose\_by\_height - Prolog}{46}
-\contentsline {subsubsection}{\numberline {15.1.6}pair\_value - Prolog}{46}
-\contentsline {subsubsection}{\numberline {15.1.7}sort\_grasp\_poses - Prolog}{47}
-\contentsline {subsubsection}{\numberline {15.1.8}createQuery - C++}{47}
-\contentsline {subsubsection}{\numberline {15.1.9}find\_grasp\_pose - C++}{47}
-\contentsline {subsection}{\numberline {15.2}Schnittstellen}{47}
-\contentsline {subsubsection}{\numberline {15.2.1}Service Server knowledge\_grasp\_service/knowledge\_grasp}{47}
-\contentsline {subsection}{\numberline {15.3}Programmablauf}{48}
-\contentsline {section}{\numberline {16}svm\_classifier}{48}
-\contentsline {subsection}{\numberline {16.1}svm\_classifier}{48}
-\contentsline {subsection}{\numberline {16.2}svm\_training\_data\_collector}{48}
-\contentsline {subsection}{\numberline {16.3}svm\_trainer}{48}
-\contentsline {subsection}{\numberline {16.4}Beschreibung des Teilsystems}{49}
-\contentsline {subsubsection}{\numberline {16.4.1}main - Python}{49}
-\contentsline {subsubsection}{\numberline {16.4.2}save\_training\_set - Python}{49}
-\contentsline {subsubsection}{\numberline {16.4.3}get\_corresponding\_normals\_histogram\_file - Python}{49}
-\contentsline {subsubsection}{\numberline {16.4.4}get\_features - Python}{49}
-\contentsline {subsubsection}{\numberline {16.4.5}collect\_training\_data - Python}{49}
-\contentsline {subsubsection}{\numberline {16.4.6}main - Python}{49}
-\contentsline {subsubsection}{\numberline {16.4.7}plot\_confusion\_matrix - Python}{49}
-\contentsline {subsubsection}{\numberline {16.4.8}main - Python}{50}
-\contentsline {subsection}{\numberline {16.5}Schnittstellen}{50}
-\contentsline {subsubsection}{\numberline {16.5.1}Service Server classify\_service}{50}
-\contentsline {subsection}{\numberline {16.6}Programmablauf}{50}
-\contentsline {subsubsection}{\numberline {16.6.1}Schritt 1: Trainingsdaten sammeln und speichern}{50}
-\contentsline {subsubsection}{\numberline {16.6.2}Schritt 2: Trainieren und speichern einer SVM}{50}
-\contentsline {subsubsection}{\numberline {16.6.3}Schritt 3: Laden der SVM und Klassifizieren von Featurevektoren}{50}
-\contentsline {section}{\numberline {17}beliefstate}{50}
-\contentsline {subsection}{\numberline {17.1}Beschreibung des Teilsystems}{50}
-\contentsline {subsubsection}{\numberline {17.1.1}to\_underscore - Python}{50}
-\contentsline {subsubsection}{\numberline {17.1.2}object\_url\_to\_object\_name - Python}{51}
-\contentsline {subsubsection}{\numberline {17.1.3}prolog\_query\_false - Python}{51}
-\contentsline {subsubsection}{\numberline {17.1.4}prolog\_query\_true - Python}{51}
-\contentsline {subsubsection}{\numberline {17.1.5}point\_to\_prolog\_list - Python}{51}
-\contentsline {subsubsection}{\numberline {17.1.6}pose\_to\_prolog\_list - Python}{51}
-\contentsline {subsubsection}{\numberline {17.1.7}gripper\_as\_string - Python}{52}
-\contentsline {subsubsection}{\numberline {17.1.8}create\_query\_for\_perceive\_object - Python}{52}
-\contentsline {subsubsection}{\numberline {17.1.9}create\_query\_for\_grasp\_object - Python}{52}
-\contentsline {subsubsection}{\numberline {17.1.10}create\_query\_for\_drop\_object - Python}{52}
-\contentsline {subsubsection}{\numberline {17.1.11}create\_query\_object\_attached\_to\_gripper - Python}{52}
-\contentsline {subsubsection}{\numberline {17.1.12}object\_exists - Python}{52}
-\contentsline {subsubsection}{\numberline {17.1.13}pose\_stamped\_to\_position\_tupel - Python}{52}
-\contentsline {subsubsection}{\numberline {17.1.14}pose\_stamped\_to\_quaternion\_tupel - Python}{53}
-\contentsline {subsubsection}{\numberline {17.1.15}quaternion\_to\_prolog\_list - Python}{53}
-\contentsline {subsubsection}{\numberline {17.1.16}spawn\_object\_frame - Python}{53}
-\contentsline {subsubsection}{\numberline {17.1.17}update\_object\_frame - Python}{53}
-\contentsline {subsubsection}{\numberline {17.1.18}change\_reference\_frame - Python}{53}
-\contentsline {subsubsection}{\numberline {17.1.19}spawn\_object\_mesh - Python}{53}
-\contentsline {subsubsection}{\numberline {17.1.20}main - Python}{54}
-\contentsline {subsubsection}{\numberline {17.1.21}object\_exists - Prolog}{54}
-\contentsline {subsubsection}{\numberline {17.1.22}process\_perceive\_action - Prolog}{54}
-\contentsline {subsubsection}{\numberline {17.1.23}process\_grasp\_action - Prolog}{54}
-\contentsline {subsubsection}{\numberline {17.1.24}process\_drop\_action - Prolog}{54}
-\contentsline {subsubsection}{\numberline {17.1.25}object\_attached\_to\_gripper - Prolog}{54}
-\contentsline {subsubsection}{\numberline {17.1.26}get\_latest\_object\_pose - Prolog}{54}
-\contentsline {subsubsection}{\numberline {17.1.27}get\_objects\_on\_kitchen\_island\_counter - Prolog}{55}
-\contentsline {subsubsection}{\numberline {17.1.28}get\_two\_objects\_on\_kitchen\_island\_counter\_with\_same\_storage\_place - Prolog}{55}
-\contentsline {subsubsection}{\numberline {17.1.29}Subscriber process\_perceive\_action}{55}
-\contentsline {subsubsection}{\numberline {17.1.30}Subscriber process\_grasp\_action}{55}
-\contentsline {subsubsection}{\numberline {17.1.31}Subscriber process\_drop\_action}{55}
-\contentsline {subsubsection}{\numberline {17.1.32}Service Server gripper\_empty}{55}
-\contentsline {subsubsection}{\numberline {17.1.33}Service Server object\_to\_pick}{56}
-\contentsline {subsubsection}{\numberline {17.1.34}Schritt 1: Wahrnehmen mehrerer Objekte}{56}
-\contentsline {subsubsection}{\numberline {17.1.35}Schritt 2: Welche zwei Objekte sollen wegger\IeC {\"a}umt werden?}{56}
-\contentsline {subsubsection}{\numberline {17.1.36}Schritt 3: Greifen eines Objekts}{56}
-\contentsline {subsubsection}{\numberline {17.1.37}Schritt 4: Greifen eines weiteren Objekts}{56}
-\contentsline {subsubsection}{\numberline {17.1.38}Schritt 5: Abstellen des 1. Objekts}{56}
-\contentsline {subsubsection}{\numberline {17.1.39}Schritt 6: Anfrage welcher der Gripper belegt ist}{56}
-\contentsline {subsubsection}{\numberline {17.1.40}Schritt 7: Abstellen des 2. Objekts}{56}
-\contentsline {subsubsection}{\numberline {17.1.41}Schritt 8: Anfrage welcher der Gripper belegt ist}{56}
-\contentsline {subsubsection}{\numberline {17.1.42}Schritt 9: Welche Objekte sollen wegger\IeC {\"a}umt werden?}{57}
-\contentsline {section}{\numberline {18}storage\_place}{57}
-\contentsline {subsection}{\numberline {18.1}Beschreibung des Teilsystems}{57}
-\contentsline {subsubsection}{\numberline {18.1.1}createQuery - C++}{57}
-\contentsline {subsubsection}{\numberline {18.1.2}main - C++}{57}
-\contentsline {subsubsection}{\numberline {18.1.3}get\_position - Prolog}{57}
-\contentsline {subsubsection}{\numberline {18.1.4}get\_scale - Prolog}{57}
-\contentsline {subsubsection}{\numberline {18.1.5}storage\_area - Prolog}{58}
-\contentsline {subsubsection}{\numberline {18.1.6}storage\_place - Prolog}{58}
-\contentsline {subsection}{\numberline {18.2}Schnittstellen}{58}
-\contentsline {subsubsection}{\numberline {18.2.1}Service Server find\_storage\_place}{58}
-\contentsline {subsection}{\numberline {18.3}Programmablauf}{58}
-\contentsline {subsubsection}{\numberline {18.3.1}Schritt 1: Anfrage an den Service- Server}{58}
-\contentsline {subsubsection}{\numberline {18.3.2}Schritt 2: Erstellen der Prologanfrage}{58}
-\contentsline {subsubsection}{\numberline {18.3.3}Schritt 3: Ermitteln des Lagerplatzes}{59}
-\contentsline {subsubsection}{\numberline {18.3.4}Schritt 4: Zur\IeC {\"u}ckgeben der Antwort}{59}
-\contentsline {subsection}{\numberline {18.4}\IeC {\"U}bersicht des Teilsystems}{60}
-\contentsline {subsection}{\numberline {18.5}Schnittstellen - 'suturo\_motion\_main'}{61}
-\contentsline {subsubsection}{\numberline {18.5.1}Angebotene Actions}{61}
-\contentsline {subsubsection}{\numberline {18.5.2}Aufgerufene Actions}{62}
-\contentsline {subsubsection}{\numberline {18.5.3}Aufgerufene Services}{62}
-\contentsline {subsubsection}{\numberline {18.5.4}Ver\IeC {\"o}ffentlichte Topics}{63}
-\contentsline {subsubsection}{\numberline {18.5.5}Benutzte Topics}{64}
-\contentsline {subsection}{\numberline {18.6}Schnittstellen - 'simple\_gripper'}{65}
-\contentsline {subsubsection}{\numberline {18.6.1}Angebotene Actions}{65}
-\contentsline {subsubsection}{\numberline {18.6.2}Aufgerufene Actions}{65}
-\contentsline {subsection}{\numberline {18.7}Ablauf}{66}
-\contentsline {subsection}{\numberline {18.8}Besonderheiten/Besondere Algorithmen}{67}
-\contentsline {subsubsection}{\numberline {18.8.1}Algorithmus f\IeC {\"u}r das Greifen eines Objektes}{67}
-\contentsline {subsubsection}{\numberline {18.8.2}Algorithmus f\IeC {\"u}r das Abstellen eines Objektes}{68}
-\contentsline {subsubsection}{\numberline {18.8.3}Algorithmus f\IeC {\"u}r das Schieben eines Objektes}{69}
-\contentsline {subsection}{\numberline {18.9}Tests \& Evaluation}{70}
-\contentsline {section}{\numberline {19}Vision}{71}
-\contentsline {subsection}{\numberline {19.1}Vorwort Vision}{71}
-\contentsline {subsection}{\numberline {19.2}\IeC {\"U}berblick Vision}{71}
-\contentsline {subsection}{\numberline {19.3}Beschreibung des Teilsystems}{71}
-\contentsline {subsubsection}{\numberline {19.3.1}Abk\IeC {\"u}rzungen durch short\_types.h}{71}
-\contentsline {subsubsection}{\numberline {19.3.2}preprocessCloud}{72}
-\contentsline {subsubsection}{\numberline {19.3.3}segmentPlanes}{72}
-\contentsline {subsubsection}{\numberline {19.3.4}findCluster}{72}
-\contentsline {subsubsection}{\numberline {19.3.5}findCenterGazebo}{72}
-\contentsline {subsubsection}{\numberline {19.3.6}findPoses}{72}
-\contentsline {subsubsection}{\numberline {19.3.7}estimateSurfaceNormals}{73}
-\contentsline {subsubsection}{\numberline {19.3.8}apply3DFilter}{73}
-\contentsline {subsubsection}{\numberline {19.3.9}estimatePlaneIndices}{73}
-\contentsline {subsubsection}{\numberline {19.3.10}extractCluster}{73}
-\contentsline {subsubsection}{\numberline {19.3.11}mlsFilter}{73}
-\contentsline {subsubsection}{\numberline {19.3.12}voxelGridFilter}{74}
-\contentsline {subsubsection}{\numberline {19.3.13}outlierRemoval}{74}
-\contentsline {subsubsection}{\numberline {19.3.14}cvfhRecognition}{74}
-\contentsline {subsubsection}{\numberline {19.3.15}euclideanClusterExtraction}{74}
-\contentsline {subsubsection}{\numberline {19.3.16}SACInitialAlignment}{74}
-\contentsline {subsubsection}{\numberline {19.3.17}iterativeClosestPoint}{75}
-\contentsline {subsubsection}{\numberline {19.3.18}produceColorHist}{75}
-\contentsline {subsubsection}{\numberline {19.3.19}getAllFeatures}{75}
-\contentsline {subsubsection}{\numberline {19.3.20}getCVFHFeatures}{75}
-\contentsline {subsubsection}{\numberline {19.3.21}getColorFeatures}{75}
-\contentsline {subsubsection}{\numberline {19.3.22}getTargetByLabel}{76}
-\contentsline {subsubsection}{\numberline {19.3.23}sub\_kinect\_callback}{76}
-\contentsline {subsubsection}{\numberline {19.3.24}start\_node}{76}
-\contentsline {subsubsection}{\numberline {19.3.25}getObjects}{76}
-\contentsline {subsubsection}{\numberline {19.3.26}extractAbovePlane}{76}
-\contentsline {subsubsection}{\numberline {19.3.27}transform}{77}
-\contentsline {subsubsection}{\numberline {19.3.28}train}{77}
-\contentsline {subsubsection}{\numberline {19.3.29}classify}{77}
-\contentsline {subsubsection}{\numberline {19.3.30}has\_suffix}{77}
-\contentsline {subsubsection}{\numberline {19.3.31}read\_from\_file}{77}
-\contentsline {subsection}{\numberline {19.4}Schnittstellen}{78}
-\contentsline {subsubsection}{\numberline {19.4.1}Service Server /vision\_suturo/objects\_information}{78}
-\contentsline {subsubsection}{\numberline {19.4.2}Service Server /vision\_suturo/objects\_poses}{79}
-\contentsline {subsubsection}{\numberline {19.4.3}Subscriber REAL\_KINECT\_POINTS\_FRAME}{79}
-\contentsline {subsection}{\numberline {19.5}Programmablauf}{80}
-\contentsline {subsubsection}{\numberline {19.5.1}Schritt 1: Erkennen der Punktwolke}{80}
-\contentsline {subsubsection}{\numberline {19.5.2}Schritt 2: Service-Aufruf \textit {/vision\_suturo/objects\_information}}{80}
-\contentsline {subsubsection}{\numberline {19.5.3}Schritt 3: Vorbereiten auf die Extraktion}{80}
-\contentsline {subsubsection}{\numberline {19.5.4}Schritt 3b: Ausweichen auf Simulationsdaten}{80}
-\contentsline {subsubsection}{\numberline {19.5.5}Schritt 4: Cluster Extraktion}{80}
-\contentsline {subsubsection}{\numberline {19.5.6}Schritt 5: Berechnen von Features und Posen}{81}
-\contentsline {subsubsection}{\numberline {19.5.7}Schritt 6: Bef\IeC {\"u}llen der MSG}{81}
-\contentsline {subsubsection}{\numberline {19.5.8}Schritt 7: Angleichen von Mesh und Objekt (Cluster)}{81}
-\contentsline {subsubsection}{\numberline {19.5.9}Schritt 8: Berechnen des Quaternions }{81}
-\contentsline {subsubsection}{\numberline {19.5.10}Schritt 9: Berechnen des Mittelpunkts }{81}
-\contentsline {subsubsection}{\numberline {19.5.11}Schritt 10: Bef\IeC {\"u}llen der MSG }{81}
-\contentsline {section}{\numberline {20}Nutzungsbeschreibung}{82}
-\contentsline {subsection}{\numberline {20.1}Installation und Ausf\IeC {\"u}hrung von Planning}{82}
-\contentsline {subsubsection}{\numberline {20.1.1}Installation}{82}
-\contentsline {subsubsection}{\numberline {20.1.2}Ausf\IeC {\"u}hrung}{82}
-\contentsline {subsection}{\numberline {20.2}Installation und Ausf\IeC {\"u}hrung von Motion}{82}
-\contentsline {subsubsection}{\numberline {20.2.1}Installationsanleitung}{82}
-\contentsline {subsubsection}{\numberline {20.2.2}Starten der Nodes}{83}
-\contentsline {subsection}{\numberline {20.3}Installation und Ausf\IeC {\"u}hrung von Vision}{83}
-\contentsline {subsubsection}{\numberline {20.3.1}Installation (mit gazebo)}{83}
-\contentsline {subsubsection}{\numberline {20.3.2}Ausf\"uhrung}{84}
-\contentsline {subsection}{\numberline {20.4}Installation und Ausf\IeC {\"u}hrung von Knowledge}{85}
-\contentsline {subsubsection}{\numberline {20.4.1}Installation}{85}
-\contentsline {subsubsection}{\numberline {20.4.2}Ausf\IeC {\"u}hrung}{85}
+\contentsline {subsubsection}{\numberline {15.1.2}createQuery - C++}{45}
+\contentsline {subsubsection}{\numberline {15.1.3}find\_grasp\_pose - C++}{46}
+\contentsline {section}{\numberline {16}svm\_classifier}{46}
+\contentsline {subsection}{\numberline {16.1}svm\_classifier}{46}
+\contentsline {subsection}{\numberline {16.2}svm\_training\_data\_collector}{46}
+\contentsline {subsection}{\numberline {16.3}svm\_trainer}{46}
+\contentsline {subsection}{\numberline {16.4}Beschreibung des Teilsystems}{47}
+\contentsline {subsubsection}{\numberline {16.4.1}main - Python}{47}
+\contentsline {subsubsection}{\numberline {16.4.2}save\_training\_set - Python}{47}
+\contentsline {subsubsection}{\numberline {16.4.3}get\_corresponding\_normals\_histogram\_file - Python}{47}
+\contentsline {subsubsection}{\numberline {16.4.4}get\_features - Python}{47}
+\contentsline {subsubsection}{\numberline {16.4.5}collect\_training\_data - Python}{47}
+\contentsline {subsubsection}{\numberline {16.4.6}main - Python}{47}
+\contentsline {subsubsection}{\numberline {16.4.7}plot\_confusion\_matrix - Python}{47}
+\contentsline {subsubsection}{\numberline {16.4.8}main - Python}{48}
+\contentsline {subsection}{\numberline {16.5}Schnittstellen}{48}
+\contentsline {subsubsection}{\numberline {16.5.1}Service Server classify\_service}{48}
+\contentsline {subsection}{\numberline {16.6}Programmablauf}{48}
+\contentsline {subsubsection}{\numberline {16.6.1}Schritt 1: Trainingsdaten sammeln und speichern}{48}
+\contentsline {subsubsection}{\numberline {16.6.2}Schritt 2: Trainieren und speichern einer SVM}{48}
+\contentsline {subsubsection}{\numberline {16.6.3}Schritt 3: Laden der SVM und Klassifizieren von Featurevektoren}{48}
+\contentsline {section}{\numberline {17}beliefstate}{48}
+\contentsline {subsection}{\numberline {17.1}Beschreibung des Teilsystems}{48}
+\contentsline {subsubsection}{\numberline {17.1.1}to\_underscore - Python}{48}
+\contentsline {subsubsection}{\numberline {17.1.2}object\_url\_to\_object\_name - Python}{49}
+\contentsline {subsubsection}{\numberline {17.1.3}prolog\_query\_false - Python}{49}
+\contentsline {subsubsection}{\numberline {17.1.4}prolog\_query\_true - Python}{49}
+\contentsline {subsubsection}{\numberline {17.1.5}point\_to\_prolog\_list - Python}{49}
+\contentsline {subsubsection}{\numberline {17.1.6}pose\_to\_prolog\_list - Python}{49}
+\contentsline {subsubsection}{\numberline {17.1.7}gripper\_as\_string - Python}{50}
+\contentsline {subsubsection}{\numberline {17.1.8}create\_query\_for\_perceive\_object - Python}{50}
+\contentsline {subsubsection}{\numberline {17.1.9}create\_query\_for\_grasp\_object - Python}{50}
+\contentsline {subsubsection}{\numberline {17.1.10}create\_query\_for\_drop\_object - Python}{50}
+\contentsline {subsubsection}{\numberline {17.1.11}create\_query\_object\_attached\_to\_gripper - Python}{50}
+\contentsline {subsubsection}{\numberline {17.1.12}object\_exists - Python}{50}
+\contentsline {subsubsection}{\numberline {17.1.13}pose\_stamped\_to\_position\_tupel - Python}{50}
+\contentsline {subsubsection}{\numberline {17.1.14}pose\_stamped\_to\_quaternion\_tupel - Python}{51}
+\contentsline {subsubsection}{\numberline {17.1.15}quaternion\_to\_prolog\_list - Python}{51}
+\contentsline {subsubsection}{\numberline {17.1.16}spawn\_object\_frame - Python}{51}
+\contentsline {subsubsection}{\numberline {17.1.17}update\_object\_frame - Python}{51}
+\contentsline {subsubsection}{\numberline {17.1.18}change\_reference\_frame - Python}{51}
+\contentsline {subsubsection}{\numberline {17.1.19}spawn\_object\_mesh - Python}{51}
+\contentsline {subsubsection}{\numberline {17.1.20}main - Python}{52}
+\contentsline {subsubsection}{\numberline {17.1.21}object\_exists - Prolog}{52}
+\contentsline {subsubsection}{\numberline {17.1.22}process\_perceive\_action - Prolog}{52}
+\contentsline {subsubsection}{\numberline {17.1.23}process\_grasp\_action - Prolog}{52}
+\contentsline {subsubsection}{\numberline {17.1.24}process\_drop\_action - Prolog}{52}
+\contentsline {subsubsection}{\numberline {17.1.25}object\_attached\_to\_gripper - Prolog}{52}
+\contentsline {subsubsection}{\numberline {17.1.26}get\_latest\_object\_pose - Prolog}{52}
+\contentsline {subsubsection}{\numberline {17.1.27}get\_objects\_on\_kitchen\_island\_counter - Prolog}{53}
+\contentsline {subsubsection}{\numberline {17.1.28}get\_two\_objects\_on\_kitchen\_island\_counter\_with\_same\_storage\_place - Prolog}{53}
+\contentsline {subsubsection}{\numberline {17.1.29}Subscriber process\_perceive\_action}{53}
+\contentsline {subsubsection}{\numberline {17.1.30}Subscriber process\_grasp\_action}{53}
+\contentsline {subsubsection}{\numberline {17.1.31}Subscriber process\_drop\_action}{53}
+\contentsline {subsubsection}{\numberline {17.1.32}Service Server gripper\_empty}{53}
+\contentsline {subsubsection}{\numberline {17.1.33}Service Server object\_to\_pick}{54}
+\contentsline {subsubsection}{\numberline {17.1.34}Schritt 1: Wahrnehmen mehrerer Objekte}{54}
+\contentsline {subsubsection}{\numberline {17.1.35}Schritt 2: Welche zwei Objekte sollen wegger\IeC {\"a}umt werden?}{54}
+\contentsline {subsubsection}{\numberline {17.1.36}Schritt 3: Greifen eines Objekts}{54}
+\contentsline {subsubsection}{\numberline {17.1.37}Schritt 4: Greifen eines weiteren Objekts}{54}
+\contentsline {subsubsection}{\numberline {17.1.38}Schritt 5: Abstellen des 1. Objekts}{54}
+\contentsline {subsubsection}{\numberline {17.1.39}Schritt 6: Anfrage welcher der Gripper belegt ist}{54}
+\contentsline {subsubsection}{\numberline {17.1.40}Schritt 7: Abstellen des 2. Objekts}{54}
+\contentsline {subsubsection}{\numberline {17.1.41}Schritt 8: Anfrage welcher der Gripper belegt ist}{54}
+\contentsline {subsubsection}{\numberline {17.1.42}Schritt 9: Welche Objekte sollen wegger\IeC {\"a}umt werden?}{55}
+\contentsline {section}{\numberline {18}storage\_place}{55}
+\contentsline {subsection}{\numberline {18.1}Beschreibung des Teilsystems}{55}
+\contentsline {subsubsection}{\numberline {18.1.1}createQuery - C++}{55}
+\contentsline {subsubsection}{\numberline {18.1.2}main - C++}{55}
+\contentsline {subsubsection}{\numberline {18.1.3}get\_position - Prolog}{55}
+\contentsline {subsubsection}{\numberline {18.1.4}get\_scale - Prolog}{55}
+\contentsline {subsubsection}{\numberline {18.1.5}storage\_area - Prolog}{56}
+\contentsline {subsubsection}{\numberline {18.1.6}storage\_place - Prolog}{56}
+\contentsline {subsection}{\numberline {18.2}Schnittstellen}{56}
+\contentsline {subsubsection}{\numberline {18.2.1}Service Server find\_storage\_place}{56}
+\contentsline {subsection}{\numberline {18.3}Programmablauf}{56}
+\contentsline {subsubsection}{\numberline {18.3.1}Schritt 1: Anfrage an den Service- Server}{56}
+\contentsline {subsubsection}{\numberline {18.3.2}Schritt 2: Erstellen der Prologanfrage}{56}
+\contentsline {subsubsection}{\numberline {18.3.3}Schritt 3: Ermitteln des Lagerplatzes}{57}
+\contentsline {subsubsection}{\numberline {18.3.4}Schritt 4: Zur\IeC {\"u}ckgeben der Antwort}{57}
+\contentsline {subsection}{\numberline {18.4}\IeC {\"U}bersicht des Teilsystems}{58}
+\contentsline {subsection}{\numberline {18.5}Schnittstellen - 'suturo\_motion\_main'}{59}
+\contentsline {subsubsection}{\numberline {18.5.1}Angebotene Actions}{59}
+\contentsline {subsubsection}{\numberline {18.5.2}Aufgerufene Actions}{60}
+\contentsline {subsubsection}{\numberline {18.5.3}Aufgerufene Services}{60}
+\contentsline {subsubsection}{\numberline {18.5.4}Ver\IeC {\"o}ffentlichte Topics}{61}
+\contentsline {subsubsection}{\numberline {18.5.5}Benutzte Topics}{62}
+\contentsline {subsection}{\numberline {18.6}Schnittstellen - 'simple\_gripper'}{63}
+\contentsline {subsubsection}{\numberline {18.6.1}Angebotene Actions}{63}
+\contentsline {subsubsection}{\numberline {18.6.2}Aufgerufene Actions}{63}
+\contentsline {subsection}{\numberline {18.7}Ablauf}{64}
+\contentsline {subsection}{\numberline {18.8}Besonderheiten/Besondere Algorithmen}{65}
+\contentsline {subsubsection}{\numberline {18.8.1}Algorithmus f\IeC {\"u}r das Greifen eines Objektes}{65}
+\contentsline {subsubsection}{\numberline {18.8.2}Algorithmus f\IeC {\"u}r das Abstellen eines Objektes}{66}
+\contentsline {subsubsection}{\numberline {18.8.3}Algorithmus f\IeC {\"u}r das Schieben eines Objektes}{67}
+\contentsline {subsection}{\numberline {18.9}Tests \& Evaluation}{68}
+\contentsline {section}{\numberline {19}Vision}{69}
+\contentsline {subsection}{\numberline {19.1}\IeC {\"U}berblick Vision}{69}
+\contentsline {subsection}{\numberline {19.2}Beschreibung des Teilsystems}{69}
+\contentsline {subsubsection}{\numberline {19.2.1}Abk\IeC {\"u}rzungen durch short\_types.h}{69}
+\contentsline {subsubsection}{\numberline {19.2.2}preprocessCloud}{70}
+\contentsline {subsubsection}{\numberline {19.2.3}segmentPlanes}{70}
+\contentsline {subsubsection}{\numberline {19.2.4}findCluster}{70}
+\contentsline {subsubsection}{\numberline {19.2.5}findCenterGazebo}{70}
+\contentsline {subsubsection}{\numberline {19.2.6}findPoses}{70}
+\contentsline {subsubsection}{\numberline {19.2.7}estimateSurfaceNormals}{70}
+\contentsline {subsubsection}{\numberline {19.2.8}apply3DFilter}{71}
+\contentsline {subsubsection}{\numberline {19.2.9}estimatePlaneIndices}{71}
+\contentsline {subsubsection}{\numberline {19.2.10}extractCluster}{71}
+\contentsline {subsubsection}{\numberline {19.2.11}mlsFilter}{71}
+\contentsline {subsubsection}{\numberline {19.2.12}voxelGridFilter}{71}
+\contentsline {subsubsection}{\numberline {19.2.13}outlierRemoval}{72}
+\contentsline {subsubsection}{\numberline {19.2.14}cvfhRecognition}{72}
+\contentsline {subsubsection}{\numberline {19.2.15}euclideanClusterExtraction}{72}
+\contentsline {subsubsection}{\numberline {19.2.16}SACInitialAlignment}{72}
+\contentsline {subsubsection}{\numberline {19.2.17}iterativeClosestPoint}{72}
+\contentsline {subsubsection}{\numberline {19.2.18}produceColorHist}{73}
+\contentsline {subsubsection}{\numberline {19.2.19}getAllFeatures}{73}
+\contentsline {subsubsection}{\numberline {19.2.20}getCVFHFeatures}{73}
+\contentsline {subsubsection}{\numberline {19.2.21}getColorFeatures}{73}
+\contentsline {subsubsection}{\numberline {19.2.22}getTargetByLabel}{73}
+\contentsline {subsubsection}{\numberline {19.2.23}sub\_kinect\_callback}{74}
+\contentsline {subsubsection}{\numberline {19.2.24}start\_node}{74}
+\contentsline {subsubsection}{\numberline {19.2.25}getObjects}{74}
+\contentsline {subsubsection}{\numberline {19.2.26}extractAbovePlane}{74}
+\contentsline {subsubsection}{\numberline {19.2.27}transform}{74}
+\contentsline {subsubsection}{\numberline {19.2.28}train}{75}
+\contentsline {subsubsection}{\numberline {19.2.29}classify}{75}
+\contentsline {subsubsection}{\numberline {19.2.30}has\_suffix}{75}
+\contentsline {subsubsection}{\numberline {19.2.31}read\_from\_file}{75}
+\contentsline {subsection}{\numberline {19.3}Schnittstellen}{76}
+\contentsline {subsubsection}{\numberline {19.3.1}Service Server /vision\_suturo/objects\_information}{76}
+\contentsline {subsubsection}{\numberline {19.3.2}Service Server /vision\_suturo/objects\_poses}{77}
+\contentsline {subsubsection}{\numberline {19.3.3}Subscriber REAL\_KINECT\_POINTS\_FRAME}{77}
+\contentsline {subsection}{\numberline {19.4}Programmablauf}{77}
+\contentsline {subsubsection}{\numberline {19.4.1}Schritt 1: Erkennen der Punktwolke}{77}
+\contentsline {subsubsection}{\numberline {19.4.2}Schritt 2: Service-Aufruf \textit {/vision\_suturo/objects\_information}}{77}
+\contentsline {subsubsection}{\numberline {19.4.3}Schritt 3: Vorbereiten auf die Extraktion}{77}
+\contentsline {subsubsection}{\numberline {19.4.4}Schritt 3b: Ausweichen auf Simulationsdaten}{78}
+\contentsline {subsubsection}{\numberline {19.4.5}Schritt 4: Cluster Extraktion}{78}
+\contentsline {subsubsection}{\numberline {19.4.6}Schritt 5: Berechnen von Features und Posen}{78}
+\contentsline {subsubsection}{\numberline {19.4.7}Schritt 6: Bef\IeC {\"u}llen der MSG}{78}
+\contentsline {subsubsection}{\numberline {19.4.8}Schritt 7: Ermitteln der Pose}{78}
+\contentsline {section}{\numberline {20}Nutzungsbeschreibung}{79}
+\contentsline {subsection}{\numberline {20.1}Installation und Ausf\IeC {\"u}hrung von Planning}{79}
+\contentsline {subsubsection}{\numberline {20.1.1}Installation}{79}
+\contentsline {subsubsection}{\numberline {20.1.2}Ausf\IeC {\"u}hrung}{79}
+\contentsline {subsection}{\numberline {20.2}Installation und Ausf\IeC {\"u}hrung von Motion}{79}
+\contentsline {subsubsection}{\numberline {20.2.1}Installationsanleitung}{79}
+\contentsline {subsubsection}{\numberline {20.2.2}Starten der Nodes}{80}
+\contentsline {subsection}{\numberline {20.3}Installation und Ausf\IeC {\"u}hrung von Vision}{80}
+\contentsline {subsubsection}{\numberline {20.3.1}Installation (mit gazebo)}{80}
+\contentsline {subsubsection}{\numberline {20.3.2}Ausf\"uhrung}{81}
+\contentsline {subsection}{\numberline {20.4}Installation und Ausf\IeC {\"u}hrung von Knowledge}{82}
+\contentsline {subsubsection}{\numberline {20.4.1}Installation}{82}
+\contentsline {subsubsection}{\numberline {20.4.2}Ausf\IeC {\"u}hrung}{82}

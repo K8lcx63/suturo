@@ -191,12 +191,7 @@ Normal- und Farb-Features werden zur Klassifizierung der ermittelten Objekte ben
 \subsection{Posen der Objekte bestimmen}
 \chapterauthor{Tammo Wübbena}
 Für eine sinnvolle Greifpose müssen die Punket im Koordinatensystem sowie Rotation und Translation der Objekte bestimmt werden. 
-\textbf{Lösung}: Vision erhält von Knowledge die klassifizierten Labels und Nummern der Objekte. Dazu wird das passende Mesh als Punktwolke gespawned und mit einem Iterative Closest Point Algorithmus an den erkannten Cluster angeglichen. Die Pose kann anschließend mit einem Qauternion, dass aus der aus dem Algorithmus resultierenden Rotationsmatrix ermittelt werden.
-
-\subsection{Posen: z-Achse negativ}
-\chapterauthor{Tammo Wübbena}
-Die ermittelten Posen der Objekte haben manchmal (je nach fit) eine umgekehrter z-Achse. Die Objekte können aber immer seitlich gegriffen werden.
-\textbf{Lösung}: Vergleich mit den Normalen der Tischplatte, auf der die Objekte stehen (nicht implementiert).
+\textbf{Lösung}: Vision erhält von Knowledge die klassifizierten Labels und Nummern der Objekte, deren Pose dann mit einem Alignment-Algorithmus und einer Verfeinerung durch den Iterative Closest Point ermittelt werden.
 
 \subsection{Welche Gripper sind belegt}
 \chapterauthor{Alexander Haar}
@@ -1445,7 +1440,7 @@ vorkommen und direkt im Anschluss normal_features)
 \section*{Methodendokumentation Gruppe Knowledge}
 \section{knowledge\_grasp}
 \chapterauthor{Max-Phillip Bahr}
-Das Knowledge\_Grasp-Paket dient dazu, alle GraspPosen zu einem erkannten Gegenstand aus der Ontologie auszulesen. Die GraspPose dient dazu dem PR2 mitzuteilen wie ein Gegenstand zu greifen ist.
+Das Knowledge\_Grasp-Paket dient dazu, die GraspPose zu einem erkannten Gegenstand aus der Ontologie auszulesen. Die GraspPose dient dazu dem PR2 mitzuteilen wie ein Gegenstand zu greifen ist.
 
 \begin{figure}[!htb]
         \center{\includegraphics[width=\textwidth]
@@ -1458,103 +1453,26 @@ Das Knowledge\_Grasp-Paket dient dazu, alle GraspPosen zu einem erkannten Gegens
 
 \subsubsection{find\_grasp\_pose - Prolog}
 \begin{spverbatim}
-find_grasp_pose(ObjectClassLabel, Frame, Translation, Quaternion)
+find_grasp_pose(ObjectClassLabel, Position, Quaternion)
 @param ObjectClassLabel Das Objektlabel des zu greifenden Objekts 
        (z.B. suturo_object:'JaMilch')
-@param Frame Der Frame des zu greifenden Objekts (z.B. "/JaMilch")
-@param Translation Position der GraspPose als Prolog Liste 
-       (z.B. [0.0, 0.0, 0.0])
+@param Position Position der GraspPose als Prolog Liste (z.B. [0.0, 0.0, 0.0])
 @param Quaternion Orientation der GraspPose also Prolog Liste 
        (z.B. [0.0 0.0 0.0 1.0])
 
-Description : Benutzt sort_grasp_poses um eine sortierte Liste aller 
-GraspPosen zu erhalten und führt dann mit member alle Posen einzeln auf.
-\end{spverbatim}
-
-\subsubsection{find\_grasp\_individual - Prolog}
-\begin{spverbatim}
-find_grasp_individual(ObjectClassLabel, GraspIndividual)
-@param ObjectClassLabel Das Objektlabel des zu greifenden Objekts 
-       (z.B. suturo_object:'JaMilch')
-@param GraspIndividual Das zum Label gehörige Individual das 
-       eine GraspPose enthält
-
-Description : Findet alle zum einem ObjectLabel gehörigen Individuals die 
-GraspPosen darstellen.
-\end{spverbatim}
-
-\subsubsection{build\_grasp\_tuple - Prolog}
-\begin{spverbatim}
-build_grasp_tuple([GraspIndividual, ObjectClassLabel, Frame], 
-                  [GraspIndividual, ObjectClassLabel, Frame, 
-                  Translation, Quaternion])
-@param GraspIndividual Das Individual der GraspPose
-@param ObjectClassLabel Das zur GraspPose gehörige Objektlabel
-@param Frame Der Frame des Objekts
-@param Translation Die ausgelesene Position der GraspPose
-@param Quaternion Die ausgelesene Rotation der GraspPose
-
-Description : Liest die Daten aus GraspIndividual aus und fügt sie dem 
-Tupel hinzu.
-\end{spverbatim}
-
-\subsubsection{build\_pose\_list - Prolog}
-\begin{spverbatim}
-build_pose_list(ObjectClassLabel, Frame, PoseList)
-@param ObjectClassLabel Das zur GraspPose gehörige Objektlabel
-@param Frame Der Frame des Objekts
-@param List Die fertige Liste von GraspPosen.
-
-Description : benutzt findall um alle GraspIndividuals zum Objektlabel zu 
-finden und dann build_grasp_tuple um die Daten der Posen den 
-Tupeln in der Liste hinzuzufügen
-\end{spverbatim}
-
-\subsubsection{evaluate\_pose\_by\_height - Prolog}
-\begin{spverbatim}
-evaluate_pose_by_height([Individual, Class, Frame, Translation, Quaternion], 
-                        K-[Individual, Translation, Quaternion])
-@param Individual Das Individual der GraspPose
-@param Class Das zur GraspPose gehörige Objektlabel
-@param Frame Der Frame des Objekts
-@param Translation Die ausgelesene Position der GraspPose
-@param Quaternion Die ausgelesene Rotation der GraspPose
-@param K Dem Tupel zugeteilter Schlüsselwert
-
-Description : Wertet die GraspPosen nach Höhenunterschied zum Ablageplatz aus 
-und weist ihnen Keys zu die zum sortieren benutzt werden.
-\end{spverbatim}
-
-\subsubsection{pair\_value - Prolog}
-\begin{spverbatim}
-pair_value(_-V, V)
-@param V Wert eines Schlüssel-Wert Paares
-
-Description : Entfernt den Schlüssel eines Schlüssel-Wert Paares.
-\end{spverbatim}
-
-\subsubsection{sort\_grasp\_poses - Prolog}
-\begin{spverbatim}
-sort_pose_list(ObjectClassLabel, Frame, PoseList)
-@param ObjectClassLabel Das Label des zu greifenden Objekts
-@param Frame Der Frame des Objekts
-@param SortedGraspList Die fertige Liste von GraspPosen.
-
-Description : Baut mit build_pose_list eine Liste aus GraspPosen und weist 
-ihnen mit evaluate_pose_by_height Schlüssel zu, dann werden die Posen nach 
-diesen Schlüsseln sortiert und die Schlüssel danach mit pair_value aus den 
-Paaren entfernt. Das Ergebnis ist eine sortierte Liste aus GraspPosen.
+Description : Liest zu einem gegebenen Objektlabel eine zugehörige GraspPose 
+aus der Ontologie aus. Es wird bei der eingespeicherten GraspPose von der 
+Translation des Grippers zum Mittelpunkt des Objekts ausgegangen.
 \end{spverbatim}
 
 \subsubsection{createQuery - C++}
 \begin{spverbatim}
-std::string createQuery(std::string object_label, std::string frame_id)
+std::string createQuery(std::string object_label)
 @param object_label Das Objektlabel.
-@param frame_id Die ID des Objektframes.
-@return Den aus dem Objektlabel und FrameID zusammengesetzten Query-String.
+@return Den aus dem Objektlabel zusammengesetzten Query-String.
 
-Description : Baut aus dem Objektlabel und der Frame ID einen Query-String 
-für die Prolog-Methode find_grasp_pose zusammen.
+Description : Baut aus dem Objektlabel einen Query-String für die 
+Prolog-Methode find_grasp_pose zusammen.
 \end{spverbatim}
 
 \subsubsection{find\_grasp\_pose - C++}
@@ -1567,37 +1485,12 @@ bool find_grasp_pose(knowledge_msgs::GraspIndividual::Request  &req,
 @return true wenn Methode erfolgreich, false wenn nicht.
 
 Description : Die Methode liest das Objektlabel aus req aus und baut mit 
-createQuery einen QueryString, der mit der query-Methode an den Prolog Server 
-geschickt wird. Alle von Prolog gefundenen Lösungen werden dem PoseArray 
-hinzugefügt und je nach Objektlabel die Greifstärke eingestellt
+createQuery einen QueryString, der mit der once-Methode an den Prolog Server 
+geschickt wird. Wenn Prolog mit find_grasp_pose (Prolog Methode) eine Lösung 
+zur Query findet (also die GraspPose aus der Ontologie ausliest), wird diese in 
+das Response Objekt geschrieben und true zurückgegeben. Wenn nicht wird 
+eine Fehlermeldung ausgegeben und false zurückgegeben.
 \end{spverbatim}
-
-\subsection{Schnittstellen}
-\chapterauthor{Max-Phillip Bahr}
-
-\subsubsection{Service Server knowledge\_grasp\_service/knowledge\_grasp}
-\begin{spverbatim}
-GraspIndividual.srv
-@request:
-
-	string object_label
-
-@response: 
-
-	geometry_msgs/PoseArray grasp_pose_array
-	float64 force
-\end{spverbatim}
-Wir entnehmen der Message das Objektlabel und lesen die für dieses Objekt gespeicherte GraspPosen aus der Ontologie aus. Die Posen werden als grasp\_pose\_array zurückgegeben.
-
-\subsection{Programmablauf}
-\chapterauthor{Max-Phillip Bahr}
-\begin{itemize}
-\item[1.]Es wird eine Anfrage an den Service-Server gestellt
-\item[2.]Eine Anfrage mit folgendem Inhalt wird an den json\_prolog- Server wird gestellt:\\ "find\_grasp\_pose(suturo\_object:'object\_label', 'frame\_id', Position, Quaternion)." 
-\item[3.]Die entsprechende Prolog Methode liest die zum übergebenen Objektlabel gehörigen GraspPosen aus der OWL Ontologie aus.
-\item[4.] Die als PrologBindings vom json\_prolog- Server erhaltenen GraspPosen werden von find\_grasp\_pose (c++) in die gewünschte Form konvertiert.
-\item[5.] Antwort zurückgeben.
-\end{itemize}
 
 \section{svm\_classifier}
 \chapterauthor{Alexander Haar}
@@ -2427,13 +2320,10 @@ Am Ende funktionierten die angebotenen Funktionalitäten wie gewünscht.\\
 \section*{Methodendokumentation Gruppe Vision}
 
 \section{Vision}
-\subsection{Vorwort Vision}
-\chapterauthor{Alexander Link}
-Da einige Teile der Dokumentation überarbeitet und nicht komplett neu geschrieben wurden, ist zu beachten, dass die Autoren der Vision-Teile zu der Dokumentation von Meilenstein 1 genau umgekehrt waren. Auch ist hinzuzufügen, dass an vielen Funktionen Tammo Wübbena und Alexander Link zugleich beteiligt waren. In solchen Fällen sind beide Autoren mit "Beide"\ abgekürzt.
 
 \subsection{Überblick Vision}
 \chapterauthor{Alexander Link}
-Das Vision-Paket \footnote{im weiteren Verlauf auch Vision-Package, vision-node oder einfach Paket oder vision genannt} dient zur Akquirierung und Verarbeitung visueller Informationen durch die Kinect-Kamera des PR2-Roboters.
+Das Vision-Paket \footnote{im weiteren Verlauf auch Vision-Package, vision-node oder einfach Paket oder vision genannt} dient zur Akquirierung und Verarbeitung visueller Informationen durch die Kinect-Kamera des PR2-Roboters, sowie dem anschließenden Klassifizieren von Objekten und Feststellen derer Posen.
 
 \begin{figure}[!htb]
         \center{\includegraphics[width=\textwidth]
@@ -2506,12 +2396,12 @@ das an Gazebo übergeben wurde).
 
 
 \subsubsection{findPoses}
-\chapterauthor{Beide (Doku), Beide (Code)}
+\chapterauthor{Alexander Link (Doku), Beide (Code)}
 \begin{verbatim}
 std::vector<geometry_msgs::PoseStamped> 
 findPoses(const std::vector<PointCloudRGBPtr> clouds_in)
-Beschreibung: Errechnet Position und Orientierung (Quaternion) der Objekte in den
-übergebenen Punktwolken.
+Beschreibung: Errechnet Position und Rotation der Objekte in den übergebenen
+Punktwolken.
 @param: Punktwolken der Objekte
 @return: Posen der Objekte
 \end{verbatim}\label{func:findposes}
@@ -2843,14 +2733,6 @@ Die \textit{normal\_features} vom Typ VFHSignature308 und \textit{color\_feature
 Da die Länge der Features für ein Objekt immer gleich ist, kann durch die Anzahl der erkannten Objekte die Länge insgesamt ermittelt werden.
 
 \subsubsection{Service Server /vision\_suturo/objects\_poses}
-
-\begin{figure}[!htb]
-        \center{\includegraphics[width=0.6 \textwidth]
-        {img/vision_pose_service.png}
-        \caption{} Ausgabe der Ausrichtung für ein Objekt durch den Pose Service}
-\end{figure}
-
-
 \begin{verbatim}
 poses.srv
 @request: string, uint8 (label of classified (recognized) object and its number
@@ -2895,19 +2777,10 @@ Mit \textit{EuclideanClusterExtracion} werden die nun segmentierten Objekte (all
 Es werden die Normal-Features, Color-Features für die Klassifikation durch Knowledge und die Posen der einzelnen Objekte berechnet.
  
 \subsubsection{Schritt 6: Befüllen der MSG}
-Die einzelnen Features und Posen werden in der Message (ObjectsInfo.msg) gespeichert und zur weiteren Bearbeitung an Planning weitergegeben.
+Die einzelnen Features und Posen (letzteres aktuell noch nicht getestet) werden in der Message (ObjectsInfo.msg) gespeichert und zur weiteren Bearbeitung an Planning weitergegeben.
 
-\subsubsection{Schritt 7: Angleichen von Mesh und Objekt (Cluster)}
-Die von Knowledge gelabelten Objekte werden mit ihren jeweiligen Meshes abgeglichen und durch Iterative Closest Point Algorithmen werden die Rotationsmatrizen zu den Posen ermittelt.
-
-\subsubsection{Schritt 8: Berechnen des Quaternions }
-Die im vorherigen Schritt errechneten Rotationsmatrizen werden verwendet, um mit Hilfe eines Transforms das Quaternion zu berechnen, dass die Orientierung des Objekts darstellt. 
-
-\subsubsection{Schritt 9: Berechnen des Mittelpunkts }
-Der Mittelpunkt des angeglichenen Meshes (als Punktwolke) wird errechnet und als Vektor gespeichert.
-\\
-\subsubsection{Schritt 10: Befüllen der MSG }
-Die Message wird mit dem Mittelpunkt als Vektor und der Orientierung als Quaternion befüllt und weiter an Planning gesendet.
+\subsubsection{Schritt 7: Ermitteln der Pose}
+Die von Knowledge gelabelten Objekte werden mit ihren jeweiligen Meshes abgeglichen und durch SACInitialAlignment werden ihre jeweiligen Posen ermittelt.
 
 \subsection*{Visualization-Publisher}
 Der Visualization-Publisher ''publiziert'' (advertise) die extrahierten Cluster als zusammenhängende Punktwolke
@@ -3009,8 +2882,7 @@ Folgendes muss zur .bashrc (oder zshrc) hinzugefügt werden:
 
 \item Sollten Probleme auftreten, könnte dies durch ein Update von gazebo auf v2.2.6 gelöst werden:
 \\
-\textit{sudo sh -c 'echo ''deb http://packages.osrfoundation.org/gazebo/ubuntu trusty main'' $>$ \\ 
-/etc/apt/sources.list.d/gazebo-latest.list'}
+\textit{sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu trusty main" > /etc/apt/sources.list.d/gazebo-latest.list'}
 \\
 \textit{wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -}
 \\
