@@ -189,7 +189,7 @@ Die Teilansichten, die wir zur Berechnung unserer Trainingsfeatures verwenden, h
 \subsection{Posen der Objekte bestimmen}
 \chapterauthor{Tammo Wübbena}
 Für eine sinnvolle Greifpose müssen die Punket im Koordinatensystem sowie Rotation und Translation der Objekte bestimmt werden. 
-\textbf{Lösung}: Vision erhält von Knowledge die klassifizierten Labels und Nummern der Objekte. Dazu wird das passende Mesh als Punktwolke gespawned und mit einem Iterative Closest Point Algorithmus an den erkannten Cluster angeglichen. Die Pose kann anschließend mit einem Qauternion, dass aus der aus dem Algorithmus resultierenden Rotationsmatrix ermittelt werden.
+\textbf{Lösung}: Vision erhält vom eigenen Klassifizierer die klassifizierten Labels und Nummern der Objekte. Dazu wird das passende Mesh als Punktwolke gespawned und mit einem Iterative Closest Point Algorithmus an den erkannten Cluster angeglichen. Die Pose kann anschließend mit einem Quaternion, dass aus der aus dem Algorithmus resultierenden Rotationsmatrix ermittelt wird, übertragen werden.
 
 \subsection{Posen: z-Achse negativ}
 \chapterauthor{Tammo Wübbena}
@@ -2645,9 +2645,9 @@ Dabei werden nacheinander mit Hilfe von Ablaufdiagrammen das Greifen, das Abstel
 
 \subsubsection{Unit-Tests}
 Um einen reibungslosen Entwicklungsprozess zu gewährleisten, war es nötig unsere Lib Funktionalität durch Unit-Tests abzudecken. Dies stellte uns vor diverse Herausforderungen. Zum einen lässt sich ROS-Funktionalität nicht testen, dadurch ist es nötig die Core-Funktionalität unserer Library von ROS Funktionen zu befreien. Ein erster Ansatz war es hierfür die \textit{ROSConnector-Klasse} anzulegen, welche einen Wrapper um ROS Funktionen darstellt und lediglich Methoden anbietet, die den Aufruf weiter an ROS delegiert. Dies sollte es ermöglichen die nötigen ROS Aufrufe in unserer Library mit einem Mocking-Framework (in unserem Fall gMock) zu mocken und so Unit-Tests fahren zu können. Diesen Ansatz haben wir verfolgt um dann leider festzustellen, dass gMock noch nicht von \textit{catkin} unterstützt wird, gMock ist leider nur in einer \textit{forked catkin version} verfügbar und es ist wohl geplant das Framework in einer neueren Version von \textit{catkin} in das Main-Release zu integrieren. Daher haben wir uns entschlossen unsere Library soweit vorzubereiten, damit die \textit{Unit-Tests} nach dem Release und der Migration auf die neuste Version keinen großen Aufwand darstellen. Leider mussten wir feststellen, dass \textit{catkin build} beim Buildprozess keine Tests ausführt, sondern diese nur über \textit{catkin\_ make run\_ tests} ausgeführt werden können. Damit die Tests dennoch regelmäßig laufen und die Funktionalität der Lib regelmäßig getestet wird, wurde \textit{Continuous Integration} eingerichtet. Über den Dienst \textit{coverage.io} lässt sich zusätzlich ein \textit{Coveragereport} für die getesteten Packages erstellen, dadurch ist es möglich Qualitätsstandards zu definieren und \textit{Mergerequests} nur bei ausreichender Testabdeckung zu akzeptieren. Leider war es uns nicht möglich dies hier umzusetzen, da die OpenSource Registrierung von coverage.io zum Zeitpunkt der Umsetzung nicht funktionierte. \\
-Der Sinn der Unit-Tests war es die Zeit bis Fehler bei der Entwicklung entdeckt werden deutlich zu verkürzen und die Stelle der Fehler besser und schneller zu identifizieren. Dadurch wollten wir vor allem die extrem langen Testzyklen auf dem echten Roboter verkürzen, um mehr Zeit für neue Features in der Entwicklung zu haben.
+Der Sinn der Unit-Tests war es die Zeit bis Fehler bei der Entwicklung entdeckt werden deutlich zu verkürzen und die Stelle der Fehler besser und schneller zu identifizieren. Dadurch wollten wir vor allem die extrem langen Testzyklen auf dem echten Roboter verkürzen, um mehr Zeit für neue Features in der Entwicklung zu haben. \\
 
-\\ ~ \\
+ $~$ \\
 Damit sich Methoden mit gMock für die Tests leicht mocken lassen, sieht gMock eine \textit{virtual} Definition von Methoden, die gemockt werden sollen vor. Damit ergibt sich folgender Pseudocode für die \textit{ROSConnector-Klasse}: \\
 
 \begin{verbatim}
@@ -2914,18 +2914,6 @@ Beschreibung: Trennt cluster einer Punktwolke voneinander.
 @return Eine Punktwolke pro cluster/Objekt
 \end{verbatim}\label{func:euclideanClusterExtraction}
 
-\subsubsection{SACInitialAlignment}
-\chapterauthor{Alexander Link (Doku), Tammo Wübbena (Code)}
-\begin{verbatim}
-PointCloudRGBPtr SACInitialAlignment(std::vector<PointCloudRGBPtr> objects,
-                                std::vector<PointCloudVFHS308Ptr> features,
-                                PointCloudRGBPtr target)
-Beschreibung: Errechnet Ausrichtung von Objekten bezüglich Zielen per sample
-consensus
-@param: objects Punktwolken, features als VFHSignature308, target PointCloud
-@return Punktwolke
-\end{verbatim}\label{func:sacinitialalignment}
-
 \subsubsection{iterativeClosestPoint}
 \chapterauthor{Alexander Link (Doku), Tammo Wübbena (Code)}
 \begin{verbatim}
@@ -2948,16 +2936,6 @@ Beschreibung: Errechnet ein Farbhistogramm einer Punktwolke.
 soll
 @return Farbhistogramm als floats (r,g,b)
 \end{verbatim}\label{func:produceColorHist}
-
-\subsubsection{getAllFeatures}
-\chapterauthor{Alexander Link (Doku), Tammo Wübbena (Code)}
-\begin{verbatim}
-void getAllFeatures(std::vector<PointCloudRGBPtr> all_clusters,
-                    std::vector<float> vfhs_vector,
-                    std::vector<uint64_t> color_features_vector)
-Beschreibung: Errechnet CVFH- und Farb-features für alle übergebenen Objekte.
-@param: Punktwolken der Objekte, deren features errechnet werden sollen
-\end{verbatim}\label{func:getallfeatures}
 
 \subsubsection{getCVFHFeatures}
 \chapterauthor{Alexander Link (Doku), Tammo Wübbena (Code)}
@@ -3017,6 +2995,18 @@ einer Szene.
 ObjectsInfo.msg
 @return true wenn service call erfolgreich, ansonsten false
 \end{verbatim}\label{func:getobjects}
+
+\subsubsection{getPoses}
+\begin{verbatim}
+bool getObjects(vision_suturo_msgs::objects::Request &req, 
+vision_suturo_msgs::objects::Response &res)
+Beschreibung: Service zum ermitteln von Posen der zuvor extrahierten Objekte.
+@param: req index und label des Clusters, für den eine Pose bestimmt werden soll; 
+res Antwort mit Pose zum Objekt
+ObjectsInfo.msg
+@return true wenn service call erfolgreich, ansonsten false
+\end{verbatim}\label{func:getposes}
+
 
 
 \subsection*{CloudTransformer}
@@ -3141,7 +3131,7 @@ objects.srv
 							object_errors (errors while extracting)
 							)
 \end{verbatim}
-Gibt Anzahl, Features von den in einer Szene erkannten Objekten (Clustern) zurück. Die Pose wird für diesen Meilenstein noch nicht ermittelt. Der Service kann weitere Informationen und bei Problemen unterschiedliche Fehlermeldungen zurückgeben.
+Gibt Anzahl, Features von den in einer Szene erkannten Objekten (Clustern) zurück. Der Service kann weitere Informationen und bei Problemen unterschiedliche Fehlermeldungen zurückgeben.
 \\ \\
 Die \textit{normal\_features} vom Typ VFHSignature308 und \textit{color\_features} (acht bins) aller Objekte werden konkateniert in Arrays festgehalten. 
 Da die Länge der Features für ein Objekt immer gleich ist, kann durch die Anzahl der erkannten Objekte die Länge insgesamt ermittelt werden.
@@ -3196,7 +3186,7 @@ Sollte es zu irgendeinem Zeitpunkt beim Filtern oder der Segmentierung zu Proble
 Mit \textit{EuclideanClusterExtracion} werden die nun segmentierten Objekte (alle noch in einer Punktwolke zusammengefasst) extrahiert und in einzelne Cluster gespeichert.
 \\
 \subsubsection{Schritt 5: Berechnen von Features und Posen}
-Es werden die Normal-Features, Color-Features für die Klassifikation durch Knowledge und die Posen der einzelnen Objekte berechnet.
+Es werden die Normal-Features, Color-Features für die Klassifikation durch Vision-Classifier und die Posen der einzelnen Objekte berechnet.
  
 \subsubsection{Schritt 6: Befüllen der MSG}
 Die einzelnen Features und Posen werden in der Message (ObjectsInfo.msg) gespeichert und zur weiteren Bearbeitung an Planning weitergegeben.
