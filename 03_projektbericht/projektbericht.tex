@@ -138,13 +138,6 @@ Beim Fahren kollidiert der Roboter häufig mit Küchenobjekten und dreht sich in
 
 \textbf{Lösung}: Bevor der Pr2 zu dem gegebenem Punkt fährt, stellen wir sicher, dass sich der Roboter in einer entsprechenden sicheren Position befindet. Bis dahin sollte er sich um 90 Grad gedreht haben.
 
-\subsection{Extrahieren von wichtigen Information}
-\chapterauthor{Vanessa Hassouna}
-
-Die Informationen der gesehenen Objekte wird als \textbf{Message} übergeben. Diese beinhaltet ein Array aus \textbf{normal\_features}, ein Array aus \textbf{color\_features}, ein Array mit \textbf{object\_pose} und die Anzahl der gesehenen Objekte. 
-Um jedoch Objekte an Knowledge senden zu können, muss das Array zuerst zergliedert werden. \\
-
-\textbf{Lösung}: Alle erhaltenen Informationen werden auf dem Parameterserver zwischengespeichert, erst danach werden diese miteinander konkateniert.
 
 \subsection{Logik der Main wird zu groß und unübersichtlich}
 \chapterauthor{Vanessa Hassouna}
@@ -249,7 +242,7 @@ Es gab nach größeren Änderungen am Code immer wieder Fehler der Funktionalit�
 Fehler in der Funktionalität sind leider erst beim testen auf dem Roboter aufgefallen, hier durch hatten wir eine extreme lange \textit{Time-To-Fail}, dies verlängerte die Entwicklungszeit unnötig und hinderte uns daran in dieser Zeit neue Features zu implementieren.
 \textbf{Lösung}: Es werden Tests für die Funktionen des Codes geschrieben, die beim \textit{Bauen} des Projektes durchlaufen und den Code auf die korrekte Funktionalität prüfen. So sollen Fehler die bei Änderungen entstehen können schneller entdeckt werden und die \textit{Time-To-Fail} verkürzt werden.
 
-\section*{Methodendokumentation Gruppe Planning}
+\section{Methodendokumentation Gruppe Planning}
 \section{Die Quellcode-Datei: main.lisp (planning\_main\_programm)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
@@ -304,7 +297,7 @@ Diese Node läuft solange,bis die komplette Main einmalig durchlaufen wurde.
 
 
 
-%müsste eigendlich wieder ausgelagert werden, kann von mir aus aber auch drin bleiben -v
+%müsste eigendlich wieder ausgelagert werden, kann von mir aus aber auch drin bleiben 
 \subsubsection{find-Object(x z)}
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
@@ -505,6 +498,7 @@ call-Motion-Move-Arm-To-Point (point-center-of-object \&optional (x 3))
 
 Beschreibung: Ruft den Actionserver von Motion auf und 
 sendet den Befehl einen Arm zu dem point-center-of-object zu fahren.
+
 @param point-center-of-object &optional (x 3)
 @return: Successfull oder Aborted
 \end{verbatim}
@@ -662,7 +656,7 @@ Beschreibung: Published eine knowledge_msgs/PerceivedObject-msg
 \begin{verbatim}
 publish-Text (string)
 
-Beschreibung: Publish a text in RVIZ with a given string.
+Beschreibung: Publisht einen Text in RVIZ mit einem übergebenen String.
 
 @param:string
 \end{verbatim}
@@ -673,9 +667,11 @@ Beschreibung: Publish a text in RVIZ with a given string.
 \begin{verbatim}
 publish-Pose-JaMilch ()
 
-Beschreibung: This function is only for the demo scenario purpose.
-Here a "JaMilch" is percieved and published to Team Knowledge also a new param
-will be created on the Ros Param Server.
+Beschreibung: Die Funktion ist nur für das Demoszenario 
+erstellt. Eine "JaMilch" wir "gesehen" und gepublisht
+an das Team Knowledge. Es wird auche in neuer Parameter
+auf dem Paramserver erstellt der den Namen des Strings
+bekommt.
 
 @param:string
 \end{verbatim}
@@ -714,7 +710,8 @@ Beschreibung: Löst die Y-Koordinate einer GraspPose heraus.
 \begin{verbatim}
 transformation-XYZ (x y z startFrame &optional (endFrame "/base_footprint"))
 
-Beschreibung: Transforms a point with standart ( 0 0 0 1) quaternion.
+Beschreibung: Transformiert einen Punkt mit dem standart
+Quaternion  0 0 0 1.
 
 @param: x y z startFrame &optional (endFrame "/base_footprint")
 @return: Liefert eine transformierte tf-pose-stamped
@@ -727,8 +724,8 @@ Beschreibung: Transforms a point with standart ( 0 0 0 1) quaternion.
 \begin{verbatim}
  transformation-Pose-Stamped (pose &optional (endFrame "/base_footprint")) 
 
-Beschreibung: Transform a Pose-Stamped-msgs with an optional Frame,\\
- default is base_footprint.
+Beschreibung: Transformiert eine Pose-Stamped-msgs mit einem optional Frame,\\
+ default ist base_footprint.
 
 @param: x y z startFrame &optional (endFrame '/base_footprint')
 @return: Liefert eine transformierte tf-pose-stamped
@@ -742,8 +739,8 @@ Beschreibung: Transform a Pose-Stamped-msgs with an optional Frame,\\
 \begin{verbatim}
 make-Object-Pose-For-Handshake (label)
 
-Beschreibung: Making a msg from the point of an object for \\
-the handshake function.
+Beschreibung: Erstellt eine msg von dem Punkt eines Objektes\\ 
+für die Handshake Methode.
 
 @param: label
 @return: T oder Nil
@@ -754,10 +751,11 @@ the handshake function.
 \begin{verbatim}
 percieve-Objetcs ()
 
-Beschreibung: Calling vision_sutuo service to percieve objects,\\
-while looping for the array-total-size through all the percieved \\
-objects will be published and saved on to the Paramserver.
-Another param named counter is logging how many objects has been seen.
+Beschreibung: Ruf vision_suturo Service um Objekte wahrzunehmen auf\\
+wärend dessen wir durch die größe des übergebenen Arrays \\
+durchgelaufen und jedes gesehene Objekt gepublisht, sowie\\
+auf dem Paramserver gespeichert. Auch ein Counter wird gesetzt\\
+der mitzählt wieviele Objekte gesehen wurden.
 
 @return: T oder Nil
 \end{verbatim}
@@ -767,8 +765,7 @@ Another param named counter is logging how many objects has been seen.
 \begin{verbatim}
  percieve-Objects-And-Search (label)
 
-Beschreibung: searching for the given object if its still there.
-
+Beschreibung: Sucht nach einem Objekt ob es noch gesehen wird.
 @param: label
 @return: T oder Nil
 \end{verbatim}
@@ -779,11 +776,11 @@ Beschreibung: searching for the given object if its still there.
 \begin{verbatim}
 get-Information-About-Object (label)
 
-Beschreibung: Transforming the point of the label to frame "map" return \\
-value is the transformed y value.
+Beschreibung: Transformiert einen Punkt von dem gegeben Objekt\\
+in den Frame "Map".
 
 @param: label
-@return: Transformed pose
+@return: Transformed y
 \end{verbatim}
 
 \subsubsection{save-Object (label object\_pose)}
@@ -791,8 +788,10 @@ value is the transformed y value.
 \begin{verbatim}
 save-Object (label object_pose)
 
-Beschreibung: The given object (label) will be set as a new param on the Paramserver
-, but keep in mind only the Point will be saved. The label will be the name of the param.
+Beschreibung: Das gegeben Objekt wird auf dem \\
+Paramserver gespeichert. Hier wird jedoch nur der Punkt\\
+des Objektes berücksichtigt und der Name des Parameters \\
+ist der Name des Objektes.
 
 @param: label object_pose
 @return: T oder Nil
@@ -899,8 +898,10 @@ arm-second arm-second-homeposi)}
 grab-Or-Place-Object (label x y angle arm-first 
 arm-first-homeposi grab-string &optional arm-second arm-second-homeposi)
 
-Beschreibung: Trying to grab or place, if the given grab-string
- is equal to grab the pr2 will also try to grab it with another arm and different places.
+Beschreibung: Versucht zu Greifen oder Abzustellen. Wenn der \\
+übergebene String äquivalent zu "grab" ist, wird der Roboter \\
+auch mit dem zweiten Arm versuchen zu Greifen, wenn der erste\\
+nicht Funktioniert hat.
 
 @param: label x y angle arm-first arm-first-homeposi grab-string &optiona\\
 arm-second arm-second-homeposi
@@ -916,8 +917,9 @@ grab-string arm-second arm-second-homeposi)}
  trying-To-Grab (label x y angle arm-first arm-first-homeposi
  grab-string arm-second arm-second-homeposi)
 
-Beschreibung: Calling grab-or-place-object, \\
-if the counter is bigger than 0 the pr2 wil first change the Position.
+Beschreibung: Ruft grab-or-place-object auf, wenn der \\
+Caounter größer ist als 0 verändert der Pr2 seine Position \\
+und setzt den Counter auf 1, damit er in keinen Loop gerät.
 
 @param: Label x y angle arm-first arm-first-homeposi \\
 grab-string arm-second arm-second-homeposi
@@ -929,8 +931,9 @@ grab-string arm-second arm-second-homeposi
 \begin{verbatim} 
 how-Many-Gripper ()
 
-Beschreibung: Looping through the emtpy-gripper server and\\
-setting the variable left and right to T(1) or nil (0).
+Beschreibung: Durchläuft den empty-gripper server\\
+und setzt die Variablen für Linken- und Rechten-arm auf \\
+T oder Nil.
 
 @return: T oder Nil
 \end{verbatim}
@@ -941,8 +944,8 @@ setting the variable left and right to T(1) or nil (0).
 \begin{verbatim} 
 calculate-Object-And-Pr2-Distance (label)
 
-Beschreibung: Calculating the distance from the given\\
-object to 2 different locations.
+Beschreibung: Berechnet die Distanz zwischen dem \\
+Pr2 und dem Objekt.
 
 @param: label
 @return: T oder Nil
@@ -954,7 +957,8 @@ object to 2 different locations.
 \begin{verbatim}
 distance (xa ya xb yb)
 
- Beschreibung:calctulating the distance between two 2d-vectors.
+ Beschreibung: Berechnet die Distanz\\
+zwischen zwei Vektoren.
 
 @param: xa ya xb yb (vektor1 vektor2)
 @return: distance
@@ -966,7 +970,9 @@ distance (xa ya xb yb)
 \begin{verbatim}
 set-First-Posi ()
 
- Beschreibung: Setting global x y and angle to the first position.
+ Beschreibung: Setzt die Globalen Variablen *x* und *y*\\
+auf die erste Position (Die Position ist fest in der \\
+Küche gewählt).
 
 @return: T oder Nil
 \end{verbatim}
@@ -977,7 +983,9 @@ set-First-Posi ()
 \begin{verbatim}
 set-Second-Posi ()
 
- Beschreibung: Setting global x y and angle to the second position.
+ Beschreibung: Setzt die Globalen Variablen *x* und *y*\\
+auf die zweite Position (Die Position ist fest in der \\
+Küche gewählt).
 
 @return: T oder Nil
 \end{verbatim}
