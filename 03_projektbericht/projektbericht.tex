@@ -2129,7 +2129,7 @@ Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zur
 
 \newpage
 
-\section*{Methodendokumentation Gruppe Motion}
+\section{Methodendokumentation Gruppe Motion}
 
 \subsection{Übersicht des Teilsystems}
 \chapterauthor{Roman Haak}
@@ -2414,7 +2414,13 @@ Dabei werden nacheinander mit Hilfe von Ablaufdiagrammen das Greifen, das Abstel
 \newpage
 
 \subsection{Tests \& Evaluation}
-\chapterauthor{MB, RH}
+\chapterauthor{Maximilian Bertram}
+
+\subsubsection{Unit-Tests}
+Um einen reibungslosen Entwicklungsprozess zu gewährleisten, war es nötig unsere Lib-Funktionalität durch Unit-Tests abzudecken. Dies stellte uns vor diverse Herausforderungen. Zum einen lässt sich ROS-Funktionalität nicht testen, dadurch ist es nötig die Core-Funktionalität unserer Library von ROS Funktionen zu befreien. Ein erster Ansatz war es hierfür die \textit{ROSConnector-Klasse} anzulegen, welche einen Wrapper um ROS Funktionen darstellt und lediglich Methoden anbietet, die den Aufruf weiter an ROS delegiert. Dies sollte es ermöglichen die nötigen ROS Aufrufe in unserer Library mit einem Mocking-Framework (in unserem Fall gMock) zu mocken und so Unit-Tests fahren zu können. Diesen Ansatz haben wir verfolgt um dann leider festzustellen, dass gMock noch nicht von \textit{catkin} unterstützt wird, gMock ist leider nur in einer \textit{forked catkin version} verfügbar und es ist wohl geplant das Framework in einer neueren Version von \textit{catkin} in das Main-Release zu integrieren. Daher haben wir uns entschlossen unsere Library soweit vorzubereiten, damit die \textit{Unit-Tests} nach dem Release und der Migration auf die neuste Version keinen großen Aufwand darstellen.
+
+
+\subsubsection{Continuous Integration}
 Da wir agil entwickeln, haben wir abgewägt und die Priorität auf die Zielerreichung des 2.
 Meilensteines gesetzt und uns gegen das Implementieren von Unit-Tests durch ein Testframework entschieden. Alle von Motion angebotenen Funktionen (greifen, abstellen, umstubsen) wurden mehrfach manuell am echten Roboter überprüft und getestet. Die Implementierung von Unit-Tests wird im 3. Meilenstein folgen. \\
 
