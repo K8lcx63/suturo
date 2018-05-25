@@ -152,6 +152,13 @@ Greift der Pr2 daneben, oder verliert er während der Fahrt ein Objekt aus dem G
 
 \textbf{Lösung}: Algorithmus stellt zur Laufzeit anhand der Joints des Gripper fest, ob diese Gripper gefüllt sind, oder nicht. Es können so beliebig im Code kritische Abschnitte definiert werden, in denen eine Laufzeitkontrolle notwendig ist. Sollte nun ein Gripper fälschlicherweise leer sein, kann eine Notfallroutine etabliert werden.
 
+\subsection{Für den Roboter unloesbare Deadlocks}
+\chapterauthor{Kevin Störmer}
+Während der Entwicklung des zweiten Meilensteines ist uns aufgefallen, dass der Roboter bestimmte Deadlocks erreichen kann, aus denen er sich nicht mehr selbstständig befreien kann.\\
+
+\textbf{Lösung}: Entwicklung eines Paketes (Planning \_Interaction) zur Interaktion des Roboters mit Menschen. Dabei stehen Menschensicherheit und Verständlichkeit im Vordergrund und beliebige Deadlocks sind vom Nutzer configurierbar.
+
+
 \subsection{Die Objektplatzierung soll dynamisch sein}
 \chapterauthor{Hauke Tietjen}
 Wenn jedes Objekt einen statischen Abstellplatz hätte, könnten identische Objekte miteinander kollidieren. Außerdem bringt es Abwechslung in den Programmablauf, wodurch Probleme aufgedeckt werden können. Ein Beispiel wäre Überlappungen von Objekten, in der Wahrnehmung. \\
