@@ -12,3 +12,5 @@ cmake-build-debug
 03_projektbericht/projektbericht\.toc
 
 03_projektbericht/projektbericht\.tex\.bak
+
+*.toc
