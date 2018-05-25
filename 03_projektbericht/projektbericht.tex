@@ -178,15 +178,20 @@ Jedes Objekt muss mindestens eine GraspPose besitzen, an der es vom Roboter gegr
 
 \textbf{Lösung}: In unserer OWL-Ontologie haben wir für jedes Objekt manuell eine GraspPose eingespeichert. Diese wird dann von einer Node ausgelesen und weitergegeben.
 
-\subsection{Segmentieren \& Extrahieren von mehreren Objekten}
-\chapterauthor{Tammo Wübbena}
-Die Objekte müssen klar von der restlichen wahrgenommenen Szene extrahiert und in einzelne Cluster aufgeteilt werden.\\
-\textbf{Lösung}: Die Planare werden so lang segmentiert, bis nur noch eine Fläche (der Tisch) übrig ist. Es werden dann nur die Punkte oberhalb der Tischfläche extrahiert. Dann werden die Objekte mit einer euclidean cluster extraction voneinander getrennt und als einzelne Objekte zwischengespeichert.
+\subsection{Verwendung von CVFH- und Farbfeatures}
+\chapterauthor{Alexander Link}
+Würden die Features einfach konkateniert werden, hätten sie aufgrund ihrer unterschiedlichen Länge (308 vs 24 Stellen) unterschiedliche Priorität im Klassifizierungsprozess. \\
+\textbf{Lösung}: Verwendung von zwei verschiedenen Klassifizierern, die jeder lediglich eines der Featuresets verwenden. Die Ergebnisse werden anschließend kombiniert, sodass ein Ergebnis immer noch richtig sein kann, falls einer der (oder sogar beide) Klassifizierer ein Objekt falsch bestimmen sollte. Diese Abspaltung geht mit weiteren Vorteilen bezüglich Fehlerfindung und Debugging-Ausgaben einher.
 
-\subsection{Features zur Klassifizierung ermitteln}
-\chapterauthor{Tammo Wübbena}
-Normal- und Farb-Features werden zur Klassifizierung der ermittelten Objekte benötigt. \\
-\textbf{Lösung}: Bestimmung von VFH-Features und aufteilen von RGB-Daten in Achter-Bins.
+\subsection{Normal Bayes Klassifizierung}
+\chapterauthor{Alexander Link}
+Der Normal Bayes Klassifizierer aus OpenCV, den ich ursprünglich verwenden wollte, schien in unserem Fall nie Ergebnisse mit sinnvollen Wahrscheinlichkeiten auszugeben. Dabei hat sich herausgestellt, dass die schiere Menge der Features und Teilansichten, auf die wir trainieren, nicht für diese Art von Klassifizierer geeignet ist. \\
+\textbf{Lösung}: Stattdessen wird jetzt ein Random Forest Algorithmus aus einer sourcebuilt OpenCV 3.3.0 -Version verwendet, bei dem jeder Klassifizierer über 50 Bäume verfügt, die jeweils nur mit einem Teil aller vorhandenen Trainingsdaten befüllt sind.
+
+\subsection{Fehlerhafte Trainingsdaten}
+\chapterauthor{Alexander Link}
+Die Teilansichten, die wir zur Berechnung unserer Trainingsfeatures verwenden, haben zwei Makel, die jeweils eines unserer Featuresets auf die Probe stellen. Erstens verfügen einige Teilansichten über Fehler in der Tiefenmessung; zweitens haben alle Teilansichten einen Rotstich. \\
+\textbf{Lösung}: Indem wir die gleichen Filter und Segmentierungsmethoden anwenden, wie wir es bei einem Echtfall tun, sorgen wir unter Anderem durch eine (sehr niedrig angesetzte) Minimalbegrenzung der Objekte dafür, dass einzelne schwebene, durch Messfehler entstandene Punkte nicht mit in die Featureberechnung einbezogen werden. Zusätzlich haben wir Versuche getätigt, durch die wir dem Rotstich per Nachkorrektur der Farbwerte bei der Erkennung von Objekten im Echtfall entgegenwirken konnten, um stellenweise bessere Endergebnisse zu erzielen.
 
 \subsection{Posen der Objekte bestimmen}
 \chapterauthor{Tammo Wübbena}
