@@ -2343,7 +2343,7 @@ Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zur
 
 \newpage
 
-\section*{Methodendokumentation Gruppe Motion}
+\section{Methodendokumentation Gruppe Motion}
 
 \subsection{Übersicht des Teilsystems}
 \chapterauthor{Roman Haak}
@@ -2628,13 +2628,71 @@ Dabei werden nacheinander mit Hilfe von Ablaufdiagrammen das Greifen, das Abstel
 \newpage
 
 \subsection{Tests \& Evaluation}
-\chapterauthor{MB, RH}
-Da wir agil entwickeln, haben wir abgewägt und die Priorität auf die Zielerreichung des 2.
-Meilensteines gesetzt und uns gegen das Implementieren von Unit-Tests durch ein Testframework entschieden. Alle von Motion angebotenen Funktionen (greifen, abstellen, umstubsen) wurden mehrfach manuell am echten Roboter überprüft und getestet. Die Implementierung von Unit-Tests wird im 3. Meilenstein folgen. \\
+\chapterauthor{Maximilian Bertram}
 
-Durch die händischen Tests sind immer wieder Differenzen zwischen echtem PR2 und der Simulation aufgefallen. Es mussten immer wieder Anpassungen am Code vorgenommen werden, damit das Package auf dem jeweiligen System wie gewünscht funktioniert. Die Fehlersuche hat hierbei enorm Zeit verbraucht. \\
+\subsubsection{Unit-Tests}
+Um einen reibungslosen Entwicklungsprozess zu gewährleisten, war es nötig unsere Lib-Funktionalität durch Unit-Tests abzudecken. Dies stellte uns vor diverse Herausforderungen. Zum einen lässt sich ROS-Funktionalität nicht testen, dadurch ist es nötig die Core-Funktionalität unserer Library von ROS Funktionen zu befreien. Ein erster Ansatz war es hierfür die \textit{ROSConnector-Klasse} anzulegen, welche einen Wrapper um ROS Funktionen darstellt und lediglich Methoden anbietet, die den Aufruf weiter an ROS delegiert. Dies sollte es ermöglichen die nötigen ROS Aufrufe in unserer Library mit einem Mocking-Framework (in unserem Fall gMock) zu mocken und so Unit-Tests fahren zu können. Diesen Ansatz haben wir verfolgt um dann leider festzustellen, dass gMock noch nicht von \textit{catkin} unterstützt wird, gMock ist leider nur in einer \textit{forked catkin version} verfügbar und es ist wohl geplant das Framework in einer neueren Version von \textit{catkin} in das Main-Release zu integrieren. Daher haben wir uns entschlossen unsere Library soweit vorzubereiten, damit die \textit{Unit-Tests} nach dem Release und der Migration auf die neuste Version keinen großen Aufwand darstellen. Leider mussten wir feststellen, dass \textit{catkin build} beim Buildprozess keine Tests ausführt, sondern diese nur über \textit{catkin_make run_tests} ausgeführt werden können. Damit die Tests dennoch regelmäßig laufen und die Funktionalität der Lib regelmäßig getestet wird, wurde \textit{Continuous Integration} eingerichtet.
 
-Am Ende funktionierten die angebotenen Funktionalitäten wie gewünscht.\\
+\subsubsection{Continuous Integration}
+Um den Entwicklungsprozess weiter zu verbessern haben wir uns dazu entschieden \textit{Continuous Integration} zu verwenden um eine reibungslose Integration der Feature-Branches in den master-Branch zu gewährleisten. Dabei haben wir uns entschieden den CI-Dienst von \textit{Travis} zu nutzen. Einer der Hauptgründe hier für ist die verhältnismäßig leichte Konfiguration über die \textit{.travis.yml}. Dabei musste \textit{catkin_make} verwendet werden, da \textit{catkin build} generell keine Tests ausführt, dadurch war die Konfiguration von travis leider nicht trivial, da wir sogenannte \textit{private dependencies} in unserem Code verwenden, dies bezieht sich in unserem Fall auf die anderen \textit{SUTURO Pakete}. Diese mussten zu erst gecloned werden und gebaut werden um im lokalen Buildrepository zur Verfügung zu stehen. Am besten lässt sich dies durch folgende kommentierte \textit{.travis.yml} zeigen, relevant sind hier vor allem die Bereiche \textit{install}, \textit{before_script} und \textit{script}: \\
+
+\textit{install section of .travis.yml}
+\begin{verbatim}
+# Create a catkin workspace with the package under integration.
+install:
+  - mkdir -p ~/catkin_ws/src
+  - cd ~/catkin_ws/src
+  - catkin_init_workspace
+  # Create the devel/setup.bash (run catkin_make with an empty workspace) and
+  # source it to set the path variables.
+  - cd ~/catkin_ws
+  - catkin_make
+  - source ~/catkin_ws/devel/setup.bash
+  - cd ~/catkin_ws/src
+  # Clone the private dependencies repositories
+  - git clone https://github.com/menanuni/common_suturo1718.git
+  - git clone https://github.com/menanuni/msgs_suturo_1718.git
+  - cd ~/catkin_ws 
+  # Install rosdeps from private deps
+  - rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO -r
+  # Add the package under integration to the workspace using a symlink.
+  - cd ~/catkin_ws/src
+  - ln -s $CI_SOURCE_PATH .
+  - cd ~/catkin_ws
+  # Build the private dependencies
+  - catkin_make --pkg knowledge_msgs
+  - catkin_make --pkg motion_msgs
+  # Source the private dependencies
+  - source ~/catkin_ws/devel/setup.bash
+\end{verbatim}
+
+\textit{before_script section of .travis.yml}
+
+\begin{verbatim}
+before_script:
+  # source dependencies: install using wstool.
+  - cd ~/catkin_ws/src
+  - wstool init
+  - if [[ -f $ROSINSTALL_FILE ]] ; then wstool merge $ROSINSTALL_FILE ; fi
+  - wstool up
+  # package depdencies: install using rosdep.
+  - cd ~/catkin_ws
+  - rosdep install -y --from-paths src --ignore-src --rosdistro $ROS_DISTRO -r
+
+\end{verbatim}
+
+\textit{script section of .travis.yml}
+
+\begin{verbatim}
+script:
+  - source /opt/ros/$ROS_DISTRO/setup.bash
+  - cd ~/catkin_ws
+  # ensuring the path is set correctly.
+  - source devel/setup.bash
+  # Run the tests of package motion and motion gripper
+  - catkin_make run_tests_motion
+  - catkin_make run_tests_motion_gripper
+\end{verbatim}
 
 \newpage
 
