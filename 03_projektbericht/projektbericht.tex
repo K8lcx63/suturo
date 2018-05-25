@@ -1030,7 +1030,7 @@ aus den Joint-States geparsed.
 
 
 \begin{figure}[!htb]
-	\center{\includegraphics[width=1.0\textwidth]
+	\center{\includegraphics[width=1.1\textwidth]
 		{img/diag_planning_objects.png}
 		\caption{} Architektur der Quellcode-Datei planning-objects.lisp}
 \end{figure}
@@ -1041,14 +1041,23 @@ aus den Joint-States geparsed.
 \subsubsection{Serviceclients}
 1. '/storage\_place\_service/storage\_place' \\
 Gibt den Ablageplatz des Objekts zur\"uck.\\ \\
-2. '/object\_grasping/grasp\_pose' \\
-Gibt die Greifpose des für die Koordinaten zurück.\\
-3. '~location\_marker' \\
+2. '/place\_object/place' \\
+Gibt die Pose zum abstellen eines Objektes zur\"uck\\ \\
+3. '/beliefstate/gripper\_empty' \\
+Gibt eine Message zurück die aussagt welcher Gripper leer ist\\ \\
+4. '/push\_object/push' \\
+Gibt eine Pose zum Verschieben des Objektes zur\"uck\\ \\
+5. '/motion\_msgs/MovingCommandAction' \\
+Bewegt den Gripper zur gegebenen Pose\\ \\
+6. '/motion\_msgs/GripperAction' \\
+Öffnet oder schließt die Hand auf das gegebene Maß\\ \\
+7. 'visualization\_msgs/Marker' \\
 Publiziert Marker zur Visualisierung von Landezonen.
+
 \subsection{Beschreibung des Teilsystems}
 \subsubsection{\"Ubersicht}
 \chapterauthor{Hauke Tietjen}
-Die Datei 'objects' aus dem Paket 'planning\_objects' dient dazu, aus den von Knowledge vorgegebenen Ablageorten für Objekte, Punkte zu bestimmen, die geeignet sind um Objekte auf ihnen abzustellen. Dabei werden Platzmangel und die Kollision von Objekten berücksichtigt. Zusätzlich lassen sich die finalen Positionen in Rviz visualisieren. Außerdem können Objekte nach hinten verschoben werden um Platz für neue zu schaffen.
+Die Datei 'objects' aus dem Paket 'planning\_objects' dient dazu, aus den von Knowledge vorgegebenen Ablageorten für Objekte, Punkte zu bestimmen, die geeignet sind um Objekte auf ihnen abzustellen. Dabei werden Platzmangel und die Kollision von Objekten berücksichtigt. Zusätzlich lassen sich die finalen Positionen in Rviz visualisieren. Außerdem können Objekte nach hinten verschoben werden um Platz für Neue zu schaffen.
 
 \subsubsection{calculate-landing-zone()}
 \chapterauthor{Hauke Tietjen}
@@ -1064,13 +1073,36 @@ Objekten auf Tischkanten und Wänden verhindert werden. Danach wird die
 Funktion fill-landing-zone-horizontally aufgerufen, die eine Pose 
 zurück gibt. Die X- und Y-Koordinaten dieser Pose werden an Knowledge, 
 mit einer weiteren Message welche die Grippernummer enthält,
- weitergegeben. Knowledge gibt dann eine entsprechende Greifpose für 
- das Objekt zurück. Die Pose wird mit dem String der die Kapazität 
+weitergegeben. Knowledge gibt dann eine entsprechende Greifpose für 
+das Objekt zurück. Die Pose wird mit dem String der die Kapazität 
 des storage place beschreibt in eine Liste geschrieben und diese
 zurückgegeben.
 
 @param object
 @return Gibt die Pose eines Grippers in /map zurück um ein Objekt abzustellen
+\end{verbatim}
+
+\begin{figure}[!htb]
+	\center{\includegraphics[width=1.0\textwidth]
+		{img/objects_all_placed.png}
+		\caption{} Alle Objekte in ihren Abstellzonen}
+\end{figure}
+
+\subsubsection{check-storage-place-spelling()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+check-storage-place-spelling()
+
+Beschreibung: Diese Funktion überprüft ob der Parameter 'object-label'
+einem der Namen für Objekte entspricht. Der Name muss korrekt geschrieben
+werden, weil sonst Knowledge den Namen nicht kennt und abstürzt. 
+Die Namen sind: "HelaCurryKetchup", "TomatoSauceOroDiParma", 
+"PringlesPaprika", "PringlesSalt", "JaMilch", 
+"KoellnMuesliKnusperHonigNuss", "KellogsToppasMini", "CupEcoOrange", 
+"EdekaRedBowl" und "SiggBottle".
+
+@param object-label
+@return true wenn es den Namen gibt, false falls nicht
 \end{verbatim}
 
 \subsubsection{fill-landing-zone-horizontally()}
@@ -1079,12 +1111,42 @@ zurückgegeben.
 fill-landing-zone-horizontally()
 
 Beschreibung: Es wird festgestellt in welchen Abstellbereich das Objekt gehört.
-Dann wird der Bereich mit dem gegebenen Objekt befüllt.
+Dann wird überprüft ob noch genug Platz für das derzeitige Objekt und das 
+Nächste ist. Dann wird der Bereich mit dem gegebenen Objekt befüllt.
 Dies geschieht von positiv nach negativ auf der Y-Achse, im Frame '/map'.
+Danach wird die erstellte Pose zurückgegeben.
 
-@param position width height
+@param position width height, der Landezone
 @return Gibt eine Pose in /map zurück um ein Objekt abzustellen
 \end{verbatim}
+
+\begin{figure}[!htb]
+	\center{\includegraphics[width=1.0\textwidth]
+		{img/objects_abstellen.png}
+		\caption{} Das Abstellen eines Objekts}
+\end{figure}
+
+\subsubsection{push-object()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+push-object()
+
+Beschreibung: Diese Funktion fragt Knowledge welche Hand frei ist und öffnet 
+jene Hand. Wenn der zuletzt befüllte Ablageort voll ist, werden mit der 
+geöffneten Hand, nacheinander, beide Objekte auf X-Achse positiv verschoben. 
+Falls der Ablageort noch nicht voll sein sollte wird stattdessen ein Fehler 
+ausgegeben. Wenn kein Fehler aufgetreten ist wird die globale Variable 
+'*storage-place-capacity*' wieder auf "storage-place-empty" gesetzt.
+
+@param
+@return
+\end{verbatim}
+
+\begin{figure}[!htb]
+	\center{\includegraphics[width=1.0\textwidth]
+		{img/objects_push.png}
+		\caption{} Das Verschieben von Objekten}
+\end{figure}
 
 \subsubsection{calculate-landing-zone-visualized()}
 \chapterauthor{Hauke Tietjen}
@@ -1127,7 +1189,8 @@ Beschreibung: Die Funktion startet den Marker-publisher.
 publish-pose()
 
 Beschreibung: Es wird ein Marker an der angegebenen Pose publiziert,
-mit ID und den Dimensionen aus height und width.
+mit ID und den Dimensionen aus height und width. Der Marker hat die
+Form eines Würfels und die Farbe wird zufällig gewählt.
 
 @param pose id height width
 @return 
@@ -1178,7 +1241,6 @@ Fehlernachricht wird 'vison error:' ausgegeben.
 \end{verbatim}
 
 Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' funktionieren analog zu 'vison-error' und definieren weitere Fehler, für andere Bereiche.
-\newpage
 \section{Die Quellcode-Datei: interaction.lisp (planning\_interaction)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
