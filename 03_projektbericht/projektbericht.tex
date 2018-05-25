@@ -191,7 +191,12 @@ Normal- und Farb-Features werden zur Klassifizierung der ermittelten Objekte ben
 \subsection{Posen der Objekte bestimmen}
 \chapterauthor{Tammo Wübbena}
 Für eine sinnvolle Greifpose müssen die Punket im Koordinatensystem sowie Rotation und Translation der Objekte bestimmt werden. 
-\textbf{Lösung}: Vision erhält von Knowledge die klassifizierten Labels und Nummern der Objekte, deren Pose dann mit einem Alignment-Algorithmus und einer Verfeinerung durch den Iterative Closest Point ermittelt werden.
+\textbf{Lösung}: Vision erhält von Knowledge die klassifizierten Labels und Nummern der Objekte. Dazu wird das passende Mesh als Punktwolke gespawned und mit einem Iterative Closest Point Algorithmus an den erkannten Cluster angeglichen. Die Pose kann anschließend mit einem Qauternion, dass aus der aus dem Algorithmus resultierenden Rotationsmatrix ermittelt werden.
+
+\subsection{Posen: z-Achse negativ}
+\chapterauthor{Tammo Wübbena}
+Die ermittelten Posen der Objekte haben manchmal (je nach fit) eine umgekehrter z-Achse. Die Objekte können aber immer seitlich gegriffen werden.
+\textbf{Lösung}: Vergleich mit den Normalen der Tischplatte, auf der die Objekte stehen (nicht implementiert).
 
 \subsection{Welche Gripper sind belegt}
 \chapterauthor{Alexander Haar}
@@ -2501,12 +2506,12 @@ das an Gazebo übergeben wurde).
 
 
 \subsubsection{findPoses}
-\chapterauthor{Alexander Link (Doku), Beide (Code)}
+\chapterauthor{Beide (Doku), Beide (Code)}
 \begin{verbatim}
 std::vector<geometry_msgs::PoseStamped> 
 findPoses(const std::vector<PointCloudRGBPtr> clouds_in)
-Beschreibung: Errechnet Position und Rotation der Objekte in den übergebenen
-Punktwolken.
+Beschreibung: Errechnet Position und Orientierung (Quaternion) der Objekte in den
+übergebenen Punktwolken.
 @param: Punktwolken der Objekte
 @return: Posen der Objekte
 \end{verbatim}\label{func:findposes}
@@ -2838,6 +2843,14 @@ Die \textit{normal\_features} vom Typ VFHSignature308 und \textit{color\_feature
 Da die Länge der Features für ein Objekt immer gleich ist, kann durch die Anzahl der erkannten Objekte die Länge insgesamt ermittelt werden.
 
 \subsubsection{Service Server /vision\_suturo/objects\_poses}
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=0.6 \textwidth]
+        {img/vision_pose_service.png}
+        \caption{} Ausgabe der Ausrichtung für ein Objekt durch den Pose Service}
+\end{figure}
+
+
 \begin{verbatim}
 poses.srv
 @request: string, uint8 (label of classified (recognized) object and its number
@@ -2882,10 +2895,19 @@ Mit \textit{EuclideanClusterExtracion} werden die nun segmentierten Objekte (all
 Es werden die Normal-Features, Color-Features für die Klassifikation durch Knowledge und die Posen der einzelnen Objekte berechnet.
  
 \subsubsection{Schritt 6: Befüllen der MSG}
-Die einzelnen Features und Posen (letzteres aktuell noch nicht getestet) werden in der Message (ObjectsInfo.msg) gespeichert und zur weiteren Bearbeitung an Planning weitergegeben.
+Die einzelnen Features und Posen werden in der Message (ObjectsInfo.msg) gespeichert und zur weiteren Bearbeitung an Planning weitergegeben.
 
-\subsubsection{Schritt 7: Ermitteln der Pose}
-Die von Knowledge gelabelten Objekte werden mit ihren jeweiligen Meshes abgeglichen und durch SACInitialAlignment werden ihre jeweiligen Posen ermittelt.
+\subsubsection{Schritt 7: Angleichen von Mesh und Objekt (Cluster)}
+Die von Knowledge gelabelten Objekte werden mit ihren jeweiligen Meshes abgeglichen und durch Iterative Closest Point Algorithmen werden die Rotationsmatrizen zu den Posen ermittelt.
+
+\subsubsection{Schritt 8: Berechnen des Quaternions }
+Die im vorherigen Schritt errechneten Rotationsmatrizen werden verwendet, um mit Hilfe eines Transforms das Quaternion zu berechnen, dass die Orientierung des Objekts darstellt. 
+
+\subsubsection{Schritt 9: Berechnen des Mittelpunkts }
+Der Mittelpunkt des angeglichenen Meshes (als Punktwolke) wird errechnet und als Vektor gespeichert.
+\\
+\subsubsection{Schritt 10: Befüllen der MSG }
+Die Message wird mit dem Mittelpunkt als Vektor und der Orientierung als Quaternion befüllt und weiter an Planning gesendet.
 
 \subsection*{Visualization-Publisher}
 Der Visualization-Publisher ''publiziert'' (advertise) die extrahierten Cluster als zusammenhängende Punktwolke
@@ -2987,7 +3009,8 @@ Folgendes muss zur .bashrc (oder zshrc) hinzugefügt werden:
 
 \item Sollten Probleme auftreten, könnte dies durch ein Update von gazebo auf v2.2.6 gelöst werden:
 \\
-\textit{sudo sh -c 'echo "deb http://packages.osrfoundation.org/gazebo/ubuntu trusty main" > /etc/apt/sources.list.d/gazebo-latest.list'}
+\textit{sudo sh -c 'echo ''deb http://packages.osrfoundation.org/gazebo/ubuntu trusty main'' $>$ \\ 
+/etc/apt/sources.list.d/gazebo-latest.list'}
 \\
 \textit{wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -}
 \\
