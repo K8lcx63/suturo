@@ -2645,8 +2645,8 @@ class ROSConnector {
 private:
     ROSClassInstance ros;
 public:
-    virtual returnType ROSMETHODNAME(Params param) {
-        return ros.ROSMETHODNAME(params);
+    virtual returnType ROSMETHODNAME(Arg1 arg, Arg2 arg2, ...) {
+        return ros.ROSMETHODNAME(arg, arg2, ...);
     }
 }
 \end{verbatim}
