@@ -1599,119 +1599,10 @@ Wir entnehmen der Message das Objektlabel und lesen die für dieses Objekt gespe
 \item[5.] Antwort zurückgeben.
 \end{itemize}
 
-\section{svm\_classifier}
-\chapterauthor{Alexander Haar}
-Das svm\_classifier-Paket dient zur Ermittlung eines Objektlabels anhand eines Featurevektors.
-
-\subsection{svm\_classifier}
-\begin{figure}[!htb]
-        \center{\includegraphics[width= 10cm]
-        {figures/svm_classifier.png}
-        \caption{\label{fig:classifier} Architektur der svm\_classifier-node}}
-\end{figure}
-
-\subsection{svm\_training\_data\_collector}
-\begin{figure}[!htb]
-        \center{\includegraphics[width= 5cm]
-        {figures/svm_training_data_collector.png}
-        \caption{\label{fig:training_data} Architektur der svm\_training\_data\_collector-node}}
-\end{figure}
-
-\subsection{svm\_trainer}
-\begin{figure}[!htb]
-        \center{\includegraphics[width=5cm]
-        {figures/svm_trainer.png}
-        \caption{\label{fig:trainer} Architektur der svm\_trainer-node}}
-\end{figure}
-      
-\subsection{Beschreibung des Teilsystems}
-\chapterauthor{Alexander Haar}
-
-\subsubsection{main - Python}
-\begin{verbatim}
-if __name__ == '__main__'
-Beschreibung: Lädt die svm_model.sav Datei und startet den Classify- Service.
-\end{verbatim}
-
-\subsubsection{save\_training\_set - Python}
-\begin{verbatim}
-def save_training_set()
-Beschreibung: Nachdem alle Trainingsdaten gesammelt wurden, speichert diese 
-Funktion alle Daten als sav- Datei.
-\end{verbatim}
-
-\subsubsection{get\_corresponding\_normals\_histogram\_file - Python}
-\begin{verbatim}
-def get_corresponding_normals_histogram_file(color_histogram_file)
-Beschreibung: Findet zu einem Farbhistogramm das entsprechende Normalshistogramm. 
-@param color_histogram_file: Das Farbhistogramm.
-@return: Das korrespondierende Normalshistogramm.
-\end{verbatim}
-
-\subsubsection{get\_features - Python}
-\begin{verbatim}
-def get_features(label, color_histogram_file)
-Beschreibung: Ermittelt anhand des Labels der Klasse und der Farbhistogrammdatei 
-den Featurevektor
-@param label: Das Label der Klasse.
-@param color_histogram_file: Die Farbhistogrammdatei.
-@return: Der resultierende Featurevektor.
-\end{verbatim}
-
-\subsubsection{collect\_training\_data - Python}
-\begin{verbatim}
-def collect_training_data()
-Beschreibung: Startet das Sammeln von Trainingsdaten.
-\end{verbatim}
-
-\subsubsection{main - Python}
-\begin{verbatim}
-if __name__ == '__main__'
-Beschreibung: Initialisiert den Paketpfad und startet das Sammeln 
-von Trainingsdaten.
-\end{verbatim}
-
-\subsubsection{plot\_confusion\_matrix - Python}
-\begin{verbatim}
-def plot_confusion_matrix(cm, classes, normalize=False, title='Confusion matrix',
-cmap=plt.cm.Blues)
-Beschreibung: Erstellt eine Konfusionsmatrix und stellt diese graphisch dar. 
-@param cm: Die echten Labels.
-@param classes: Die vorhergesagten Labels.
-\end{verbatim}
-
-\subsubsection{main - Python}
-\begin{verbatim}
-if __name__ == '__main__'
-Beschreibung: Lädt die Trainingsdaten und startet das Trainieren der SVM, 
-welche anschließend gespeichert wird.
-\end{verbatim}
-
-\subsection{Schnittstellen}
-\chapterauthor{Alexander Haar}
-
-\subsubsection{Service Server classify\_service}
-\begin{verbatim}
-def classify(req)
-Beschreibung: Service- Methode, welche einen Featurevektor klassifiziert.
-@param req: Die Anfrage an den Service, welche den Featurevektor enhält.  
-@param res: Die Antwort des Services, welche das Label enthält.
-\end{verbatim}
-
-\subsection{Programmablauf}
-\chapterauthor{Alexander Haar}
-\subsubsection{Schritt 1: Trainingsdaten sammeln und speichern}
-Es werden aus csv- Dateien die Featurevektoren mit Labels ausgelesen und als sav- Datei gespeichert.
-
-\subsubsection{Schritt 2: Trainieren und speichern einer SVM} 
-Die Trainingsdaten werden geladen, danach wird eine SVM mit den Daten trainiert und gespeichert.
-
-\subsubsection{Schritt 3: Laden der SVM und Klassifizieren von Featurevektoren}
-Die beiden vorherigen Schritte werden nur einmal im Vorfeld ausgeführt. Das Hauptprogramm lädt die SVM und startet anschließend den Classify- Service.
-
 \section{beliefstate}
 \chapterauthor{Alexander Haar}
-Das beliefstate-Paket dient dazu sich Aktionen die der Roboter ausgeführt hat zu speichern und auf Anfrage zu ermitteln, welcher Gripper belegt ist und welche Objekte als nächstes weggeräumt werden sollen. Außerdem spawnt der Knoten die Objektkoordinatensysteme und spawnt außerdem das Mesh des Objekts.
+Das beliefstate-Paket dient dazu sich Aktionen die der Roboter ausgeführt hat zu speichern und auf Anfrage zu ermitteln, welcher Gripper belegt ist und welche Objekte als nächstes weggeräumt werden sollen. Außerdem spawnt der Knoten die Objektkoordinatensysteme und spawnt außerdem das Mesh des Objekts.\\
+Des weiteren ist der beliefstate in die Mensch-Roboter-Interaktion involviert. Falls ein Objekt nicht gegriffen werden kann, dann wird der beliefstate so manipuliert, dass ein Zustand hergestellt wird in dem das Objekt von oben gegriffen wurde. Sollte ein Objekt nicht abgestellt werden können, dann wird des komplett aus dem beliefstate entfernt. 
 
 \begin{figure}[!htb]
         \center{\includegraphics[width=\textwidth]
@@ -1955,7 +1846,7 @@ welche als nächstes verteilt werden sollen.
 @param Object2: Das zweite Objekt.
 \end{verbatim}
 
-\subsection*{Schnittstellen}
+\subsection{Schnittstellen}
 \chapterauthor{Alexander Haar}
 
 \subsubsection{Subscriber process\_perceive\_action}
@@ -1982,9 +1873,35 @@ sendet diese an den json_prolog- Server.
 @param drop_object_msg: Die DropObject.msg
 \end{verbatim}
 
+\subsubsection{Subscriber grasp\_object\_human\_interaction}
+\begin{verbatim}
+def grasp_object_human_interaction(msg)
+Beschreibung: Stellt einen Zustand her, in dem Der Roboter davon
+              ausgeht das angegebenen Objekt im vorgegebenen
+              Gripper zu halten. 
+@param msg: Die erhaltenen Nachricht.
+\end{verbatim}
+
+\subsubsection{Subscriber delete\_object\_human\_interaction}
+\begin{verbatim}
+def delete_object_human_interaction(msg)
+Beschreibung: Löscht das angegebene Objekt aus dem gesamten 
+              Kenntnisstand des Roboters.
+@param msg: Die erhaltenen Nachricht.
+\end{verbatim}
+
 \subsubsection{Service Server gripper\_empty}
 \begin{verbatim}
 def gripper_empty(req)
+Beschreibung: Die Anfrage an den Server ist leer. Zurückgegeben werden
+zwei booleans, welche angeben, ob der Gripper belegt ist.
+@param req: Die Anfrage an den Service.
+@return: Die Antwort des Services.
+\end{verbatim}
+
+\subsubsection{Service Server object\_attached\_to\_gripper}
+\begin{verbatim}
+def object_attached_to_gripper(req)
 Beschreibung: Die Anfrage an den Server ist leer. Zurückgegeben werden
 zwei booleans, welche angeben, ob der Gripper belegt ist.
 @param req: Die Anfrage an den Service.
@@ -2000,7 +1917,16 @@ Beschreibung: Gibt die zwei Objekte zurück, welche als nächstes
 @return: Die Antwort des Services.
 \end{verbatim}
 
-\subsection*{Programmablauf}
+\subsubsection{Publisher despawn\_place\_preview}
+Wurde ein Objekt abgestellt, dann wird dem place\_object-Knoten über dieses Topic mitgeteilt, dass die Vorschau entfernt werden kann.
+
+\subsubsection{Publisher spawn\_attached\_object}
+Auf diesem Topic publish der beliefstate, falls ein Objekt mithilfe eines Menschen gegriffen wurde.
+
+\subsubsection{Publisher perceived\_object\_bounding\_box}
+Wenn ein Objekt wahrgenommen wurde, dann wird über dieses Topic die Pose ein und das entsprechende CAD-Model an Motion weitergereicht
+
+\subsection{Programmablauf}
 \chapterauthor{Alexander Haar}
 \subsubsection{Schritt 1: Wahrnehmen mehrerer Objekte}
 Es werden mehre Objekte wahrgenommen und deren Label sowie Pose wird dem beliefstate bekannt gemacht.
@@ -2050,13 +1976,13 @@ Beschreibung: Erzeugt eine Prologanfrage, um einen Lagerplatz
               zu ermitteln.
 @param object_label: Der Name des Objekts von dem der Lagerplatz 
                      bestimmt werden soll.
-\end{verbatim}\label{func:segmentplanes}
+\end{verbatim}
 
 \subsubsection{main - C++}
 \begin{verbatim}
 int main(int argc, char **argv)
 Beschreibung: Startet den Knoten.
-\end{verbatim}\label{func:findcentergazebo}
+\end{verbatim}
 
 
 \subsubsection{get\_position - Prolog}
@@ -2067,7 +1993,7 @@ Beschreibung: Extrahiert aus einem Position, die Koordinaten.
 @param X: Die X- Koordinate
 @param Y: Die Y- Koordinate
 @param Z: Die Z- Koordinate
-\end{verbatim}\label{func:findposes}
+\end{verbatim}
 
 \subsubsection{get\_scale - Prolog}
 \begin{verbatim}
@@ -2076,7 +2002,7 @@ Beschreibung: Extrahiert aus einer Lagerfläche die Ausmaße.
 @param StorageAreaIndividual: Die Lagerfläche
 @param Width: Die Breite der Lagerfläche
 @param Height: Die Höhe der Lagerfläche
-\end{verbatim}\label{func:estimatesurfacenormals}
+\end{verbatim}
 
 \subsubsection{storage\_area - Prolog}
 \begin{verbatim}
@@ -2085,7 +2011,7 @@ Beschreibung: Ermittelt zu einer Objektklasse die Lagerfläche.
 @param ObjectClass: Die Objektklasse zu der eine Lagerfläche
 ermittelt werden soll.
 @param StorageAreaIndividual: Die ermittelte Lagerfläche.
-\end{verbatim}\label{func:apply3dfilter}
+\end{verbatim}
 
 \subsubsection{storage\_place - Prolog}
 \begin{verbatim}
@@ -2098,7 +2024,7 @@ ein Lagerplatz ermittelt werden soll.
 @param Z: Die Z- Koordinate des Lagerplatzes.
 @param Width: Die Breite des Lagerplatzes.
 @param Height: Die Höhe des Lagerplatzes.
-\end{verbatim}\label{func:estimateplaneindices}
+\end{verbatim}
 
 \subsection{Schnittstellen}
 \chapterauthor{Alexander Haar}
@@ -2126,6 +2052,294 @@ Anhand der Objektklasse wird eine Prologanfrage erstellt und an den json\_prolog
 Durch die oben definierten Prologregeln wird unter Verwendung von only- restrictions der Lagerplatz ermittelt.
 \subsubsection{Schritt 4: Zurückgeben der Antwort}
 Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zurückgegeben.
+
+\section{push\_object}
+\chapterauthor{Alexander Haar}
+Das push\_object-Paket errechnet einen Punkt auf der Oberfläche eines abgestellten Objektes, damit es nach hinten geschoben werden kann. Dabei wird ausgenutzt, dass die Objekte immer gleich abgestellt werden. Bei den runden Objekten ist es für schieben unerheblich wie sie abgestellt werden, bei den eckigen Objekte zeigt aber immer die kurze Seite zum Roboter. Da man die Position des Objekte im Raum kennt und die geometrischen Abmessungen kann man nun eine passende Schiebepose berechnen.
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=\textwidth]
+        {figures/push_object.png}
+        \caption{\label{fig:push} Architektur der push\_object-node}}
+\end{figure}
+      
+\subsection{Beschreibung des Teilsystems}
+\chapterauthor{Alexander Haar}
+
+\subsubsection{create\_query - Python}
+\begin{verbatim}
+def create_query(req)
+Beschreibung: Erzeugt eine Prologanfrage, um eine Schiebepose 
+              zu ermitteln.
+@param object_label: Der Name des Objekts, welches geschoben
+                     werden soll.
+\end{verbatim}
+
+
+\subsubsection{main - Python}
+\begin{verbatim}
+if __name__ == '__main__'
+Beschreibung: Startet den Knoten.
+\end{verbatim}
+
+
+\subsubsection{object\_depth - Prolog}
+\begin{verbatim}
+object_depth(ObjectClass, Depth)
+Beschreibung: Gibt zu einer Objektklasse die entsprechende Tiefe zurück.
+@param ObjectClass: Die Objektklasse zu der die Tiefe ermittelt werden soll.
+@param Depth: Die Objekttiefe.
+\end{verbatim}
+
+\subsubsection{calculate\_push\_pose - Prolog}
+\begin{verbatim}
+calculate_push_pose(ObjectClass, SourceFrame, X, Y, Z)
+Beschreibung: Extrahiert aus einer Lagerfläche die Ausmaße.
+@param ObjectClass: Die Objektklasse zu der die Schiebepose ermittelt werden soll.
+@param SourceFrame: Das Frame, welches sich im Mittelpunkt des Objekts befindet.
+@param X: Die X-Position der Schiebepose.
+@param Y: Die Y-Position der Schiebepose.
+@param Z: Die Z-Position der Schiebepose.
+\end{verbatim}
+
+\subsection{Schnittstellen}
+\chapterauthor{Alexander Haar}
+
+\subsubsection{Service Server /push\_object/push}
+\begin{verbatim}
+def push_object(req)
+Beschreibung: Service- Methode, welche eine Schiebepose für Objekte 
+              ermittelt.
+@param req: Die Anfrage an den Service, welche den Namen des Objekts 
+            enthält.  
+@return: Die Antwort des Services, welche die Schiebepose enthält.
+
+\end{verbatim}
+
+\subsection{Programmablauf}
+\chapterauthor{Alexander Haar}
+\subsubsection{Schritt 1: Anfrage an den Service- Server}
+Eine Objektklasse wird an den Service- Server übergeben.
+\subsubsection{Schritt 2: Erstellen der Prologanfrage}
+Anhand der Objektklasse wird eine Prologanfrage erstellt und an den json\_prolog- Server geschickt.
+\subsubsection{Schritt 3: Ermitteln der Schiebepose} 
+Es wird mithilfe von Prolog eine Schiebepose errechnet. Das genaue Vorgehen ist oben in den einleitenden Worten beschrieben.
+\subsubsection{Schritt 4: Zurückgeben der Antwort}
+Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zurückgegeben.
+
+\section{place\_object}
+\chapterauthor{Alexander Haar}
+Das push\_object-Paket berechnet zu einer vorgegebenen x -und y-Koordinate die passende z-Koordinate, damit ein Objekt exakt auf einem Tisch abgestellt wird. Dabei errechnet sich die z-Koordinate aus der Höhe des Tisches(0.85), die Hälfte der Objekthöhe und der Gripperposition relativ zum Mittelpunkt. Aus diesen drei Parametern lässt sich dann eine optimale z-Koordinate bestimmen. Außerdem wird beim Aufruf des Services eine Vorschau des abgestellten Objekts erstellt.
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=\textwidth]
+        {figures/place_object.png}
+        \caption{\label{fig:place} Architektur der place\_object-node}}
+\end{figure}
+      
+\subsection{Beschreibung des Teilsystems}
+\chapterauthor{Alexander Haar}
+
+\subsubsection{create\_place\_query - Python}
+\begin{verbatim}
+def create_place_query(req)
+Beschreibung: Erzeugt eine Prologanfrage, um eine passende 
+              z-Koordinate zum Abstellen zu ermitteln.
+@param req: Die Anfrage an den Service, welcher den Gripper 
+            enthält, dessen Objekt abgestellt werden soll.
+@return: Ein String, welcher die Prologanfrage enthält.
+\end{verbatim}
+
+\subsubsection{create\_object\_height\_query - Python}
+\begin{verbatim}
+def create_object_height_query(object_label)
+Beschreibung: Erzeugt eine Prologanfrage, um die Höhe eines Objekts zu ermitteln.
+@param object_label: Der Name des Objekts, dessen Höhe ermittelt werden soll.
+@return: Ein String, welcher die Prologanfrage enthält.
+\end{verbatim}
+
+\subsubsection{spawn\_object\_mesh - Python}
+\begin{verbatim}
+def spawn_object_mesh(x, y, object_label)
+Beschreibung: Spawn das Objekt- Mesh als Vorschau des abgestellten 
+              Objekts an der vorgegeben x -und y-Position.
+@param object_label: Der Name des Objekts, welches abgestellt werden soll.
+\end{verbatim}
+
+\subsubsection{main - Python}
+\begin{verbatim}
+if __name__ == '__main__'
+Beschreibung: Startet den Knoten.
+\end{verbatim}
+
+
+\subsubsection{get\_grasp\_pose\_individual - Prolog}
+\begin{verbatim}
+get_grasp_pose_individual(ObjectClass, [[X,Y,Z],[QX,QY,QZ,QW]], GraspPoseIndividual)
+Beschreibung: Gibt zu einer Objektklasse das GraspPoseIndividual zurück, 
+              welches zum 2. Parameter passt.
+@param: ObjectClass: Die Objektklasse zu der das GraspPoseIndividual 
+        ermittelt werden soll.
+@param: [[X,Y,Z],[QX,QY,QZ,QW]]: Die Greifpose.
+@param: Das passende GraspPoseIndividual.
+\end{verbatim}
+
+\subsubsection{object\_height - Prolog}
+\begin{verbatim}
+object_height(ObjectClass, Height)
+Beschreibung: Gibt zu einer Objektklasse die entsprechende Höhe zurück.
+@param ObjectClass: Die Objektklasse zu der die Höhe ermittelt werden soll.
+@param Height: Die Objekthöhe.
+\end{verbatim}
+
+\subsubsection{calculate\_place\_pose - Prolog}
+\begin{verbatim}
+calculate_place_pose(GripperIndividual, Z, [QX, QY, QZ, QW])
+Beschreibung:Berechnet zum Objekt, welches sich im angegebenen Gripper
+             befindet eine passende Rotation und z-Koordinate 
+             zum Abstellen.
+@param GripperIndividual: Der Gripper in dem Sich das Objekt befindet.
+@param Z: Die z-Koordinate des Grippers beim Abstellen.
+@param [QX, QY, QZ, QW]: Die Rotation des Grippers beim Abstellen.
+\end{verbatim}
+
+\subsection{Schnittstellen}
+\chapterauthor{Alexander Haar}
+
+\subsubsection{Service Server /place\_object/place}
+\begin{verbatim}
+def place_object(req)
+Beschreibung: Service- Methode, welche eine Abstellpose für Objekte 
+              ermittelt.
+@param req: Die Anfrage an den Service, welche den Gripper in dem 
+            sich das Objekt befindet enthält.  
+@return: Die Antwort des Services, welche die Abstellpose enthält.
+
+\end{verbatim}
+
+\subsubsection{Subscriber /place\_object/despawn\_place\_preview}
+\begin{verbatim}
+def despawn_object_mesh(object_label)
+Beschreibung: Diese Methode lässt die Vorschau des 
+              abzustellenden Objekts wieder despawnen.
+@param object_label: Der Name des Objekts.
+
+\end{verbatim}
+
+\subsection{Programmablauf}
+\chapterauthor{Alexander Haar}
+\subsubsection{Schritt 1: Anfrage an den Service- Server}
+Ein Gripper wird an den Service- Server übergeben.
+\subsubsection{Schritt 2: Erstellen der Prologanfrage}
+Anhand des Grippers wird eine Prologanfrage erstellt und an den json\_prolog- Server geschickt.
+\subsubsection{Schritt 3: Ermitteln der Abstellpose} 
+Es wird mithilfe von Prolog eine Abstellpose errechnet. Das genaue Vorgehen ist oben in den einleitenden Worten beschrieben.
+\subsubsection{Schritt 4: Zurückgeben der Antwort}
+Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zurückgegeben.
+\subsubsection{Schritt 5: Spawnen der Vorschau} 
+Es wird anschließend das Objekt-Mesh gespawn, so wie das Objekt perfekt abgestellt aussehen sollte.
+
+\section{kitchen\_model\_export}
+\chapterauthor{Alexander Haar}
+Das Kitchen\_Model\_Export-Paket dient dazu der Manipulation die Umgebung bekannt zu machen, damit der PR2 nicht mit der Umgebung kollidiert.
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=\textwidth]
+        {figures/kitchen_model_export.png}
+        \caption{\label{fig:kitchen} Architektur der kitchen\_model\_export-node}}
+\end{figure}
+      
+\subsection{Beschreibung des Teilsystems}
+\chapterauthor{Alexander Haar}
+
+\subsubsection{main - C++}
+\begin{verbatim}
+int main(int argc, char **argv)
+Beschreibung: Startet den Knoten und liest den Parameter sim ein.
+\end{verbatim}
+
+\subsubsection{path\_to\_cad\_model - Prolog}
+\begin{verbatim}
+path_to_cad_model(IAIKitchenObjectClass, Path)
+Beschreibung: Ermittel zu einem Küchenobjekt den CAD-Model-Pfad.
+@param IAIKitchenObjectClass: Die Küchenobjektklasse
+@param Path: Der Pfad zum CAD-Model des Küchenobjekts.
+\end{verbatim}
+
+\subsubsection{get\_frame - Prolog}
+\begin{verbatim}
+get_frame(KitchenObjectIndividual, Frame)
+Beschreibung: Gibt zu einem Küchenobjekt den Frame in dem es 
+              sich befindet zurück.
+@param KitchenObjectIndividual: Das Küchenobjekt.
+@param Frame: Der Frame in dem sich das Objekt befindet.
+\end{verbatim}
+
+\subsubsection{get\_frame\_without\_prefix - Prolog}
+\begin{verbatim}
+get_frame_without_prefix(KitchenObjectIndividual, Frame)
+Beschreibung: Gibt zu einem Küchenobjekt den Frame in dem es 
+              sich befindet ohne Prefix zurück.
+@param KitchenObjectIndividual: Das Küchenobjekt.
+@param Frame: Der Frame in dem sich das Objekt befindet ohne Prefix.
+\end{verbatim}
+
+\subsubsection{is\_iai\_kitchen\_object - Prolog}
+\begin{verbatim}
+is_iai_kitchen_object(IAIKitchenObjectClass)
+Beschreibung: Bestimmt, ob es sich bei einem Objekt um ein 
+              Küchenobjekt handelt.
+@param: IAIKitchenObjectClass: Das zu prüfende Objekt.
+\end{verbatim}
+
+\subsubsection{get\_fixed\_kitchen\_objects - Prolog}
+\begin{verbatim}
+get_fixed_kitchen_objects(ObjectIndividual, Path, Frame)
+Beschreibung: Ermittelt alle Küchenobjekte, sowie deren 
+              CAD-Model-Pfad und entsprechendem Frame.
+@param ObjectIndividual: Das Küchenobjekt.
+@param Path: Der Pfad des CAD-Model.
+@param Frame: Der Frame des Küchenobjekts.
+\end{verbatim}
+
+\subsubsection{get\_fixed\_kitchen\_objects\_without\_prefix - Prolog}
+\begin{verbatim}
+get_fixed_kitchen_objects_without_prefix(ObjectIndividual, Path, Frame) 
+Beschreibung: Ermittelt alle Küchenobjekte, sowie deren CAD-Model-Pfad 
+              und entsprechendem Frame ohne Prefix.
+@param ObjectIndividual: Das Küchenobjekt.
+@param Path: Der Pfad des CAD-Model.
+@param Frame: Der Frame des Küchenobjekts ohne Prefix.
+\end{verbatim}
+
+\subsection{Schnittstellen}
+\chapterauthor{Alexander Haar}
+
+\subsubsection{Service Server /kitchen\_model\_export/get\_fixed\_kitchen\_object}
+\begin{verbatim}
+bool get_fixed_kitchen_objects(knowledge_msgs::GetFixedKitchenObjects::Request  &req,
+                               knowledge_msgs::GetFixedKitchenObjects::Response &res)
+
+Beschreibung: Service- Methode, welche alle Küchenobjekte für die PlanningScene ermittelt.
+@param req: Die Anfrage an den Service, welche leer ist
+@return: Die Antwort des Services, welche den Namen, CAD-Model-Pfad und 
+         Frame für alle Küchenobjekte enthält.
+
+\end{verbatim}
+
+
+\subsection{Programmablauf}
+\chapterauthor{Alexander Haar}
+\subsubsection{Schritt 1: Anfrage an den Service- Server}
+Ein Gripper wird an den Service- Server übergeben.
+\subsubsection{Schritt 2: Erstellen der Prologanfrage}
+Anhand des Grippers wird eine Prologanfrage erstellt und an den json\_prolog- Server geschickt.
+\subsubsection{Schritt 3: Ermitteln aller Küchenobjekte} 
+Es wird mithilfe von Prolog werden alle Küchenobjekte ermittelt.
+\subsubsection{Schritt 4: Zurückgeben der Antwort}
+Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zurückgegeben.
+
+
 
 \newpage
 
@@ -2427,10 +2641,13 @@ Um den Entwicklungsprozess weiter zu verbessern haben wir uns dazu entschieden \
 \section*{Methodendokumentation Gruppe Vision}
 
 \section{Vision}
+\subsection{Vorwort Vision}
+\chapterauthor{Alexander Link}
+Da einige Teile der Dokumentation überarbeitet und nicht komplett neu geschrieben wurden, ist zu beachten, dass die Autoren der Vision-Teile zu der Dokumentation von Meilenstein 1 genau umgekehrt waren. Auch ist hinzuzufügen, dass an vielen Funktionen Tammo Wübbena und Alexander Link zugleich beteiligt waren. In solchen Fällen sind beide Autoren mit "Beide"\ abgekürzt.
 
 \subsection{Überblick Vision}
 \chapterauthor{Alexander Link}
-Das Vision-Paket \footnote{im weiteren Verlauf auch Vision-Package, vision-node oder einfach Paket oder vision genannt} dient zur Akquirierung und Verarbeitung visueller Informationen durch die Kinect-Kamera des PR2-Roboters, sowie zur Verwendung dieser zum Klassifizieren gesehener Objekte und Bestimmen derer Posen.
+Das Vision-Paket \footnote{im weiteren Verlauf auch Vision-Package, vision-node oder einfach Paket oder vision genannt} dient zur Akquirierung und Verarbeitung visueller Informationen durch die Kinect-Kamera des PR2-Roboters.
 
 \begin{figure}[!htb]
         \center{\includegraphics[width=\textwidth]
@@ -2866,47 +3083,44 @@ Gibt eine Punktwolke unseres Sichtfelds (Szene oder Scene) zurück. Dabei wird a
 \\ \\
 Die Callback-Funktion wird im loop immer wieder aufgerufen, solange die Node noch aktiv ist bzw. der roscore-server besteht.
 
-\subsection{Beide}
-\chapterauthor{Alexander Link \& Tammo Wübbena}
-\subsubsection{Schritt 1: Vorbereitung}
-Die Services, der Visualization-Publisher und der Kinect-Subscriber werden gestartet. Je nach Einstellung wird der Klassifizierer trainiert, oder lädt Daten vom Training aus vorhergegangenen Nodestarts.
-\subsubsection{Schritt 2: Serviceaufruf \textit{/vision\_suturo/objects\_information}}
+\subsection{Programmablauf}
+\chapterauthor{Tammo Wübbena}
+\subsubsection{Schritt 1: Erkennen der Punktwolke}
+Ein Subscriber empfängt die zu verarbeitenden Punktwolken des Kinect-Sensors und hält die wahrgenommene Szene aktuell.
+\subsubsection{Schritt 2: Service-Aufruf \textit{/vision\_suturo/objects\_information}}
 Jedes mal, wenn der Service \textit{/vision\_suturo/objects\_information} durch Planning aufgerufen wird, wird die Funktion \textit{findCluster} in perception.h ausgeführt. 
-\\
-\subsubsection{Schritt 3: Filterung und Segmentierung} 
+\subsubsection{Schritt 3: Vorbereiten auf die Extraktion} 
 In \textit{findCluster} wird die Punktwolke zunächst folgendermaßen vorbearbeitet:
 
 \begin{itemize} 
 \item Ein PassThrough Filter, der den Sichtbereich begrenzt.
 \item Ein VoxelGrid Filter zum Downsampling der eingehenden Punktwolke, indem für viele kleine 3-dimensionale Boxen der Mittelpunkte aller enthaltenden Punkte berechnet wird.
 \item Ein MovingLeastSquares Filter, der Flächen begradigt, um Ungenauigkeiten der Daten vorzubeugen.
-\item Entfernen aller Punkte, die nicht zum größten Cluster in der Szene gehören.
-\item Finden der Grundfläche (für gewöhnlich die Tischplatte). Alle Punkte, die sich nicht oberhalb der Tischplatte befinden, werden entfernt. Anschließend wird die Grundfläche selbst entfernt.
-\item Entfernen von weiteren Flächen, die zu groß sind, um zum gesuchten Objekt gehören zu können. Dies passiert mehrmals, wenn es mehrere solcher Flächen im Sichtfeld gibt.
+\item Das Entfernen von Flächen, die zu groß sind, um zum gesuchten Objekt gehören zu können. Dies passiert mehrmals, wenn es mehrere solcher Flächen im Sichtfeld gibt.
 \end{itemize}
-
+Eine Outlier-Removal wird nicht mehr benötigt, da die folgende Euclidean Cluster Extraction ''Ausreißer'', also weit von den Clustern entfernte Punkte nicht extrahiert.\\
+\subsubsection{Schritt 3b: Ausweichen auf Simulationsdaten}
+Sollte es zu irgendeinem Zeitpunkt beim Filtern oder der Segmentierung zu Problemen kommen, weil beispielsweise die resultierende Punktwolke leer ist, wird auf die direkten Daten des Zielobjekts aus gazebo ausgewichen, wenn möglich.
+\\
 \subsubsection{Schritt 4: Cluster Extraktion}
-Mit \textit{EuclideanClusterExtraction} werden die nun segmentierten Objekte (alle noch in einer Punktwolke zusammengefasst) extrahiert und in einzelne Cluster gespeichert.
+Mit \textit{EuclideanClusterExtracion} werden die nun segmentierten Objekte (alle noch in einer Punktwolke zusammengefasst) extrahiert und in einzelne Cluster gespeichert.
 \\
-\subsubsection{Schritt 5: Berechnen von Features und Klassifizierung}
-Es werden CVFH- und Farbfeatures für die Klassifikation berechnet. Mithilfe des in Schritt 1 mit Daten befüllten Klassifizierers wird nun festgestellt, welche Gegenstände sich in der Szene befinden.
-\\
-\subsection{Schritt 6: Servicerückgabe}
-Zurückgegeben werden die Labels der einzelnen erkannten Objekte sowie die Anzahl der Objekte, die sich in der Szene befinden.
-\\
-\subsection{Schritt 7: Serviceaufruf \textit{/vision\_suturo/objects\_poses}}
-Wenn Planning jetzt den Service \textit{/vision\_suturo/objects\_poses} aufruft, wird übergeben, für welches der Objekte, die wir zuvor in \textit{/vision\_suturo/objects\_information} festgestellt haben, die Pose errechnet werden soll.
+\subsubsection{Schritt 5: Berechnen von Features und Posen}
+Es werden die Normal-Features, Color-Features für die Klassifikation durch Knowledge und die Posen der einzelnen Objekte berechnet.
+ 
+\subsubsection{Schritt 6: Befüllen der MSG}
+Die einzelnen Features und Posen werden in der Message (ObjectsInfo.msg) gespeichert und zur weiteren Bearbeitung an Planning weitergegeben.
 
-\subsubsection{Schritt 8: Angleichen von Mesh und Objekt (Cluster)}
-Das Objekt wird mit ihrem jeweiligen Mesh abgeglichen und durch Iterative Closest Point Algorithmen werden die Rotationsmatrizen zu den Posen ermittelt.
+\subsubsection{Schritt 7: Angleichen von Mesh und Objekt (Cluster)}
+Die von Knowledge gelabelten Objekte werden mit ihren jeweiligen Meshes abgeglichen und durch Iterative Closest Point Algorithmen werden die Rotationsmatrizen zu den Posen ermittelt.
 
-\subsubsection{Schritt 9: Berechnen des Quaternions }
+\subsubsection{Schritt 8: Berechnen des Quaternions }
 Die im vorherigen Schritt errechneten Rotationsmatrizen werden verwendet, um mit Hilfe eines Transforms das Quaternion zu berechnen, dass die Orientierung des Objekts darstellt. 
 
-\subsubsection{Schritt 10: Berechnen des Mittelpunkts }
+\subsubsection{Schritt 9: Berechnen des Mittelpunkts }
 Der Mittelpunkt des angeglichenen Meshes (als Punktwolke) wird errechnet und als Vektor gespeichert.
 \\
-\subsubsection{Schritt 11: Befüllen der MSG }
+\subsubsection{Schritt 10: Befüllen der MSG }
 Die Message wird mit dem Mittelpunkt als Vektor und der Orientierung als Quaternion befüllt und weiter an Planning gesendet.
 
 \subsection*{Visualization-Publisher}
