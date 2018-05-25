@@ -2738,13 +2738,10 @@ script:
 \section*{Methodendokumentation Gruppe Vision}
 
 \section{Vision}
-\subsection{Vorwort Vision}
-\chapterauthor{Alexander Link}
-Da einige Teile der Dokumentation überarbeitet und nicht komplett neu geschrieben wurden, ist zu beachten, dass die Autoren der Vision-Teile zu der Dokumentation von Meilenstein 1 genau umgekehrt waren. Auch ist hinzuzufügen, dass an vielen Funktionen Tammo Wübbena und Alexander Link zugleich beteiligt waren. In solchen Fällen sind beide Autoren mit "Beide"\ abgekürzt.
 
 \subsection{Überblick Vision}
 \chapterauthor{Alexander Link}
-Das Vision-Paket \footnote{im weiteren Verlauf auch Vision-Package, vision-node oder einfach Paket oder vision genannt} dient zur Akquirierung und Verarbeitung visueller Informationen durch die Kinect-Kamera des PR2-Roboters.
+Das Vision-Paket \footnote{im weiteren Verlauf auch Vision-Package, vision-node oder einfach Paket oder vision genannt} dient zur Akquirierung und Verarbeitung visueller Informationen durch die Kinect-Kamera des PR2-Roboters, sowie zur Verwendung dieser zum Klassifizieren gesehener Objekte und Bestimmen derer Posen.
 
 \begin{figure}[!htb]
         \center{\includegraphics[width=\textwidth]
@@ -3170,44 +3167,47 @@ Gibt eine Punktwolke unseres Sichtfelds (Szene oder Scene) zurück. Dabei wird a
 \\ \\
 Die Callback-Funktion wird im loop immer wieder aufgerufen, solange die Node noch aktiv ist bzw. der roscore-server besteht.
 
-\subsection{Programmablauf}
-\chapterauthor{Tammo Wübbena}
-\subsubsection{Schritt 1: Erkennen der Punktwolke}
-Ein Subscriber empfängt die zu verarbeitenden Punktwolken des Kinect-Sensors und hält die wahrgenommene Szene aktuell.
-\subsubsection{Schritt 2: Service-Aufruf \textit{/vision\_suturo/objects\_information}}
+\subsection{Beide}
+\chapterauthor{Alexander Link \& Tammo Wübbena}
+\subsubsection{Schritt 1: Vorbereitung}
+Die Services, der Visualization-Publisher und der Kinect-Subscriber werden gestartet. Je nach Einstellung wird der Klassifizierer trainiert, oder lädt Daten vom Training aus vorhergegangenen Nodestarts.
+\subsubsection{Schritt 2: Serviceaufruf \textit{/vision\_suturo/objects\_information}}
 Jedes mal, wenn der Service \textit{/vision\_suturo/objects\_information} durch Planning aufgerufen wird, wird die Funktion \textit{findCluster} in perception.h ausgeführt. 
-\subsubsection{Schritt 3: Vorbereiten auf die Extraktion} 
+\\
+\subsubsection{Schritt 3: Filterung und Segmentierung} 
 In \textit{findCluster} wird die Punktwolke zunächst folgendermaßen vorbearbeitet:
 
 \begin{itemize} 
 \item Ein PassThrough Filter, der den Sichtbereich begrenzt.
 \item Ein VoxelGrid Filter zum Downsampling der eingehenden Punktwolke, indem für viele kleine 3-dimensionale Boxen der Mittelpunkte aller enthaltenden Punkte berechnet wird.
 \item Ein MovingLeastSquares Filter, der Flächen begradigt, um Ungenauigkeiten der Daten vorzubeugen.
-\item Das Entfernen von Flächen, die zu groß sind, um zum gesuchten Objekt gehören zu können. Dies passiert mehrmals, wenn es mehrere solcher Flächen im Sichtfeld gibt.
+\item Entfernen aller Punkte, die nicht zum größten Cluster in der Szene gehören.
+\item Finden der Grundfläche (für gewöhnlich die Tischplatte). Alle Punkte, die sich nicht oberhalb der Tischplatte befinden, werden entfernt. Anschließend wird die Grundfläche selbst entfernt.
+\item Entfernen von weiteren Flächen, die zu groß sind, um zum gesuchten Objekt gehören zu können. Dies passiert mehrmals, wenn es mehrere solcher Flächen im Sichtfeld gibt.
 \end{itemize}
-Eine Outlier-Removal wird nicht mehr benötigt, da die folgende Euclidean Cluster Extraction ''Ausreißer'', also weit von den Clustern entfernte Punkte nicht extrahiert.\\
-\subsubsection{Schritt 3b: Ausweichen auf Simulationsdaten}
-Sollte es zu irgendeinem Zeitpunkt beim Filtern oder der Segmentierung zu Problemen kommen, weil beispielsweise die resultierende Punktwolke leer ist, wird auf die direkten Daten des Zielobjekts aus gazebo ausgewichen, wenn möglich.
-\\
+
 \subsubsection{Schritt 4: Cluster Extraktion}
-Mit \textit{EuclideanClusterExtracion} werden die nun segmentierten Objekte (alle noch in einer Punktwolke zusammengefasst) extrahiert und in einzelne Cluster gespeichert.
+Mit \textit{EuclideanClusterExtraction} werden die nun segmentierten Objekte (alle noch in einer Punktwolke zusammengefasst) extrahiert und in einzelne Cluster gespeichert.
 \\
-\subsubsection{Schritt 5: Berechnen von Features und Posen}
-Es werden die Normal-Features, Color-Features für die Klassifikation durch Vision-Classifier und die Posen der einzelnen Objekte berechnet.
- 
-\subsubsection{Schritt 6: Befüllen der MSG}
-Die einzelnen Features und Posen werden in der Message (ObjectsInfo.msg) gespeichert und zur weiteren Bearbeitung an Planning weitergegeben.
+\subsubsection{Schritt 5: Berechnen von Features und Klassifizierung}
+Es werden CVFH- und Farbfeatures für die Klassifikation berechnet. Mithilfe des in Schritt 1 mit Daten befüllten Klassifizierers wird nun festgestellt, welche Gegenstände sich in der Szene befinden.
+\\
+\subsection{Schritt 6: Servicerückgabe}
+Zurückgegeben werden die Labels der einzelnen erkannten Objekte sowie die Anzahl der Objekte, die sich in der Szene befinden.
+\\
+\subsection{Schritt 7: Serviceaufruf \textit{/vision\_suturo/objects\_poses}}
+Wenn Planning jetzt den Service \textit{/vision\_suturo/objects\_poses} aufruft, wird übergeben, für welches der Objekte, die wir zuvor in \textit{/vision\_suturo/objects\_information} festgestellt haben, die Pose errechnet werden soll.
 
-\subsubsection{Schritt 7: Angleichen von Mesh und Objekt (Cluster)}
-Die von Knowledge gelabelten Objekte werden mit ihren jeweiligen Meshes abgeglichen und durch Iterative Closest Point Algorithmen werden die Rotationsmatrizen zu den Posen ermittelt.
+\subsubsection{Schritt 8: Angleichen von Mesh und Objekt (Cluster)}
+Das Objekt wird mit ihrem jeweiligen Mesh abgeglichen und durch Iterative Closest Point Algorithmen werden die Rotationsmatrizen zu den Posen ermittelt.
 
-\subsubsection{Schritt 8: Berechnen des Quaternions }
+\subsubsection{Schritt 9: Berechnen des Quaternions }
 Die im vorherigen Schritt errechneten Rotationsmatrizen werden verwendet, um mit Hilfe eines Transforms das Quaternion zu berechnen, dass die Orientierung des Objekts darstellt. 
 
-\subsubsection{Schritt 9: Berechnen des Mittelpunkts }
+\subsubsection{Schritt 10: Berechnen des Mittelpunkts }
 Der Mittelpunkt des angeglichenen Meshes (als Punktwolke) wird errechnet und als Vektor gespeichert.
 \\
-\subsubsection{Schritt 10: Befüllen der MSG }
+\subsubsection{Schritt 11: Befüllen der MSG }
 Die Message wird mit dem Mittelpunkt als Vektor und der Orientierung als Quaternion befüllt und weiter an Planning gesendet.
 
 \subsection*{Visualization-Publisher}
