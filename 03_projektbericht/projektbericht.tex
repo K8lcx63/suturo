@@ -2431,11 +2431,11 @@ Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zur
 
 \newpage
 
-\section{Methodendokumentation Gruppe Motion}
+\section{Motion}
 
 \subsection{Übersicht des Teilsystems}
 \chapterauthor{Roman Haak}
-Die Untergruppe '\textit{Motion}' ist für das Bewegen verschiedener "Körperpartien" des Roboters zwecks Manipulation der Umwelt zuständig.\\
+Die Untergruppe '\textit{Motion}' ist für das Bewegen der verschiedenen Gelenke des Roboters zwecks Manipulation der Umwelt zuständig.\\
 Lediglich das Bewegen der Basis des Roboters wird von der Gruppe \textit{Planning} übernommen.\\
 Das Bewegen der anderen, zum Erfüllen der Zielsetzung benötigten Teile des Roboters, also Arm und Endeffektor (\textit{Gripper}), werden 
 von der Gruppe '\textit{Motion}' übernommen.\\
@@ -2719,7 +2719,7 @@ Dabei werden nacheinander mit Hilfe von Ablaufdiagrammen das Greifen, das Abstel
 \chapterauthor{Maximilian Bertram}
 
 \subsubsection{Unit-Tests}
-Um einen reibungslosen Entwicklungsprozess zu gewährleisten, war es nötig, unsere Lib-Funktionalität durch Unit-Tests abzudecken. Dies stellte uns vor diverse Herausforderungen. Zum einen lässt sich ROS-Funktionalität nicht testen; dadurch ist es nötig, die Core-Funktionalität unserer Library von ROS Funktionen zu befreien. Ein erster Ansatz war es, hierfür die \textit{ROSConnector-Klasse} anzulegen, welche einen Wrapper um ROS Funktionen darstellt und lediglich Methoden anbietet, die den Aufruf weiter an ROS delegiert. Dies sollte es ermöglichen, die nötigen ROS Aufrufe in unserer Library mit einem Mocking-Framework (in unserem Fall gMock) zu mocken und so Unit-Tests fahren zu können. Diesen Ansatz haben wir verfolgt, um dann leider festzustellen, dass gMock noch nicht von \textit{catkin} unterstützt wird. gMock ist nur in einer \textit{forked catkin version} verfügbar und es ist wohl geplant, das Framework in einer neueren Version von \textit{catkin} in das Main-Release zu integrieren. Daher haben wir uns dazu entschlossen, unsere Library soweit vorzubereiten, damit die \textit{Unit-Tests} nach dem Release und der Migration auf die neueste Version keinen großen Aufwand darstellen. Leider mussten wir feststellen, dass \textit{catkin build} beim Buildprozess keine Tests ausführt, sondern diese nur über \textit{catkin\_ make run\_ tests} ausgeführt werden können. Damit die Tests dennoch regelmäßig laufen und die Funktionalität der Lib regelmäßig getestet wird, wurde \textit{Continuous Integration} eingerichtet. Über den Dienst \textit{coverage.io} lässt sich zusätzlich ein \textit{Coveragereport} für die getesteten Packages erstellen, dadurch ist es möglich, Qualitätsstandards zu definieren und \textit{Mergerequests} nur bei ausreichender Testabdeckung zu akzeptieren. Leider war es uns nicht möglich, dies hier umzusetzen, da die OpenSource Registrierung von coverage.io zum Zeitpunkt der Umsetzung nicht funktionierte. \\
+Um einen reibungslosen Entwicklungsprozess zu gewährleisten, war es nötig, unsere Library durch Unit-Tests abzudecken. Dies stellte uns vor diverse Herausforderungen. Zum einen lässt sich ROS-Funktionalität nicht testen; dadurch ist es nötig, die Core-Funktionalität unserer Library von ROS Funktionen zu befreien. Ein erster Ansatz war es, hierfür die \textit{ROSConnector-Klasse} anzulegen, welche einen Wrapper um ROS Methoden darstellt und lediglich Methoden anbietet, die den Aufruf weiter an ROS delegieren. Dies sollte es ermöglichen, die nötigen ROS Aufrufe in unserer Library mit einem Mocking-Framework (in unserem Fall gMock) zu mocken und so Unit-Tests fahren zu können. Diesen Ansatz haben wir verfolgt, um dann leider festzustellen, dass gMock noch nicht von \textit{catkin} unterstützt wird. gMock ist nur in einer \textit{forked catkin version} verfügbar und es ist wohl geplant, das Framework in einer neueren Version von \textit{catkin} in das Main-Release zu integrieren. Daher haben wir uns dazu entschlossen, unsere Library soweit vorzubereiten, damit die \textit{Unit-Tests} nach dem Release und der Migration auf die neueste Version keinen großen Aufwand darstellen. \textit{Catkin build} führt beim Buildprozess keine Tests aus, diese können nur über \textit{catkin\_make run\_tests} ausgeführt werden. Damit die Tests dennoch regelmäßig laufen und die Funktionalität der Lib regelmäßig getestet wird, wurde \textit{Continuous Integration} eingerichtet. Über den Dienst \textit{coverage.io} lässt sich zusätzlich ein \textit{Coveragereport} für die getesteten Packages erstellen, dadurch ist es möglich, Qualitätsstandards zu definieren und \textit{Mergerequests} nur bei ausreichender Testabdeckung zu akzeptieren. Leider war es uns nicht möglich, dies hier umzusetzen, da die OpenSource Registrierung von coverage.io zum Zeitpunkt der Umsetzung nicht funktionierte. \\
 Der Sinn der Unit-Tests war es, die Zeit, bis Fehler bei der Entwicklung entdeckt werden, deutlich zu verkürzen und die Stelle der Fehler besser und schneller zu identifizieren. Dadurch wollten wir vor Allem die extrem langen Testzyklen auf dem echten Roboter verkürzen, um mehr Zeit für neue Features in der Entwicklung zu haben. \\
 
  $~$ \\
@@ -2741,7 +2741,7 @@ In der eigentlichen Library werden dann alle Funktionsaufrufe an ROS durch Funkt
 
 
 \subsubsection{Continuous Integration}
-Um den Entwicklungsprozess weiter zu verbessern haben wir uns dazu entschieden, \textit{Continuous Integration} zu verwenden, um eine reibungslose Integration der Feature-Branches in den master-Branch zu gewährleisten. Dabei haben wir uns dazu entschieden, den CI-Dienst von \textit{Travis} zu nutzen. Einer der Hauptgründe hierfür ist die verhältnismäßig leichte Konfiguration über die \textit{.travis.yml}. Dabei musste \textit{catkin\_ make} verwendet werden, da \textit{catkin build} generell keine Tests ausführt. Dadurch war die Konfiguration von travis leider nicht trivial, da wir sogenannte \textit{private dependencies} in unserem Code verwenden; dies bezieht sich in unserem Fall auf die anderen \textit{SUTURO Pakete}. Diese mussten zuerst gecloned und gebaut werden, um im lokalen Buildrepository zur Verfügung zu stehen. Am besten lässt sich dies durch folgende kommentierte \textit{.travis.yml} zeigen. Relevant sind hier vor Allem die Bereiche \textit{install}, \textit{before\_ script} und \textit{script}: \\
+Um den Entwicklungsprozess weiter zu verbessern haben wir uns dazu entschieden, \textit{Continuous Integration} zu verwenden, um eine reibungslose Integration der Feature-Branches in den master-Branch zu gewährleisten. Dabei haben wir den CI-Dienst von \textit{Travis} genutzen. Einer der Hauptgründe hierfür ist die verhältnismäßig leichte Konfiguration über die \textit{.travis.yml} YAML-Datei. Dabei musste \textit{catkin\_make} verwendet werden, da \textit{catkin build} generell keine Tests ausführt. Durch die \textit{private dependencies} unserer Node war die Einrichtung von Travis nicht trivial. Diese mussten zuerst gecloned und gebaut werden, um im lokalen Buildrepository zur Verfügung zu stehen. Am besten lässt sich dies durch folgende kommentierte \textit{.travis.yml} zeigen. Relevant sind hier vor Allem die Bereiche \textit{install}, \textit{before\_script} und \textit{script}: \\
 
 \textit{install section of .travis.yml}
 \begin{verbatim}
@@ -2773,7 +2773,7 @@ install:
   - source ~/catkin_ws/devel/setup.bash
 \end{verbatim}
 
-\textit{before\_ script section of .travis.yml}
+\textit{before\_script section of .travis.yml}
 
 \begin{verbatim}
 before_script:
