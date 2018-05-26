@@ -3225,7 +3225,7 @@ in the array given by the ObjectsInfo.msg)
 							poses (the pose of the requested object)
 							)
 \end{verbatim}
-Nachdem der Service objects\_information aufgerufen wurde, werden die dadurch erzeugten Features von Planning (Weiterleitung) und Knowledge (Klassifizierung) bearbeitet. Die erkannten Objekte werden dann von Knowledge jeweils mit einem Label versehen. Der Index wird von Planning bestimmt (durch teilen des übergebenen Feature-Arrays). Danach werden die Objekte von unserem Paket bearbeitet und die Pose durch Vergleich mit den jeweiligen Meshes ermittelt. Danach werden die Posen zurück an Planning übergeben.
+Nachdem der Service objects\_information aufgerufen wurde, werden die dadurch erzeugten Features und klassifizierten Objekte mit einem Label versehen und an Planning weitergeleitet. Danach werden die Objekte von unserem Paket bearbeitet und die Pose durch Vergleich mit den jeweiligen Meshes ermittelt. Im Anschluss werden die Posen zurück an Planning übergeben.
 
 \subsubsection{Subscriber REAL\_KINECT\_POINTS\_FRAME}
 \begin{verbatim}
