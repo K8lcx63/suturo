@@ -1687,8 +1687,12 @@ Wir entnehmen der Message das Objektlabel und lesen die für dieses Objekt gespe
 \begin{itemize}
 \item[1.]Es wird eine Anfrage an den Service-Server gestellt
 \item[2.]Eine Anfrage mit folgendem Inhalt wird an den json\_prolog- Server wird gestellt:\\ "find\_grasp\_pose(suturo\_object:'object\_label', 'frame\_id', Position, Quaternion)." 
-\item[3.]Die entsprechende Prolog Methode liest die zum übergebenen Objektlabel gehörigen GraspPosen aus der OWL Ontologie aus.
-\item[4.] Die als PrologBindings vom json\_prolog- Server erhaltenen GraspPosen werden von find\_grasp\_pose (c++) in die gewünschte Form konvertiert.
+\item[3.]Die entsprechende Prolog Methode liest die zum übergebenen Objektlabel gehörigen 
+
+GraspPosen aus der OWL Ontologie aus.
+\item[4.] Die als PrologBindings vom json\_prolog- Server erhaltenen GraspPosen werden von 
+
+find\_grasp\_pose (c++) in die gewünschte Form konvertiert.
 \item[5.] Antwort zurückgeben.
 \end{itemize}
 
