@@ -2530,10 +2530,10 @@ Wird eine Greif- oder Abstellaktion ausgeführt, wird über eine Nachricht an de
 \textbf{GetFixedKitchenObjects}\\
 Vom Typ '\textit{knowledge\_msgs/GetFixedKitchenObjects}': \\ 
 \begin{verbatim}
-#This servicedefinition is for transfering the shape of the objects in
+#This servicedefinition is for transferring the shape of the objects in
 #the iai_kitchen.
 #The Motion-component calls this service for getting the shape of the 
-#kitchen-objects for it's planningscene.
+#kitchen-objects for its planningscene.
 #The Knowledge-component reads these shapes out of an owl-file and 
 #returns the data described below.
 
@@ -2557,7 +2557,7 @@ Wird ein Objekt erfolgreich abgestellt oder gegriffen, werden für den \textit{B
 
 \subsubsection*{Definition der GraspObject.msg}
 \begin{verbatim}
-#A message which get's published by Motion-component after grasping an object.
+#A message which gets published by Motion-component after grasping an object.
 
 #The label of the grasped object.
 string object_label
@@ -2568,7 +2568,7 @@ Gripper gripper
 
 \subsubsection*{Definition der DropObject.msg}
 \begin{verbatim}
-#A message which get's published by Motion-component after dropping an object.
+#A message which gets published by Motion-component after dropping an object.
 
 #The gripper used. See 'Gripper.msg' for more details.
 Gripper gripper
@@ -2590,11 +2590,11 @@ uint8 RIGHT_GRIPPER = 2
 \textbf{PerceivedObjectBoundingBox}
 \chapterauthor{Roman Haak}
 
-Wird ein Objekt wahrgenommen, werden Daten über das Objekt auf dem Topic veröffentlicht. Diese werden genutzt, um das wahrgenommen Objekt zu unserer Planningscene hinzuzufügen.\\ Dabei sind folgende Daten über das Objekt in der Nachricht enthalten: \\
+Wird ein Objekt wahrgenommen, werden Daten über das Objekt auf dem Topic veröffentlicht. Diese werden genutzt, um das wahrgenommene Objekt zu unserer Planningscene hinzuzufügen.\\ Dabei sind folgende Daten über das Objekt in der Nachricht enthalten: \\
 
 \subsubsection*{Definition der PerceivedObjectBoundingBox.msg}
 \begin{verbatim}
-#A message which get's published by knowledge when an object is perceived.
+#A message which gets published by knowledge when an object is perceived.
 
 #The name of the object.
 string object_label
@@ -2612,7 +2612,7 @@ Kann ein Objekt nicht durch den Roboter gegriffen werden, wird der Mensch um Hil
 
 \subsubsection*{Definition der SpawnAttachedObject.msg}
 \begin{verbatim}
-#A message which get's published by knowledge when an object is put
+#A message which gets published by knowledge when an object is put
 #in the gripper of the robot by a human.
 #In which gripper the object was put can be determined by looking 
 #in the header's frame id. The pose is given in the corresponding
@@ -2719,7 +2719,7 @@ Dabei werden nacheinander mit Hilfe von Ablaufdiagrammen das Greifen, das Abstel
 \chapterauthor{Maximilian Bertram}
 
 \subsubsection{Unit-Tests}
-Um einen reibungslosen Entwicklungsprozess zu gewährleisten, war es nötig, unsere Lib-Funktionalität durch Unit-Tests abzudecken. Dies stellte uns vor diverse Herausforderungen. Zum einen lässt sich ROS-Funktionalität nicht testen, dadurch ist es nötig, die Core-Funktionalität unserer Library von ROS Funktionen zu befreien. Ein erster Ansatz war es, hierfür die \textit{ROSConnector-Klasse} anzulegen, welche einen Wrapper um ROS Funktionen darstellt und lediglich Methoden anbietet, die den Aufruf weiter an ROS delegiert. Dies sollte es ermöglichen, die nötigen ROS Aufrufe in unserer Library mit einem Mocking-Framework (in unserem Fall gMock) zu mocken und so Unit-Tests fahren zu können. Diesen Ansatz haben wir verfolgt, um dann leider festzustellen, dass gMock noch nicht von \textit{catkin} unterstützt wird. gMock ist leider nur in einer \textit{forked catkin version} verfügbar und es ist wohl geplant, das Framework in einer neueren Version von \textit{catkin} in das Main-Release zu integrieren. Daher haben wir uns dazu entschlossen, unsere Library soweit vorzubereiten, damit die \textit{Unit-Tests} nach dem Release und der Migration auf die neuste Version keinen großen Aufwand darstellen. Leider mussten wir feststellen, dass \textit{catkin build} beim Buildprozess keine Tests ausführt, sondern diese nur über \textit{catkin\_ make run\_ tests} ausgeführt werden können. Damit die Tests dennoch regelmäßig laufen und die Funktionalität der Lib regelmäßig getestet wird, wurde \textit{Continuous Integration} eingerichtet. Über den Dienst \textit{coverage.io} lässt sich zusätzlich ein \textit{Coveragereport} für die getesteten Packages erstellen, dadurch ist es möglich, Qualitätsstandards zu definieren und \textit{Mergerequests} nur bei ausreichender Testabdeckung zu akzeptieren. Leider war es uns nicht möglich, dies hier umzusetzen, da die OpenSource Registrierung von coverage.io zum Zeitpunkt der Umsetzung nicht funktionierte. \\
+Um einen reibungslosen Entwicklungsprozess zu gewährleisten, war es nötig, unsere Lib-Funktionalität durch Unit-Tests abzudecken. Dies stellte uns vor diverse Herausforderungen. Zum einen lässt sich ROS-Funktionalität nicht testen; dadurch ist es nötig, die Core-Funktionalität unserer Library von ROS Funktionen zu befreien. Ein erster Ansatz war es, hierfür die \textit{ROSConnector-Klasse} anzulegen, welche einen Wrapper um ROS Funktionen darstellt und lediglich Methoden anbietet, die den Aufruf weiter an ROS delegiert. Dies sollte es ermöglichen, die nötigen ROS Aufrufe in unserer Library mit einem Mocking-Framework (in unserem Fall gMock) zu mocken und so Unit-Tests fahren zu können. Diesen Ansatz haben wir verfolgt, um dann leider festzustellen, dass gMock noch nicht von \textit{catkin} unterstützt wird. gMock ist nur in einer \textit{forked catkin version} verfügbar und es ist wohl geplant, das Framework in einer neueren Version von \textit{catkin} in das Main-Release zu integrieren. Daher haben wir uns dazu entschlossen, unsere Library soweit vorzubereiten, damit die \textit{Unit-Tests} nach dem Release und der Migration auf die neueste Version keinen großen Aufwand darstellen. Leider mussten wir feststellen, dass \textit{catkin build} beim Buildprozess keine Tests ausführt, sondern diese nur über \textit{catkin\_ make run\_ tests} ausgeführt werden können. Damit die Tests dennoch regelmäßig laufen und die Funktionalität der Lib regelmäßig getestet wird, wurde \textit{Continuous Integration} eingerichtet. Über den Dienst \textit{coverage.io} lässt sich zusätzlich ein \textit{Coveragereport} für die getesteten Packages erstellen, dadurch ist es möglich, Qualitätsstandards zu definieren und \textit{Mergerequests} nur bei ausreichender Testabdeckung zu akzeptieren. Leider war es uns nicht möglich, dies hier umzusetzen, da die OpenSource Registrierung von coverage.io zum Zeitpunkt der Umsetzung nicht funktionierte. \\
 Der Sinn der Unit-Tests war es, die Zeit, bis Fehler bei der Entwicklung entdeckt werden, deutlich zu verkürzen und die Stelle der Fehler besser und schneller zu identifizieren. Dadurch wollten wir vor Allem die extrem langen Testzyklen auf dem echten Roboter verkürzen, um mehr Zeit für neue Features in der Entwicklung zu haben. \\
 
  $~$ \\
