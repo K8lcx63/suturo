@@ -250,7 +250,7 @@ Fehler in der Funktionalität sind leider erst beim testen auf dem Roboter aufge
 \textbf{Lösung}: Es werden Tests für die Funktionen des Codes geschrieben, die beim \textit{Bauen} des Projektes durchlaufen und den Code auf die korrekte Funktionalität prüfen. So sollen Fehler die bei Änderungen entstehen können schneller entdeckt werden und die \textit{Time-To-Fail} verkürzt werden.
 
 \section{Methodendokumentation Gruppe Planning}
-\section{Die Quellcode-Datei: main.lisp (planning\_main\_programm)}
+\section{main.lisp (planning\_main\_programm)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
 
@@ -321,7 +321,7 @@ terminiert die Funktion. Die Funktion beginnt immer beim zuletzt gesehenen Punkt
 
 
 \newpage
-\section{Die Quellcode-Datei: vision\_communicate.lisp (planning\_vision)}
+\section{vision\_communicate.lisp (planning\_vision)}
 
 \subsection{Architekturbild}
 
@@ -378,7 +378,7 @@ object_detection-srv:object msg-two int delta
 @return: T or nil
 \end{verbatim}
 
-\section{Die Quellcode-Datei: knowledge-communicate.lisp\\
+\section{knowledge-communicate.lisp\\
 planning\_knowledge)}
 
 \subsection{Architekturbild}
@@ -457,7 +457,7 @@ Service zum Abstellen bereitgestellt werden konnte.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\section{Die Quellcode-Datei: motion-actions.lisp (planning\_motion)}
+\section{motion-actions.lisp (planning\_motion)}
 \subsection{Architekturbild}
 \chapterauthor{Vanessa Hassouna}
 
@@ -511,7 +511,7 @@ sendet den Befehl, einen Arm zu dem point-center-of-object zu fahren.
 \end{verbatim}
 
 \newpage
-\section{Die Quellcode-Datei: movement.lisp (planning\_move)}
+\section{movement.lisp (planning\_move)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
 
@@ -605,7 +605,7 @@ Beschreibung: Diese Hilfsfunktion dient dazu, den Action-Client zu erhalten.
 
 
 
-\section{Die Quellcode-Datei: external-logic.lisp (planning\_logic)}
+\section{external-logic.lisp (planning\_logic)}
 \subsection{Architekturbild}
 \chapterauthor{Vanessa Hassouna}
 
@@ -1024,8 +1024,8 @@ aus den Joint-States geparsed.
 \end{verbatim}
 
 
-
-\section{Die Quellcode-Datei: objects.lisp (planning\_objects)}
+\newpage
+\section{objects.lisp (planning\_objects)}
 \subsection{Architekturbild}
 \chapterauthor{Hauke Tietjen}
 
@@ -1060,6 +1060,7 @@ Publiziert Marker zur Visualisierung von Landezonen.
 \subsubsection{\"Ubersicht}
 \chapterauthor{Hauke Tietjen}
 Die Datei 'objects' aus dem Paket 'planning\_objects' dient dazu, aus den von Knowledge vorgegebenen Ablageorten für Objekte, Punkte zu bestimmen, die geeignet sind um Objekte auf ihnen abzustellen. Dabei werden Platzmangel und die Kollision von Objekten berücksichtigt. Zusätzlich lassen sich die finalen Positionen in Rviz visualisieren. Außerdem können Objekte nach hinten verschoben werden um Platz für Neue zu schaffen.
+
 
 \subsubsection{calculate-landing-zone()}
 \chapterauthor{Hauke Tietjen}
@@ -1144,6 +1145,8 @@ ausgegeben. Wenn kein Fehler aufgetreten ist wird die globale Variable
 @return
 \end{verbatim}
 
+\newpage
+
 \begin{figure}[!htb]
 	\center{\includegraphics[width=1.0\textwidth]
 		{img/objects_push.png}
@@ -1198,7 +1201,7 @@ Form eines Würfels und die Farbe wird zufällig gewählt.
 @return 
 \end{verbatim}
 
-\section{Die Quellcode-Datei: error-hierarchy.lisp (planning\_error)}
+\section{error-hierarchy.lisp (planning\_error)}
 \subsection{Architekturbild}
 \chapterauthor{Hauke Tietjen}
 \begin{figure}[!htb]
@@ -1249,7 +1252,7 @@ Fehlernachricht wird 'vison error:' ausgegeben.
 \end{verbatim}
 
 Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' funktionieren analog zu 'vison-error' und definieren weitere Fehler, für andere Bereiche.
-\section{Die Quellcode-Datei: interaction.lisp (planning\_interaction)}
+\section{interaction.lisp (planning\_interaction)}
 \subsection{Architekturbild}
 \chapterauthor{Kevin Störmer}
 
@@ -1487,7 +1490,7 @@ aus dem Gripper gelegt wird.
 
 \newpage
 
-\section{Die Quellcode-Datei: old.lisp (planning\_old)}
+\section{old.lisp (planning\_old)}
 
 \subsubsection{disassemble-Vision-Call (visionclouds)}
 \chapterauthor{Vanessa Hassouna}
