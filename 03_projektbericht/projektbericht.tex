@@ -284,7 +284,7 @@ Git-tag Milestone 2 Branch TestObjectsPositioning aufgrund von merge Konflikten:
 \begin{verbatim}
 main()
 Die Main startet eine 'ros-node' mit dem Namen planning\_main.
-Diese Node läuft solange,bis die komplette Main einmalig durchlaufen wurde. 
+Diese Node läuft solange bis die komplette Main einmalig durchlaufen wurde. 
 @return: T oder Nil 
 \end{verbatim}
 
@@ -488,7 +488,7 @@ Die Quellcode-Datei 'motion-actions' im Paket 'planning\_motion'  ist ausschlies
 call-Motion-Move-Arm-Homeposition()
 
 Beschreibung: Ruft den Actionserver von Motion auf und
-sendet das 'Command 2'.Dieses Command lässt die Arme des Pr2 
+sendet das 'Command 2'. Dieses Command lässt die Arme des Pr2 
 in die Homeposition fahren.
 
 @return: Successfull oder Aborted
@@ -504,7 +504,7 @@ in die Homeposition fahren.
 call-Motion-Move-Arm-To-Point (point-center-of-object \&optional (x 3))
 
 Beschreibung: Ruft den Actionserver von Motion auf und 
-sendet den Befehl einen Arm zu dem point-center-of-object zu fahren.
+sendet den Befehl, einen Arm zu dem point-center-of-object zu fahren.
 
 @param point-center-of-object &optional (x 3)
 @return: Successfull oder Aborted
@@ -559,7 +559,8 @@ Point (x y z angle)}
 move-Base-To-Point (x y z angle)
 
 Beschreibung: Anhand des Actionservice "nav\_pcontroller/move\_base" 
-wird die Basis bewegt. Der Punkt und die Rotation sind in Frame "map" anzugeben.
+wird die Basis bewegt. Der Punkt und die Rotation sind in dem Frame 
+"map" anzugeben.
 
 @param: x y z angle
 @return: Successfull oder Aborted
@@ -677,7 +678,7 @@ publish-Pose-JaMilch ()
 Beschreibung: Die Funktion ist nur für das Demoszenario 
 erstellt. Eine "JaMilch" wir "gesehen" und gepublisht
 an das Team Knowledge. Es wird auche in neuer Parameter
-auf dem Paramserver erstellt der den Namen des Strings
+auf dem Paramserver erstellt, der den Namen des Strings
 bekommt.
 
 @param:string
@@ -717,7 +718,7 @@ Beschreibung: Löst die Y-Koordinate einer GraspPose heraus.
 \begin{verbatim}
 transformation-XYZ (x y z startFrame &optional (endFrame "/base_footprint"))
 
-Beschreibung: Transformiert einen Punkt mit dem standart
+Beschreibung: Transformiert einen Punkt mit dem standard
 Quaternion  0 0 0 1.
 
 @param: x y z startFrame &optional (endFrame "/base_footprint")
@@ -746,7 +747,7 @@ Beschreibung: Transformiert eine Pose-Stamped-msgs mit einem optional Frame,\\
 \begin{verbatim}
 make-Object-Pose-For-Handshake (label)
 
-Beschreibung: Erstellt eine msg von dem Punkt eines Objektes\\ 
+Beschreibung: Erstellt eine msg von dem Punkt eines Objektes 
 für die Handshake Methode.
 
 @param: label
@@ -758,11 +759,11 @@ für die Handshake Methode.
 \begin{verbatim}
 percieve-Objetcs ()
 
-Beschreibung: Ruf vision_suturo Service um Objekte wahrzunehmen auf\\
-wärend dessen wir durch die größe des übergebenen Arrays \\
-durchgelaufen und jedes gesehene Objekt gepublisht, sowie\\
-auf dem Paramserver gespeichert. Auch ein Counter wird gesetzt\\
-der mitzählt wieviele Objekte gesehen wurden.
+Beschreibung: Ruft vision_suturo Service um Objekte wahrzunehmen auf.
+Währenddessen wird durch die Größe des übergebenen Arrays
+durchgelaufen und jedes gesehene Objekt gepublisht, sowie
+auf dem Paramserver gespeichert. Auch ein Counter wird gesetzt,
+der mitzählt wie viele Objekte gesehen wurden.
 
 @return: T oder Nil
 \end{verbatim}
@@ -772,7 +773,7 @@ der mitzählt wieviele Objekte gesehen wurden.
 \begin{verbatim}
  percieve-Objects-And-Search (label)
 
-Beschreibung: Sucht nach einem Objekt ob es noch gesehen wird.
+Beschreibung: Sucht nach einem Objekt, ob es noch gesehen wird.
 @param: label
 @return: T oder Nil
 \end{verbatim}
@@ -783,7 +784,7 @@ Beschreibung: Sucht nach einem Objekt ob es noch gesehen wird.
 \begin{verbatim}
 get-Information-About-Object (label)
 
-Beschreibung: Transformiert einen Punkt von dem gegeben Objekt\\
+Beschreibung: Transformiert einen Punkt von dem gegeben Objekt
 in den Frame "Map".
 
 @param: label
@@ -795,9 +796,9 @@ in den Frame "Map".
 \begin{verbatim}
 save-Object (label object_pose)
 
-Beschreibung: Das gegeben Objekt wird auf dem \\
-Paramserver gespeichert. Hier wird jedoch nur der Punkt\\
-des Objektes berücksichtigt und der Name des Parameters \\
+Beschreibung: Das gegeben Objekt wird auf dem
+Paramserver gespeichert. Hier wird jedoch nur der Punkt
+des Objektes berücksichtigt und der Name des Parameters
 ist der Name des Objektes.
 
 @param: label object_pose
@@ -841,8 +842,9 @@ Beschreibung: Callback-Funktion für die Funktion init-pr2().
 \begin{verbatim}
 move-pr2 (x y z)
 
-Beschreibung: Bewegt den Roboter zu einem Punkt, wenn dieser hinter\\
+Beschreibung: Bewegt den Roboter zu einem Punkt. Wenn dieser hinter
 dem Roboter liegt begiebt dieser sich erst in eine Safeposition.
+
 @param: x y z 
 @return: Successfull oder Aborted
 \end{verbatim}
@@ -889,7 +891,7 @@ Beschreibung: Die Funktion lässt den Roboter
 anhand vorgegebener Positionen seine Drehung sowie seine
 Position ändern, wenn er ein Objekt nicht erreichen kann.
 Achtung die X-, Y-, Z- und W-Werte müssen in dem Frame "map" angegeben werden.
-Der Roboter selber bewegt sich in dem Map base\_footprint.
+Der Roboter selber bewegt sich in dem Map base_footprint.
 
 @param: x, y, z, w, label, command
 @return: T oder Nil
@@ -905,10 +907,10 @@ arm-second arm-second-homeposi)}
 grab-Or-Place-Object (label x y angle arm-first 
 arm-first-homeposi grab-string &optional arm-second arm-second-homeposi)
 
-Beschreibung: Versucht zu Greifen oder Abzustellen. Wenn der \\
-übergebene String äquivalent zu "grab" ist, wird der Roboter \\
-auch mit dem zweiten Arm versuchen zu Greifen, wenn der erste\\
-nicht Funktioniert hat.
+Beschreibung: Die Funktion versucht zu greifen oder abzustellen. Wenn der
+übergebene String äquivalent zu "grab" ist, wird der Roboter
+auch mit dem zweiten Arm versuchen zu greifen, wenn der Erste
+nicht funktioniert hat.
 
 @param: label x y angle arm-first arm-first-homeposi grab-string &optiona\\
 arm-second arm-second-homeposi
@@ -924,11 +926,11 @@ grab-string arm-second arm-second-homeposi)}
  trying-To-Grab (label x y angle arm-first arm-first-homeposi
  grab-string arm-second arm-second-homeposi)
 
-Beschreibung: Ruft grab-or-place-object auf, wenn der \\
-Caounter größer ist als 0 verändert der Pr2 seine Position \\
+Beschreibung: Die Funktion ruft grab-or-place-object auf. Wenn der
+Counter größer ist als 0 verändert der Pr2 seine Position
 und setzt den Counter auf 1, damit er in keinen Loop gerät.
 
-@param: Label x y angle arm-first arm-first-homeposi \\
+@param: Label x y angle arm-first arm-first-homeposi
 grab-string arm-second arm-second-homeposi
 @return: T oder Nil
 \end{verbatim}
@@ -938,8 +940,8 @@ grab-string arm-second arm-second-homeposi
 \begin{verbatim} 
 how-Many-Gripper ()
 
-Beschreibung: Durchläuft den empty-gripper server\\
-und setzt die Variablen für Linken- und Rechten-arm auf \\
+Beschreibung: Durchläuft den empty-gripper Server
+und setzt die Variablen für den linken und rechten Arm auf
 T oder Nil.
 
 @return: T oder Nil
@@ -951,7 +953,7 @@ T oder Nil.
 \begin{verbatim} 
 calculate-Object-And-Pr2-Distance (label)
 
-Beschreibung: Berechnet die Distanz zwischen dem \\
+Beschreibung: Berechnet die Distanz zwischen dem
 Pr2 und dem Objekt.
 
 @param: label
@@ -964,7 +966,7 @@ Pr2 und dem Objekt.
 \begin{verbatim}
 distance (xa ya xb yb)
 
- Beschreibung: Berechnet die Distanz\\
+Beschreibung: Berechnet die Distanz
 zwischen zwei Vektoren.
 
 @param: xa ya xb yb (vektor1 vektor2)
@@ -977,8 +979,8 @@ zwischen zwei Vektoren.
 \begin{verbatim}
 set-First-Posi ()
 
- Beschreibung: Setzt die Globalen Variablen *x* und *y*\\
-auf die erste Position (Die Position ist fest in der \\
+Beschreibung: Setzt die globalen Variablen *x* und *y*
+auf die erste Position (Die Position ist fest in der
 Küche gewählt).
 
 @return: T oder Nil
@@ -990,8 +992,8 @@ Küche gewählt).
 \begin{verbatim}
 set-Second-Posi ()
 
- Beschreibung: Setzt die Globalen Variablen *x* und *y*\\
-auf die zweite Position (Die Position ist fest in der \\
+Beschreibung: Setzt die globalen Variablen *x* und *y*
+auf die zweite Position (Die Position ist fest in der
 Küche gewählt).
 
 @return: T oder Nil
