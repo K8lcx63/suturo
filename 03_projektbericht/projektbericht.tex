@@ -161,14 +161,14 @@ Während der Entwicklung des zweiten Meilensteines ist uns aufgefallen, dass der
 
 \subsection{Die Objektplatzierung soll dynamisch sein}
 \chapterauthor{Hauke Tietjen}
-Wenn jedes Objekt einen statischen Abstellplatz hätte, könnten identische Objekte miteinander kollidieren. Außerdem bringt es Abwechslung in den Programmablauf, wodurch Probleme aufgedeckt werden können. Ein Beispiel wäre Überlappungen von Objekten, in der Wahrnehmung. \\
+Wenn jedes Objekt einen statischen Abstellplatz hätte, könnten identische Objekte miteinander kollidieren. Außerdem bringt es Abwechslung in den Programmablauf, wodurch Probleme aufgedeckt werden können. Ein Beispiel wäre Überlappungen von Objekten, in der Wahrnehmung.\\
 
 \textbf{Lösung}: Objekte werden in ihren festgelegten Abstellzonen kollisionsfrei platziert, bis diese keinen Platz mehr bieten oder bei drohender Überfüllung ein Fehler geworfen werden kann.
 
 
 \subsection{Fehler sollen hierarchisch sein}
 \chapterauthor{Hauke Tietjen}
-Man sollte feststellen können in welchen Bereichen Fehler auftreten und diese, aufgrund dessen, anders zu behandeln. Besonders in höher gelegenen Funktionen kann dies nützlich bei der Fehlerbehandlung sein. \\
+Man sollte feststellen können in welchen Bereichen Fehler auftreten und diese, aufgrund dessen, anders zu behandeln. Besonders in höher gelegenen Funktionen kann dies nützlich bei der Fehlerbehandlung sein.\\
 
 \textbf{Lösung}: In einer Fehlerhierarchie können Fehler von anderen Fehlern erben. Daher eignet sie sich gut um über- und untergeordneten Programmabschnitten Fehler zuzuordnen.
 
@@ -1214,6 +1214,12 @@ keine
 \subsubsection{\"Ubersicht}
 \chapterauthor{Hauke Tietjen}
 Die Datei 'error-hierarchy' aus dem Paket 'planning\_error' legt die Hierarchie der Fehler fest.
+
+\begin{figure}[!htb]
+	\center{\includegraphics[width=1.0\textwidth]
+		{img/error_hierarchy.png}
+		\caption{} Fehlerhierarchie}
+\end{figure}
 
 \subsubsection{custom-error()}
 \chapterauthor{Hauke Tietjen}
