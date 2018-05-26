@@ -3386,6 +3386,7 @@ Den Stand der für Stand  des 2. Meilensteins findet sich unter folgendem Tag: \
 \item ROS Indigo
 \item Catkin tools
 \item Gazebo 2.2.x
+\item OpenCV 3.3.0
 \end{itemize}
 
 \textbf{.bashrc}
@@ -3410,6 +3411,22 @@ Folgendes muss zur .bashrc (oder zshrc) hinzugefügt werden:
 \textit{wget http://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -}
 \\
 \textit{sudo apt-get update}
+
+
+\item OpenCV 3.3.0 herunterladen und folgendermaßen installieren: \\
+
+\textit{mkdir build} \\
+\textit{cd build/} \\
+\textit{cmake -D CMAKE\_BUILD\_TYPE=RELEASE -D \\ 
+CMAKE\_INSTALL\_PREFIX=/usr/local -D FORCE\_VTK=ON -D \\ 
+WITH\_TBB=ON -D WITH\_V4L=ON -D WITH\_QT=ON -D \\ 
+WITH\_OPENGL=ON -D WITH\_CUBLAS=ON -D \\ 
+CUDA\_NVCC\_FLAGS="-D\_FORCE\_INLINES" -D WITH\_GDAL=ON \\ 
+-D WITH\_XINE=ON -D BUILD\_EXAMPLES=ON ..} \\
+\textit{make -j $(($(nproc) + 1))} \\
+\textit{sudo make install} \\
+
+
 
 \item Folgende Pakete in den src-Ordner eines catkin workspaces klonen:\\
         \textbf{vision\_suturo\_1718} (this package) \\
