@@ -3235,10 +3235,17 @@ Gibt eine Punktwolke unseres Sichtfelds (Szene oder Scene) zurück. Dabei wird a
 \\ \\
 Die Callback-Funktion wird im loop immer wieder aufgerufen, solange die Node noch aktiv ist bzw. der roscore-server besteht.
 
-\subsection{Beide}
+\subsection{Programmablauf}
 \chapterauthor{Alexander Link \& Tammo Wübbena}
 \subsubsection{Schritt 1: Vorbereitung}
 Die Services, der Visualization-Publisher und der Kinect-Subscriber werden gestartet. Je nach Einstellung wird der Klassifizierer trainiert, oder lädt Daten vom Training aus vorhergegangenen Nodestarts.
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=0.6 \textwidth]
+        {img/vision_1_all.png}
+        \caption{} Ansicht einer beispielhaften Punktwolke, die wir durch den Kinect-Sensor zur Verfügung gestellt bekommen.}
+\end{figure}
+
 \subsubsection{Schritt 2: Serviceaufruf \textit{/vision\_suturo/objects\_information}}
 Jedes mal, wenn der Service \textit{/vision\_suturo/objects\_information} durch Planning aufgerufen wird, wird die Funktion \textit{findCluster} in perception.h ausgeführt. 
 \\
@@ -3251,12 +3258,25 @@ In \textit{findCluster} wird die Punktwolke zunächst folgendermaßen vorbearbei
 \item Ein MovingLeastSquares Filter, der Flächen begradigt, um Ungenauigkeiten der Daten vorzubeugen.
 \item Entfernen aller Punkte, die nicht zum größten Cluster in der Szene gehören.
 \item Finden der Grundfläche (für gewöhnlich die Tischplatte). Alle Punkte, die sich nicht oberhalb der Tischplatte befinden, werden entfernt. Anschließend wird die Grundfläche selbst entfernt.
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=0.6 \textwidth]
+        {img/vision_2_preprocessed.png}
+        \caption{} Ansicht der Zwischenergebnisse mitsamt Grundfläche}
+\end{figure}
+
 \item Entfernen von weiteren Flächen, die zu groß sind, um zum gesuchten Objekt gehören zu können. Dies passiert mehrmals, wenn es mehrere solcher Flächen im Sichtfeld gibt.
 \end{itemize}
 
 \subsubsection{Schritt 4: Cluster Extraktion}
 Mit \textit{EuclideanClusterExtraction} werden die nun segmentierten Objekte (alle noch in einer Punktwolke zusammengefasst) extrahiert und in einzelne Cluster gespeichert.
-\\
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=0.6 \textwidth]
+        {img/vision_3_withoutplane.png}
+        \caption{} Ansicht der einzelnen extrahierten Cluster}
+\end{figure}
+
 \subsubsection{Schritt 5: Berechnen von Features und Klassifizierung}
 Es werden CVFH- und Farbfeatures für die Klassifikation berechnet. Mithilfe des in Schritt 1 mit Daten befüllten Klassifizierers wird nun festgestellt, welche Gegenstände sich in der Szene befinden.
 \\
@@ -3279,12 +3299,12 @@ Der Mittelpunkt des angeglichenen Meshes (als Punktwolke) wird errechnet und als
 Die Message wird mit dem Mittelpunkt als Vektor und der Orientierung als Quaternion befüllt und weiter an Planning gesendet.
 
 \subsection*{Visualization-Publisher}
-Der Visualization-Publisher ''publiziert'' (advertise) die extrahierten Cluster als zusammenhängende Punktwolke
+Der Visualization-Publisher gibt zu Debugging-Zwecken die extrahierten Cluster als einzelne Punktwolke aus.
 
 \begin{figure}[!htb]
         \center{\includegraphics[width=0.6 \textwidth]
         {img/vision_visualization_object.png}
-        \caption{} Debug-Ausgabe der erkannten Objekte durch einen PointCloud2-Publisher-}
+        \caption{} Debug-Ausgabe der erkannten Objekte durch einen PointCloud2-Publisher.}
 \end{figure}
 
 \newpage
