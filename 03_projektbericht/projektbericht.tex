@@ -378,35 +378,49 @@ object_detection-srv:object msg-two int delta
 @return: T or nil
 \end{verbatim}
 
+\newpage
+
 \section{knowledge-communicate.lisp\\
 planning\_knowledge)}
 
 \subsection{Architekturbild}
-\chapterauthor{Vanessa Hassouna}
+\chapterauthor{Vanessa Hassouna und Hauke Tietjen}
 
 \begin{figure}[!htb]
-        \center{\includegraphics[width=1.0\textwidth]
+        \center{\includegraphics[width=1.1\textwidth]
         {img/knowledge.png}
         \caption{} Architektur der Quellcode-Datei knowledge-communicate.lisp}
 \end{figure}
 
 \subsection{API}
-\chapterauthor{Vanessa Hassouna}
+\chapterauthor{Vanessa Hassouna und Hauke Tietjen}
 \subsubsection{Serviceclients}
 
-1. 'beliefstate/objects\_to\_pick'\\
-Gibt uns zwei Strings zurück. Diese sind leer, wenn kein Objekt mehr gegriffen werden soll oder es kein Objekt mehr zum Greifen gibt.
+1. 'storage\_place\_service/storage\_place'\\
+Gibt die Position, Länge und Breite des Storage-places eines Objekts zurück.\\
 
-2. 'beliefstate/gripper\_empty'\\
+2. 'knowledge\_grasp/knowledge\_grasp'\\
+Gibt eine Grasppose für ein Objekt zurück.\\
+
+3. 'place\_object/place'\\
+Gibt eine Pose zum Abstellen von Objekten zurück.\\
+
+4. 'push\_object/push'\\
+Gibt eine Verschiebepose für ein Objekt zurück.\\
+
+5. '/svm\_classifier/classify\_service'\\
+Identifiziert ein Objekt anhand von Features.\\
+
+6. 'beliefstate/objects\_to\_pick'\\
+Gibt uns zwei Strings zurück. Diese sind leer, wenn kein Objekt mehr gegriffen werden soll oder es kein Objekt mehr zum Greifen gibt.\\
+
+7. 'beliefstate/gripper\_empty'\\
 Wir können erfragen, welcher Gripper frei ist.\\
 
-3. 'kitchen\_mode\_service/get\_fixed\_kitchen\_objects'\\
+8. 'beliefstate/objects\_attached\_to\_gripper\\
+Gibt den Objektnamen des Objektes zurück, welches sich in der gegebenen Hand befindet.\\
 
-4. 'storage\_place\_service/storage\_place'\\
 
-5. 'knowledge\_grasp/knowledge\_grasp'\\
-
-6. 'beliefstate/objects\_attached\_to\_gripper\\
 
 \subsubsection{Topics}
 1. 'beliefstate/perceive\_action'\\
@@ -427,19 +441,68 @@ Beschreibung: Ruft "/svm_classifier/classify_service" Service auf
 @return: identifikation
 \end{verbatim}
 
-\subsubsection{ask-knowledge-where-belongs-object()}
+\subsubsection{is-object()}
 \chapterauthor{Hauke Tietjen}
 \begin{verbatim}
-ask-knowledge-where-belongs-object()
+is-object()
+
+Beschreibung: Fragt Knowleedge ob die gegebenen Features zu dem
+gegeben Objekt (String) passen.
+
+@param: objectString features
+@return: T wenn die Features zum Objekt passen, nil falls nicht.
+\end{verbatim}
+
+\subsubsection{ask-knowledge-how-to-grab()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+ask-knowledge-how-to-grab()
+
+Beschreibung: Fragt Knowledge wie das Objekt gegriffen werden soll.
+Knowledge entscheidet dann von welcher Seite und gibt eine Pose zurück.
+
+@param: object
+@return: Greifpose
+\end{verbatim}
+
+\subsubsection{ask-knowledge-where-belongs()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+ask-knowledge-where-belongs()
 
 Beschreibung: Fragt den "storage_place" Service von Knowledge zu welchem
 Abstellplatz das gegebene Objekt gehört.
 
-@param object
+@param: object
 @return: Abstellplatz als X- und Y-Koordinate in der Mitte, sowie
 Breite und Höhe
 \end{verbatim}
 
+\subsubsection{place-object()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+place-object()
+
+Beschreibung: Fragt Knowledge wie das Objekt, mit dem besagtem Arm,
+an der gegebenen Position abgestellt werden soll. Knowledge gibt
+daraufhin eine Pose zrück.
+
+@param: gripper frame-id x-coordinate y-coordinate
+@return: Abstellpose
+\end{verbatim}
+
+\subsubsection{objects-to-pick()}
+\chapterauthor{Vanessa Hassouna}
+\begin{verbatim}
+objects-to-pick()
+
+Beschreibung: Gibt uns zwei Strings zurück. Diese sind leer, wenn kein
+Objekt mehr gegriffen werden soll oder es kein Objekt mehr zum Greifen gibt.
+
+@param: 
+@return: Abstellplatz als X- und Y-Koordinate in der Mitte, sowie
+Breite und Höhe
+\end{verbatim}
 
 \subsubsection{how-To-Pick-Objects()}
 \chapterauthor{Hauke Tietjen}
@@ -447,12 +510,48 @@ Breite und Höhe
 how-To-Pick-Objects()
 
 Beschreibung: Fragt den "knowledge_grasp" Service wie das gegebene Objekt 
-gegriffen werden soll. Der Service wird ausnahmsweise auch zum Abstellen 
-des Objekts verwendet, weil aufgrund technischer Probleme noch kein
-Service zum Abstellen bereitgestellt werden konnte.
+gegriffen werden soll. Knowledge entscheidet ob von oben, links oder rechts
+gegriffen wird.
 
-@param object
+@param: object
 @return: grasp pose
+\end{verbatim}
+
+\subsubsection{empty-gripper()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+empty-gripper()
+
+Beschreibung: Fragt Knowledge welcher Gripper frei ist.
+Knowledge gibt darauf eine Message zurück, die boolische
+Werte für beide Gripper enthält.
+
+@param:
+@return: Knowledge Message
+\end{verbatim}
+
+\subsubsection{push-objects()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+pusch-objects()
+
+Beschreibung: Fragt Knowledge nach einer Verschiebepose, für das
+gegebene Objekt.
+
+@param: object-label
+@return: Verschiebepose
+\end{verbatim}
+
+\subsubsection{get-object-attached-to-gripper()}
+\chapterauthor{Hauke Tietjen}
+\begin{verbatim}
+get-object-attached-to-gripper()
+
+Beschreibung: Fragt Knowledge welches Objekt sich in der gegebenen
+Hand befindet.
+
+@param: gripper-number
+@return: object-lable
 \end{verbatim}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -506,7 +605,7 @@ call-Motion-Move-Arm-To-Point (point-center-of-object \&optional (x 3))
 Beschreibung: Ruft den Actionserver von Motion auf und 
 sendet den Befehl, einen Arm zu dem point-center-of-object zu fahren.
 
-@param point-center-of-object &optional (x 3)
+@param: point-center-of-object &optional (x 3)
 @return: Successfull oder Aborted
 \end{verbatim}
 
@@ -1091,8 +1190,8 @@ das Objekt zurück. Die Pose wird mit dem String der die Kapazität
 des storage place beschreibt in eine Liste geschrieben und diese
 zurückgegeben.
 
-@param object
-@return Gibt die Pose eines Grippers in /map zurück um ein Objekt abzustellen
+@param: object
+@return: Gibt die Pose eines Grippers in /map zurück um ein Objekt abzustellen
 \end{verbatim}
 
 \begin{figure}[!htb]
@@ -1114,8 +1213,8 @@ Die Namen sind: "HelaCurryKetchup", "TomatoSauceOroDiParma",
 "KoellnMuesliKnusperHonigNuss", "KellogsToppasMini", "CupEcoOrange", 
 "EdekaRedBowl" und "SiggBottle".
 
-@param object-label
-@return true wenn es den Namen gibt, false falls nicht
+@param: object-label
+@return: true wenn es den Namen gibt, false falls nicht
 \end{verbatim}
 
 \subsubsection{fill-landing-zone-horizontally()}
@@ -1129,8 +1228,8 @@ Nächste ist. Dann wird der Bereich mit dem gegebenen Objekt befüllt.
 Dies geschieht von positiv nach negativ auf der Y-Achse, im Frame '/map'.
 Danach wird die erstellte Pose zurückgegeben.
 
-@param position width height, der Landezone
-@return Gibt eine Pose in /map zurück um ein Objekt abzustellen
+@param: position width height, der Landezone
+@return: Gibt eine Pose in /map zurück um ein Objekt abzustellen
 \end{verbatim}
 
 \begin{figure}[!htb]
@@ -1171,8 +1270,8 @@ calculate-landing-zone-visualized()
 Beschreibung: Die Funktion führt calculate-landing-zone() aus und
 visualisiert das Ergebnis, mit visualize-landing-zone().
 
-@param object
-@return Gibt eine Pose in /map zurück um ein Objekt zu greifen
+@param: object
+@return: Gibt eine Pose in /map zurück um ein Objekt zu greifen
 \end{verbatim}
 
 \subsubsection{visualize-landing-zone()}
@@ -1183,8 +1282,8 @@ visualize-landing-zone()
 Beschreibung: Die Funktion führt vis-init() und publish-pose() aus
 um eine Pose zu visualisieren.
 
-@param pose
-@return 
+@param: pose
+@return: 
 \end{verbatim}
 
 \subsubsection{vis-init()}
@@ -1194,8 +1293,8 @@ vis-init()
 
 Beschreibung: Die Funktion startet den Marker-publisher.
 
-@param 
-@return 
+@param: 
+@return: 
 \end{verbatim}
 
 \subsubsection{publish-pose()}
@@ -1207,8 +1306,8 @@ Beschreibung: Es wird ein Marker an der angegebenen Pose publiziert,
 mit ID und den Dimensionen aus height und width. Der Marker hat die
 Form eines Würfels und die Farbe wird zufällig gewählt.
 
-@param pose id height width
-@return 
+@param: pose id height width
+@return: 
 \end{verbatim}
 
 \section{error-hierarchy.lisp (planning\_error)}
@@ -1244,8 +1343,8 @@ custom-error()
 Beschreibung: Dieser Standardfehler erbt von 'error' während
 alle weiteren Fehler von diesem erben. 
 
-@param message
-@return 
+@param: message
+@return: 
 \end{verbatim}
 
 \subsubsection{vision-error()}
@@ -1258,7 +1357,7 @@ Zusammenhang mit Vision stehen. Vor der
 Fehlernachricht wird 'vison error:' ausgegeben. 
 
 @param
-@return 
+@return: 
 \end{verbatim}
 
 Die Conditions 'motion-error', 'move-error', 'knowledge-error' und 'objects-error' funktionieren analog zu 'vison-error' und definieren weitere Fehler, für andere Bereiche.
@@ -1312,7 +1411,7 @@ init-interaction()
 Beschreibung: Initialisiert das Paket. Startet alle Subkomponenten, 
 und teilt dem Nutzer mit falls Abhängigkeiten fehlen.
 
-@return true wenn richtig initalisiert
+@return: true wenn richtig initalisiert
 \end{verbatim}
 
 \subsubsection{ask-human-to-move-object()}
@@ -1327,8 +1426,8 @@ Dieser kann dann das Objekt in den Gripper des Pr2 legen
 und ihm die Hand schütteln. Der Roboter nimmt dann seine Arbeit 
 wieder auf.
 
-@param pose label force moving command statement1 statement2
-@return Kein definierter Rückgabewert
+@param: pose label force moving command statement1 statement2
+@return: Kein definierter Rückgabewert
 \end{verbatim}
 
 \subsubsection{ask-human-to-take-object ()}
@@ -1344,8 +1443,8 @@ welches er loswerden möchte.
 Nach einem Händeschütteln, wird das Objekt freigegeben 
 und als abgelegt behandelt. Der PR2 nimmt dann seine Arbeit wieder auf.
 
-@param label moving-command
-@return Kein definierter Rückgabewert
+@param: label moving-command
+@return: Kein definierter Rückgabewert
 \end{verbatim}
 
 \subsubsection{check-gripper()}
@@ -1359,8 +1458,8 @@ Umgebung aufgerufen wird. Nebenbei werden die beiden Gripper gecheckt,
 sodass nichts aus dem Gripper fallen kann währenddessen. Wenn kein 
 Fehlschlag passiert, läuft die mitgegebene Funktion normal durch.
 
-@param errormsg func args r l
-@return Kein definierter Rückgabewert
+@param: errormsg func args r l
+@return: Kein definierter Rückgabewert
 \end{verbatim}
 
 \subsubsection{decide-gripper()}
@@ -1372,8 +1471,8 @@ Beschreibung: Da Motion merkwürdige Magic-Numbers für ihre Actions verwendet,
 wird diese Funktion gebraucht um von der Einen auf die Andere schliessen zu 
 können.
 
-@param moving-command
-@return magic-number für die Gripper-Action
+@param: moving-command
+@return: magic-number für die Gripper-Action
 \end{verbatim}
 
 \subsubsection{drive-to-human ()}
@@ -1383,8 +1482,8 @@ drive-to-human ()
 
 Beschreibung: Fährt zu Ort für menschliche Interaction an der Iai Holz-Küche.
 
-@param -
-@return Kein definierter Rückgabewert
+@param: -
+@return: Kein definierter Rückgabewert
 \end{verbatim}
 
 \subsubsection{say ()}
@@ -1395,8 +1494,8 @@ say ()
 Beschreibung: Nutzt das sound_play Paket um einen String in 
 gesprochene Sprache zu synthetisieren und auf dem Pr2 auszugeben.
 
-@param message
-@return Kein definierter Rückgabewert
+@param: message
+@return: Kein definierter Rückgabewert
 \end{verbatim}
 
 \subsubsection{wait-for-handshake ()}
@@ -1409,8 +1508,8 @@ Pr2 führt stoppt seine Aufgabe, und gibt mitgegebene Errormessage aus.
 Danach wartet er auf einen Handshake und führt dann die mitgegebene 
 Funktion aus.
 
-@param func args errormsg
-@return Kein definierter Rückgabewert
+@param: func args errormsg
+@return: Kein definierter Rückgabewert
 \end{verbatim}
 
 \subsubsection{build-pointing-pose ()}
@@ -1421,8 +1520,8 @@ build-pointing-pose ()
 Beschreibung: Baut die Pointing-Pose aus den einzelnen Berechnungen 
 zusammen. Diese Pose wird gebraucht um auf ein Objekt zu zeigen.
 
-@param pose
-@return Pose die auf das Objekt zeigt
+@param: pose
+@return: Pose die auf das Objekt zeigt
 \end{verbatim}
 
 \subsubsection{get-pointing-pose ()}
@@ -1434,8 +1533,8 @@ Beschreibung: Baut die Pointing-Pose zusammen, ohne Quaternion.
 Verarbeitet die Daten aus 'get-vektor-pr2-reachable' 
 (beschrieben nachfolgend). 
 
-@param pose
-@return Pointing-Pose ohne Quaternion
+@param: pose
+@return: Pointing-Pose ohne Quaternion
 \end{verbatim}
 
 \subsubsection{get-vektor-pr2-reachable ()}
@@ -1446,8 +1545,8 @@ get-vektor-pr2-reachable ()
 Beschreibung: Rechnet in Abhängigkeit von Arm und Gegebenem 
 Vektor den nähesten Punkt aus den der Pr2 erreichen kann.
 
-@param Vektor
-@return erreichbarer Punkt
+@param: Vektor
+@return: erreichbarer Punkt
 \end{verbatim}
 
 \subsubsection{calculate-pointing-quaternion ()}
@@ -1458,8 +1557,8 @@ calculate-pointing-quaternion ()
 Beschreibung: Berechnet aus einer gegebenen Object-Pose das 
 Quaternion was benötigt wird um auf ein Objekt zu zeigen. 
 
-@param object-pos
-@return Quaternion, welches zum pointen gebraucht wird
+@param: object-pos
+@return: Quaternion, welches zum pointen gebraucht wird
 \end{verbatim}
 
 \subsubsection{get-directional-vector ()}
@@ -1470,8 +1569,8 @@ get-directional-vector ()
 Beschreibung: Berechnet aus 2 Punkten im Raum den Richtungsvektor in Richtung 
 des 2ten Punktes.
 
-@param Vektor1 Vektor2
-@return Richtungsvektor
+@param: Vektor1 Vektor2
+@return: Richtungsvektor
 \end{verbatim}
 
 \subsubsection{vectors-to-matrix ()}
@@ -1482,8 +1581,8 @@ vectors-to-matrix ()
 Beschreibung: Baut und berechnet aus 3 Punkten oder Vektoren im Raum eine 
 Transformationsmatrix.
 
-@param Vektor-x Vector-y Vector-z
-@return 3x3 Tansformationsmatrix
+@param: Vektor-x Vector-y Vector-z
+@return: 3x3 Tansformationsmatrix
 \end{verbatim}
 
 \newpage
@@ -1497,8 +1596,8 @@ Beschreibung: Berechnet Betrag der Wrench-Force-Daten und published sie.
 Ausserdem wird immer genau dann auf dem Handshake-detection gepublished, 
 wenn ein Handschlag festgestellt wird (Callback-Funktion).
 
-@param msg
-@return Kein definierter Rückgabewert
+@param: msg
+@return: Kein definierter Rückgabewert
 \end{verbatim}
 
 \begin{figure}[!htb]
@@ -1516,8 +1615,8 @@ put-object-in-hand ()
 Beschreibung: Simple Methode um Knowledge mitzuteilen, wenn ein Objekt 
 in den Gripper gelegt wird.
 
-@param gripper label
-@return Kein definierter Rückgabewert
+@param: gripper label
+@return: Kein definierter Rückgabewert
 \end{verbatim}
 
 \subsubsection{drop-object-in-hand ()}
@@ -1529,7 +1628,7 @@ Beschreibung: Simple Methode um Knowledge mitzuteilen, wenn ein Objekt
 aus dem Gripper gelegt wird.
 
 @param label
-@return Kein definierter Rückgabewert
+@return: Kein definierter Rückgabewert
 \end{verbatim}
 
 \newpage
