@@ -1580,7 +1580,8 @@ vorkommen und direkt im Anschluss normal_features)
 
 \newpage
 \section*{Methodendokumentation Gruppe Knowledge}
-\section{knowledge\_grasp}
+\section{Knowledge}
+\subsection{knowledge\_grasp}
 \chapterauthor{Max-Phillip Bahr}
 Das Knowledge\_Grasp-Paket dient dazu, alle GraspPosen zu einem erkannten Gegenstand aus der Ontologie auszulesen. Die GraspPose dient dazu dem PR2 mitzuteilen wie ein Gegenstand zu greifen ist.
 
@@ -1590,10 +1591,9 @@ Das Knowledge\_Grasp-Paket dient dazu, alle GraspPosen zu einem erkannten Gegens
         \caption{\label{fig:knowledge_grasp_service_node} Architektur der knowledge\_grasp\_service-node}}
 \end{figure}
       
-\subsection{Beschreibung des Teilsystems}
+\subsubsection{Beschreibung des Teilsystems}
 \chapterauthor{Max-Phillip Bahr}
 
-\subsubsection*{find\_grasp\_pose - Prolog}
 \begin{spverbatim}
 find_grasp_pose(ObjectClassLabel, Frame, Translation, Quaternion)
 @param ObjectClassLabel Das Objektlabel des zu greifenden Objekts 
@@ -1608,7 +1608,6 @@ Description : Benutzt sort_grasp_poses um eine sortierte Liste aller
 GraspPosen zu erhalten und führt dann mit member alle Posen einzeln auf.
 \end{spverbatim}
 
-\subsubsection*{find\_grasp\_individual - Prolog}
 \begin{spverbatim}
 find_grasp_individual(ObjectClassLabel, GraspIndividual)
 @param ObjectClassLabel Das Objektlabel des zu greifenden Objekts 
@@ -1620,7 +1619,6 @@ Description : Findet alle zum einem ObjectLabel gehörigen Individuals die
 GraspPosen darstellen.
 \end{spverbatim}
 
-\subsubsection*{build\_grasp\_tuple - Prolog}
 \begin{spverbatim}
 build_grasp_tuple([GraspIndividual, ObjectClassLabel, Frame], 
                   [GraspIndividual, ObjectClassLabel, Frame, 
@@ -1635,7 +1633,6 @@ Description : Liest die Daten aus GraspIndividual aus und fügt sie dem
 Tupel hinzu.
 \end{spverbatim}
 
-\subsubsection*{build\_pose\_list - Prolog}
 \begin{spverbatim}
 build_pose_list(ObjectClassLabel, Frame, PoseList)
 @param ObjectClassLabel Das zur GraspPose gehörige Objektlabel
@@ -1647,7 +1644,6 @@ finden und dann build_grasp_tuple um die Daten der Posen den
 Tupeln in der Liste hinzuzufügen
 \end{spverbatim}
 
-\subsubsection*{evaluate\_pose\_by\_height - Prolog}
 \begin{spverbatim}
 evaluate_pose_by_height([Individual, Class, Frame, Translation, Quaternion], 
                         K-[Individual, Translation, Quaternion])
@@ -1662,7 +1658,6 @@ Description : Wertet die GraspPosen nach Höhenunterschied zum Ablageplatz aus
 und weist ihnen Keys zu die zum sortieren benutzt werden.
 \end{spverbatim}
 
-\subsubsection*{pair\_value - Prolog}
 \begin{spverbatim}
 pair_value(_-V, V)
 @param V Wert eines Schlüssel-Wert Paares
@@ -1670,7 +1665,6 @@ pair_value(_-V, V)
 Description : Entfernt den Schlüssel eines Schlüssel-Wert Paares.
 \end{spverbatim}
 
-\subsubsection*{sort\_grasp\_poses - Prolog}
 \begin{spverbatim}
 sort_pose_list(ObjectClassLabel, Frame, PoseList)
 @param ObjectClassLabel Das Label des zu greifenden Objekts
@@ -1683,7 +1677,6 @@ diesen Schlüsseln sortiert und die Schlüssel danach mit pair_value aus den
 Paaren entfernt. Das Ergebnis ist eine sortierte Liste aus GraspPosen.
 \end{spverbatim}
 
-\subsubsection*{createQuery - C++}
 \begin{spverbatim}
 std::string createQuery(std::string object_label, std::string frame_id)
 @param object_label Das Objektlabel.
@@ -1694,7 +1687,6 @@ Description : Baut aus dem Objektlabel und der Frame ID einen Query-String
 für die Prolog-Methode find_grasp_pose zusammen.
 \end{spverbatim}
 
-\subsubsection*{find\_grasp\_pose - C++}
 \begin{spverbatim}
 bool find_grasp_pose(knowledge_msgs::GraspIndividual::Request  &req, 
                              knowledge_msgs::GraspIndividual::Response &res)
@@ -1709,10 +1701,9 @@ geschickt wird. Alle von Prolog gefundenen Lösungen werden dem PoseArray
 hinzugefügt und je nach Objektlabel die Greifstärke eingestellt
 \end{spverbatim}
 
-\subsection{Schnittstellen}
+\subsubsection{Schnittstellen}
 \chapterauthor{Max-Phillip Bahr}
 
-\subsubsection{Service Server knowledge\_grasp\_service/knowledge\_grasp}
 \begin{spverbatim}
 GraspIndividual.srv
 @request:
@@ -1726,7 +1717,7 @@ GraspIndividual.srv
 \end{spverbatim}
 Wir entnehmen der Message das Objektlabel und lesen die für dieses Objekt gespeicherte GraspPosen aus der Ontologie aus. Die Posen werden als grasp\_pose\_array zurückgegeben.
 
-\subsection{Programmablauf}
+\subsubsection{Programmablauf}
 \chapterauthor{Max-Phillip Bahr}
 \begin{itemize}
 \item[1.]Es wird eine Anfrage an den Service-Server gestellt
@@ -1740,7 +1731,7 @@ find\_grasp\_pose (c++) in die gewünschte Form konvertiert.
 \item[5.] Antwort zurückgeben.
 \end{itemize}
 
-\section{Beliefstate}
+\subsection{beliefstate}
 \chapterauthor{Alexander Haar}
 Das beliefstate-Paket dient dazu sich Aktionen, die der Roboter ausgeführt hat, zu speichern und auf Anfrage zu ermitteln, welcher Gripper belegt ist und welche Objekte als nächstes weggeräumt werden sollen. Außerdem spawnt der Knoten die Objektkoordinatensysteme und spawnt außerdem das Mesh des Objekts.\\
 Des Weiteren ist der Beliefstate in die Mensch-Roboter-Interaktion involviert. Falls ein Objekt nicht gegriffen werden kann, wird der Beliefstate so manipuliert, dass ein Zustand hergestellt wird, in dem das Objekt von oben gegriffen wurde. Sollte ein Objekt nicht abgestellt werden können, wird es komplett aus dem Beliefstate entfernt. 
@@ -1751,10 +1742,9 @@ Des Weiteren ist der Beliefstate in die Mensch-Roboter-Interaktion involviert. F
         \caption{\label{fig:beliefstate_node} Architektur der beliefstate-node}}
 \end{figure}
       
-\subsection{Beschreibung des Teilsystems}
+\subsubsection{Beschreibung des Teilsystems}
 \chapterauthor{Alexander Haar}
 
-\subsubsection*{to\_underscore - Python}
 \begin{verbatim}
 def to_underscore(name)
 Beschreibung: Übersetzt einen string von Camelcase- Schreibweise 
@@ -1763,7 +1753,6 @@ in underscore- Schreibweise.
 @return: Der string in underscore- Schreibweise.
 \end{verbatim}
 
-\subsubsection*{object\_url\_to\_object\_name - Python}
 \begin{verbatim}
 def object_url_to_object_name(url)
 Beschreibung: Extrahiert aus einer Owl-Url den Namen eines Objekts.
@@ -1772,7 +1761,6 @@ Beschreibung: Extrahiert aus einer Owl-Url den Namen eines Objekts.
 \end{verbatim}
 
 
-\subsubsection*{prolog\_query\_false - Python}
 \begin{verbatim}
 def prolog_query_false(query_result)
 Beschreibung: Evaluiert, ob eine Prologanfrage zu false auswertet.
@@ -1780,7 +1768,6 @@ Beschreibung: Evaluiert, ob eine Prologanfrage zu false auswertet.
 @return: True, falls die Prologanfrage zu false evaluiert und false sonst.
 \end{verbatim}
 
-\subsubsection*{prolog\_query\_true - Python}
 \begin{verbatim}
 def prolog_query_true(query_result)
 Beschreibung: Evaluiert, ob eine Prologanfrage zu true auswertet.
@@ -1788,7 +1775,6 @@ Beschreibung: Evaluiert, ob eine Prologanfrage zu true auswertet.
 @return: True, falls die Prologanfrage zu true evaluiert und false sonst.
 \end{verbatim}
 
-\subsubsection*{point\_to\_prolog\_list - Python}
 \begin{verbatim}
 def point_to_prolog_list(point)
 Beschreibung: Übersetzt einen Punkt in eine Prologliste.
@@ -1796,7 +1782,6 @@ Beschreibung: Übersetzt einen Punkt in eine Prologliste.
 @return: Die resultierende Prologliste.
 \end{verbatim}
 
-\subsubsection*{pose\_to\_prolog\_list - Python}
 \begin{verbatim}
 def pose_to_prolog_list(pose)
 Beschreibung: Übersetzt eine Pose in eine Prologliste.
@@ -1804,7 +1789,6 @@ Beschreibung: Übersetzt eine Pose in eine Prologliste.
 @return: Die resultierende Prologliste.
 \end{verbatim}
 
-\subsubsection*{gripper\_as\_string - Python}
 \begin{verbatim}
 def gripper_as_string(gripper)
 Beschreibung: Übersetzt eine Gripperkonstante in einen string.
@@ -1812,7 +1796,6 @@ Beschreibung: Übersetzt eine Gripperkonstante in einen string.
 @return: Der resultierende string.
 \end{verbatim}
 
-\subsubsection*{create\_query\_for\_perceive\_object - Python}
 \begin{verbatim}
 def create_query_for_perceive_object(perceive_object_msg)
 Beschreibung: Erzeugt anhand einer PerceiveObject.msg eine Prologanfrage.
@@ -1820,7 +1803,6 @@ Beschreibung: Erzeugt anhand einer PerceiveObject.msg eine Prologanfrage.
 @return: Die resultierende Prologanfrage.
 \end{verbatim}
 
-\subsubsection*{create\_query\_for\_grasp\_object - Python}
 \begin{verbatim}
 def create_query_for_grasp_object(grasp_object_msg)
 Beschreibung: Erzeugt anhand einer GraspObject.msg eine Prologanfrage.
@@ -1828,7 +1810,6 @@ Beschreibung: Erzeugt anhand einer GraspObject.msg eine Prologanfrage.
 @return: Die resultierende Prologanfrage.
 \end{verbatim}
 
-\subsubsection*{create\_query\_for\_drop\_object - Python}
 \begin{verbatim}
 def create_query_for_drop_object(drop_object_msg)
 Beschreibung: Erzeugt anhand einer DropObject.msg eine Prologanfrage.
@@ -1836,7 +1817,6 @@ Beschreibung: Erzeugt anhand einer DropObject.msg eine Prologanfrage.
 @return: Die resultierende Prologanfrage.
 \end{verbatim}
 
-\subsubsection*{create\_query\_object\_attached\_to\_gripper - Python}
 \begin{verbatim}
 def create_query_object_attached_to_gripper(gripper)
 Beschreibung: Erzeugt anhand einer Gripperkonstante eine Prologanfrage.
@@ -1844,7 +1824,6 @@ Beschreibung: Erzeugt anhand einer Gripperkonstante eine Prologanfrage.
 @return: Die resultierende Prologanfrage.
 \end{verbatim}
 
-\subsubsection*{object\_exists - Python}
 \begin{verbatim}
 def object_exists(object_class)
 Beschreibung: Evaluiert, ob ein Objekt bereits wahrgenommen wurde und in 
@@ -1853,7 +1832,6 @@ der Wissensbasis existiert.
 @return: True, falls das Objekt in der Wissensbasis existiert und false sonst.
 \end{verbatim}
 
-\subsubsection*{pose\_stamped\_to\_position\_tupel - Python}
 \begin{verbatim}
 def pose_stamped_to_position_tupel(pose_stamped)
 Beschreibung: Übersetzt die Position eines PoseStamped in einen Tupel.
@@ -1861,7 +1839,6 @@ Beschreibung: Übersetzt die Position eines PoseStamped in einen Tupel.
 @return: Das resultierende Tupel.
 \end{verbatim}
 
-\subsubsection*{pose\_stamped\_to\_quaternion\_tupel - Python}
 \begin{verbatim}
 def pose_stamped_to_quaternion_tupel(pose_stamped)
 Beschreibung: Übersetzt das Quaternion eines PoseStamped in ein Tupel.
@@ -1869,7 +1846,6 @@ Beschreibung: Übersetzt das Quaternion eines PoseStamped in ein Tupel.
 @return: Das resultierende Tupel.
 \end{verbatim}
 
-\subsubsection*{quaternion\_to\_prolog\_list - Python}
 \begin{verbatim}
 def quaternion_to_prolog_list(quaternion)
 Beschreibung: Übersetzt ein Quaternion in eine Prologliste.
@@ -1877,7 +1853,6 @@ Beschreibung: Übersetzt ein Quaternion in eine Prologliste.
 @return: Die resultierende Prologliste.
 \end{verbatim}
 
-\subsubsection*{spawn\_object\_frame - Python}
 \begin{verbatim}
 def spawn_object_frame(object_name, object_pose)
 Beschreibung: Spawnt an der angegebenen Pose ein Objektkoordinatensystem 
@@ -1886,7 +1861,6 @@ und das entsprechende Mesh.
 @param object_pose: Die Pose des Objekts.
 \end{verbatim}
 
-\subsubsection*{update\_object\_frame - Python}
 \begin{verbatim}
 def update_object_frame(object_name, object_pose)
 Beschreibung: Ändert die Pose des angegeben Objekts auf die übergebene
@@ -1895,7 +1869,6 @@ Beschreibung: Ändert die Pose des angegeben Objekts auf die übergebene
 @param object_pose: Die Pose des Objekts.
 \end{verbatim}
 
-\subsubsection*{change\_reference\_frame - Python}
 \begin{verbatim}
 def change_reference_frame(object_name, new_reference_frame_id)
 Beschreibung: Verändert das Referenzframe des Objektkoordinatensystems 
@@ -1904,21 +1877,18 @@ auf das übergeben Koordinatensystem.
 @param new_reference_frame_id: Das neu Referenzkoordinatensystem.
 \end{verbatim}
 
-\subsubsection*{spawn\_object\_mesh - Python}
 \begin{verbatim}
 def spawn_object_mesh(object_name)
 Beschreibung: Spawnt ein Mesh in dem entsprechenden Objektkoordinatensystem.
 @param object_name: Der Name des Objekts.
 \end{verbatim}
 
-\subsubsection*{main - Python}
 \begin{verbatim}
 __name__ == '__main__
 Beschreibung: Startet alle Service- Server und Subscriber die
 dieser Knoten benötigt.
 \end{verbatim}
 
-\subsubsection*{object\_exists - Prolog}
 \begin{verbatim}
 object_exists(ObjectClass)
 Beschreibung: Prüft, ob ein Individual dieser Klasse bereits in der
@@ -1926,7 +1896,6 @@ Wissensbasis vorhanden ist
 @param ObjectClass: Die zu prüfende Objektklasse.
 \end{verbatim}
 
-\subsubsection*{process\_perceive\_action - Prolog}
 \begin{verbatim}
 process_perceive_action(ObjectClass, PoseList, ReferenceFrame)
 Beschreibung: Fügt ein Individual der Objektklasse an der angegebenen 
@@ -1936,7 +1905,6 @@ Pose im Referenzframe hinzu.
 @param ReferenceFrame: Das Referenzframe.
 \end{verbatim}
 
-\subsubsection*{process\_grasp\_action - Prolog}
 \begin{verbatim}
 process_grasp_action(ObjectClass, GripperIndividual)
 Beschreibung: Fügt eine GraspAction zur Wissensbasis hinzu unter 
@@ -1945,7 +1913,6 @@ Verwendung des angegeben Grippers und der Objektklasse.
 @param GripperIndividual: Linker oder rechter Gripper.
 \end{verbatim}
 
-\subsubsection*{process\_drop\_action - Prolog}
 \begin{verbatim}
 process_drop_action(GripperIndividual)
 Beschreibung: Fügt eine DropAction zur Wissensbasis hinzu unter 
@@ -1953,7 +1920,6 @@ Verwendung des angegeben Grippers.
 @param GripperIndividual: Linker oder rechter Gripper.
 \end{verbatim}
 
-\subsubsection*{object\_attached\_to\_gripper - Prolog}
 \begin{verbatim}
 object_attached_to_gripper(GripperIndividual, ObjectIndividual)
 Beschreibung: Prüft, ob sich ein Objekt in dem angegebenen Gripper befindet.
@@ -1961,7 +1927,6 @@ Beschreibung: Prüft, ob sich ein Objekt in dem angegebenen Gripper befindet.
 @param ObjectIndividual: Das Objekt, welches sich im Gripper befindet.
 \end{verbatim}
 
-\subsubsection*{get\_latest\_object\_pose - Prolog}
 \begin{verbatim}
 get_latest_object_pose(ObjectIndividual, PoseList)
 Beschreibung: Gibt die zuletzt bekannte Pose des Objekts zurück.
@@ -1969,7 +1934,6 @@ Beschreibung: Gibt die zuletzt bekannte Pose des Objekts zurück.
 @param PoseList: Die Pose des Objekts.
 \end{verbatim}
 
-\subsubsection*{get\_objects\_on\_kitchen\_island\_counter - Prolog}
 \begin{verbatim}
 get_objects_on_kitchen_island_counter(ObjectList)
 Beschreibung: Gibt eine Liste aller Objekte die noch verteilt
@@ -1977,7 +1941,6 @@ werden müssen zurück.
 @param ObjectList: Eine Liste aller Objekte die noch verteilt werden müssen.
 \end{verbatim}
 
-\subsubsection*{get\_two\_objects\_on\_kitchen\_island\_counter\_with\_same\_storage\_place - Prolog}
 \begin{verbatim}
 get_two_objects_on_kitchen_island_counter_with_same_storage_place
 (Object1, Object2)
@@ -1987,10 +1950,9 @@ welche als nächstes verteilt werden sollen.
 @param Object2: Das zweite Objekt.
 \end{verbatim}
 
-\subsection{Schnittstellen}
+\subsubsection{Schnittstellen}
 \chapterauthor{Alexander Haar}
 
-\subsubsection{Subscriber process\_perceive\_action}
 \begin{verbatim}
 def process_perceive_action(perceive_object_msg)
 Beschreibung: Erstellt anhand der Message eine Prologanfrage und
@@ -1998,7 +1960,6 @@ sendet diese an den json_prolog- Server.
 @param perceive_object_msg: Die PerceiveObject.msg
 \end{verbatim}
 
-\subsubsection{Subscriber process\_grasp\_action}
 \begin{verbatim}
 def process_grasp_action(grasp_object_msg)
 Beschreibung: Erstellt anhand der Message eine Prologanfrage und
@@ -2006,7 +1967,6 @@ sendet diese an den json_prolog- Server.
 @param grasp_object_msg: Die GraspObject.msg
 \end{verbatim}
 
-\subsubsection{Subscriber process\_drop\_action}
 \begin{verbatim}
 def process_drop_action(drop_object_msg)
 Beschreibung: Erstellt anhand der Message eine Prologanfrage und
@@ -2014,7 +1974,6 @@ sendet diese an den json_prolog- Server.
 @param drop_object_msg: Die DropObject.msg
 \end{verbatim}
 
-\subsubsection{Subscriber grasp\_object\_human\_interaction}
 \begin{verbatim}
 def grasp_object_human_interaction(msg)
 Beschreibung: Stellt einen Zustand her, in dem Der Roboter davon
@@ -2023,7 +1982,6 @@ Beschreibung: Stellt einen Zustand her, in dem Der Roboter davon
 @param msg: Die erhaltenen Nachricht.
 \end{verbatim}
 
-\subsubsection{Subscriber delete\_object\_human\_interaction}
 \begin{verbatim}
 def delete_object_human_interaction(msg)
 Beschreibung: Löscht das angegebene Objekt aus dem gesamten 
@@ -2031,7 +1989,6 @@ Beschreibung: Löscht das angegebene Objekt aus dem gesamten
 @param msg: Die erhaltenen Nachricht.
 \end{verbatim}
 
-\subsubsection{Service Server gripper\_empty}
 \begin{verbatim}
 def gripper_empty(req)
 Beschreibung: Die Anfrage an den Server ist leer. Zurückgegeben werden
@@ -2040,7 +1997,6 @@ zwei booleans, welche angeben, ob der Gripper belegt ist.
 @return: Die Antwort des Services.
 \end{verbatim}
 
-\subsubsection{Service Server object\_attached\_to\_gripper}
 \begin{verbatim}
 def object_attached_to_gripper(req)
 Beschreibung: Die Anfrage an den Server ist leer. Zurückgegeben werden
@@ -2049,7 +2005,7 @@ zwei booleans, welche angeben, ob der Gripper belegt ist.
 @return: Die Antwort des Services.
 \end{verbatim}
 
-\subsubsection{Service Server object\_to\_pick}
+
 \begin{verbatim}
 def objects_to_pick(req)
 Beschreibung: Gibt die zwei Objekte zurück, welche als nächstes 
@@ -2058,46 +2014,27 @@ Beschreibung: Gibt die zwei Objekte zurück, welche als nächstes
 @return: Die Antwort des Services.
 \end{verbatim}
 
-\subsubsection{Publisher despawn\_place\_preview}
-Wurde ein Objekt abgestellt, wird dem place\_object-Knoten über dieses Topic mitgeteilt, dass die Vorschau entfernt werden kann.
+Publisher despawn\_place\_preview: Wurde ein Objekt abgestellt, wird dem place\_object-Knoten über dieses Topic mitgeteilt, dass die Vorschau entfernt werden kann.\\
 
-\subsubsection{Publisher spawn\_attached\_object}
-Auf diesem Topic published der Beliefstate, falls ein Objekt mithilfe eines Menschen gegriffen wurde.
+Publisher spawn\_attached\_object: Auf diesem Topic published der Beliefstate, falls ein Objekt mithilfe eines Menschen gegriffen wurde.\\
 
-\subsubsection{Publisher perceived\_object\_bounding\_box}
-Wenn ein Objekt wahrgenommen wurde, wird über dieses Topic die Pose und das entsprechende CAD-Model an Motion weitergereicht
+Publisher perceived\_object\_bounding\_box: Wenn ein Objekt wahrgenommen wurde, wird über dieses Topic die Pose und das entsprechende CAD-Model an Motion weitergereicht
 
-\subsection{Programmablauf}
+\subsubsection{Programmablauf}
 \chapterauthor{Alexander Haar}
-\subsubsection{Schritt 1: Wahrnehmen mehrerer Objekte}
-Es werden mehrere Objekte wahrgenommen und deren Label sowie Pose wird dem Beliefstate bekannt gemacht.
-
-\subsubsection{Schritt 2: Welche zwei Objekte sollen weggeräumt werden?}
-Nachdem alle zu verteilenden Objekte bekannt sind, werden möglichst zwei Objekte ausgewählt, welche den gleichen Lagerplatz besitzen.
-
-\subsubsection{Schritt 3: Greifen eines Objekts}
-Das erste der beiden Objekte wird gegriffen.
-
-\subsubsection{Schritt 4: Greifen eines weiteren Objekts}
-Anschließend wird das zweite Objekt gegriffen.
-
-\subsubsection{Schritt 5: Abstellen des 1. Objekts}
-Der Roboter fährt zum entsprechenden Lagerplatz und stellt es dort ab.
-
-\subsubsection{Schritt 6: Anfrage welcher der Gripper belegt ist}
-Nun wird geprüft, ob beide Gripper leer sind, dies ist nicht der Fall.
-
-\subsubsection{Schritt 7: Abstellen des 2. Objekts}
-Der Roboter fährt zum nächsten Lagerplatz und stellt das zweite Objekt dort ab.
-
-\subsubsection{Schritt 8: Anfrage welcher der Gripper belegt ist}
-Erneut wird geprüft, ob beide Gripper leer sind, dies ist jetzt der Fall.
-
-\subsubsection{Schritt 9: Welche Objekte sollen weggeräumt werden?}
-Nun beginnt dieser Prozess wieder bei Schritt 2.
-
-
-\section{storage\_place}
+\begin{itemize}
+\item[1.]Es werden mehrere Objekte wahrgenommen und deren Label sowie Pose wird dem Beliefstate bekannt gemacht.
+\item[2.]Nachdem alle zu verteilenden Objekte bekannt sind, werden möglichst zwei Objekte ausgewählt, welche den gleichen Lagerplatz besitzen.
+\item[3.]Das erste der beiden Objekte wird gegriffen.
+\item[4.]Anschließend wird das zweite Objekt gegriffen.
+\item[5.]Der Roboter fährt zum entsprechenden Lagerplatz und stellt es dort ab.
+\item[6.]Nun wird geprüft, ob beide Gripper leer sind, dies ist nicht der Fall.
+\item[7.]Der Roboter fährt zum nächsten Lagerplatz und stellt das zweite Objekt dort ab.
+\item[8.]Erneut wird geprüft, ob beide Gripper leer sind, dies ist jetzt der Fall.
+\item[9.]Nun beginnt dieser Prozess wieder bei Schritt 2.
+\end{itemize}
+ 
+\subsection{storage\_place}
 \chapterauthor{Alexander Haar}
 Das storage\_place-Paket dient zur Ermittlung des Lagerplatzes eines Objekts.
 
@@ -2107,10 +2044,9 @@ Das storage\_place-Paket dient zur Ermittlung des Lagerplatzes eines Objekts.
         \caption{\label{fig:vision_node} Architektur der storage\_place-node}}
 \end{figure}
       
-\subsection{Beschreibung des Teilsystems}
+\subsubsection{Beschreibung des Teilsystems}
 \chapterauthor{Alexander Haar}
 
-\subsubsection*{createQuery - C++}
 \begin{verbatim}
 std::string createQuery(std::string object_label)
 Beschreibung: Erzeugt eine Prologanfrage, um einen Lagerplatz 
@@ -2119,14 +2055,11 @@ Beschreibung: Erzeugt eine Prologanfrage, um einen Lagerplatz
                      bestimmt werden soll.
 \end{verbatim}
 
-\subsubsection*{main - C++}
 \begin{verbatim}
 int main(int argc, char **argv)
 Beschreibung: Startet den Knoten.
 \end{verbatim}
 
-
-\subsubsection*{get\_position - Prolog}
 \begin{verbatim}
 get_position(PositionIndividual, X, Y, Z)
 Beschreibung: Extrahiert aus einem Position, die Koordinaten.
@@ -2136,7 +2069,6 @@ Beschreibung: Extrahiert aus einem Position, die Koordinaten.
 @param Z: Die Z- Koordinate
 \end{verbatim}
 
-\subsubsection*{get\_scale - Prolog}
 \begin{verbatim}
 get_scale(StorageAreaIndividual, Width, Height)
 Beschreibung: Extrahiert aus einer Lagerfläche die Ausmaße.
@@ -2145,7 +2077,6 @@ Beschreibung: Extrahiert aus einer Lagerfläche die Ausmaße.
 @param Height: Die Höhe der Lagerfläche
 \end{verbatim}
 
-\subsubsection*{storage\_area - Prolog}
 \begin{verbatim}
 storage_area(ObjectClass, StorageAreaIndividual)
 Beschreibung: Ermittelt zu einer Objektklasse die Lagerfläche.
@@ -2154,7 +2085,6 @@ ermittelt werden soll.
 @param StorageAreaIndividual: Die ermittelte Lagerfläche.
 \end{verbatim}
 
-\subsubsection*{storage\_place - Prolog}
 \begin{verbatim}
 storage_place(ObjectClass, [X, Y, Z], Width, Height)
 Beschreibung: Ermittelt zu einer Objektklasse den Lagerplatz.
@@ -2167,10 +2097,9 @@ ein Lagerplatz ermittelt werden soll.
 @param Height: Die Höhe des Lagerplatzes.
 \end{verbatim}
 
-\subsection{Schnittstellen}
+\subsubsection{Schnittstellen}
 \chapterauthor{Alexander Haar}
 
-\subsubsection{Service Server find\_storage\_place}
 \begin{verbatim}
 bool find_storage_place(knowledge_msgs::StoragePlace::Request &req,
  knowledge_msgs::StoragePlace::Response &res)
@@ -2181,20 +2110,18 @@ Beschreibung: Service- Methode, welche einen Lagerplatz für Objekte
 @param res: Die Antwort des Services, welche das Zentrum und die 
             Ausmaße des Lagerplatzes enthält.
 @return: true, falls der Aufruf erfolgreich war und false sonst.
-\end{verbatim}\label{func:findcluster}
+\end{verbatim}
 
-\subsection{Programmablauf}
+\subsubsection{Programmablauf}
 \chapterauthor{Alexander Haar}
-\subsubsection{Schritt 1: Anfrage an den Service- Server}
-Eine Objektklasse wird an den Service- Server übergeben.
-\subsubsection{Schritt 2: Erstellen der Prologanfrage}
-Anhand der Objektklasse wird eine Prologanfrage erstellt und an den json\_prolog- Server geschickt.
-\subsubsection{Schritt 3: Ermitteln des Lagerplatzes} 
-Durch die oben definierten Prologregeln wird unter Verwendung von only- restrictions der Lagerplatz ermittelt.
-\subsubsection{Schritt 4: Zurückgeben der Antwort}
-Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zurückgegeben.
+\begin{itemize}
+\item[1.]Eine Objektklasse wird an den Service- Server übergeben.
+\item[2.]Anhand der Objektklasse wird eine Prologanfrage erstellt und an den json\_prolog- Server geschickt.
+\item[3.]Durch die oben definierten Prologregeln wird unter Verwendung von only- restrictions der Lagerplatz ermittelt.
+\item[4.]Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zurückgegeben.
+\end{itemize}
 
-\section{push\_object}
+\subsection{push\_object}
 \chapterauthor{Alexander Haar}
 Das push\_object-Paket errechnet einen Punkt auf der Oberfläche eines abgestellten Objektes, damit es nach hinten geschoben werden kann. Dabei wird ausgenutzt, dass die Objekte immer gleich abgestellt werden. Bei den runden Objekten ist es für das Schieben unerheblich wie sie abgestellt werden, bei den eckigen Objekte zeigt aber immer die kurze Seite zum Roboter. Da man die Position des Objektes im Raum kennt und die geometrischen Abmessungen kann man nun eine passende Schiebepose berechnen.
 
@@ -2204,10 +2131,9 @@ Das push\_object-Paket errechnet einen Punkt auf der Oberfläche eines abgestell
         \caption{\label{fig:push} Architektur der push\_object-node}}
 \end{figure}
       
-\subsection{Beschreibung des Teilsystems}
+\subsubsection{Beschreibung des Teilsystems}
 \chapterauthor{Alexander Haar}
 
-\subsubsection*{create\_query - Python}
 \begin{verbatim}
 def create_query(req)
 Beschreibung: Erzeugt eine Prologanfrage, um eine Schiebepose 
@@ -2216,15 +2142,11 @@ Beschreibung: Erzeugt eine Prologanfrage, um eine Schiebepose
                      werden soll.
 \end{verbatim}
 
-
-\subsubsection*{main - Python}
 \begin{verbatim}
 if __name__ == '__main__'
 Beschreibung: Startet den Knoten.
 \end{verbatim}
 
-
-\subsubsection*{object\_depth - Prolog}
 \begin{verbatim}
 object_depth(ObjectClass, Depth)
 Beschreibung: Gibt zu einer Objektklasse die entsprechende Tiefe zurück.
@@ -2232,7 +2154,6 @@ Beschreibung: Gibt zu einer Objektklasse die entsprechende Tiefe zurück.
 @param Depth: Die Objekttiefe.
 \end{verbatim}
 
-\subsubsection*{calculate\_push\_pose - Prolog}
 \begin{verbatim}
 calculate_push_pose(ObjectClass, SourceFrame, X, Y, Z)
 Beschreibung: Extrahiert aus einer Lagerfläche die Ausmaße.
@@ -2243,10 +2164,9 @@ Beschreibung: Extrahiert aus einer Lagerfläche die Ausmaße.
 @param Z: Die Z-Position der Schiebepose.
 \end{verbatim}
 
-\subsection{Schnittstellen}
+\subsubsection{Schnittstellen}
 \chapterauthor{Alexander Haar}
 
-\subsubsection{Service Server /push\_object/push}
 \begin{verbatim}
 def push_object(req)
 Beschreibung: Service- Methode, welche eine Schiebepose für Objekte 
@@ -2257,18 +2177,17 @@ Beschreibung: Service- Methode, welche eine Schiebepose für Objekte
 
 \end{verbatim}
 
-\subsection{Programmablauf}
+\subsubsection{Programmablauf}
 \chapterauthor{Alexander Haar}
-\subsubsection{Schritt 1: Anfrage an den Service- Server}
-Eine Objektklasse wird an den Service- Server übergeben.
-\subsubsection{Schritt 2: Erstellen der Prologanfrage}
-Anhand der Objektklasse wird eine Prologanfrage erstellt und an den json\_prolog- Server geschickt.
-\subsubsection{Schritt 3: Ermitteln der Schiebepose} 
-Es wird mithilfe von Prolog eine Schiebepose errechnet. Das genaue Vorgehen ist oben in den einleitenden Worten beschrieben.
-\subsubsection{Schritt 4: Zurückgeben der Antwort}
-Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zurückgegeben.
 
-\section{place\_object}
+\begin{itemize}
+\item[1.]Eine Objektklasse wird an den Service- Server übergeben.
+\item[2.]Anhand der Objektklasse wird eine Prologanfrage erstellt und an den json\_prolog- Server geschickt.
+\item[3.]Es wird mithilfe von Prolog eine Schiebepose errechnet. Das genaue Vorgehen ist oben in den einleitenden Worten beschrieben.
+\item[4.]Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zurückgegeben.
+\end{itemize}
+
+\subsection{place\_object}
 \chapterauthor{Alexander Haar}
 Das push\_object-Paket berechnet zu einer vorgegebenen x- und y-Koordinate die passende z-Koordinate, damit ein Objekt exakt auf einem Tisch abgestellt wird. Dabei errechnet sich die z-Koordinate aus der Höhe des Tisches(0.85), die Hälfte der Objekthöhe und der Gripperposition relativ zum Mittelpunkt. Aus diesen drei Parametern lässt sich dann eine optimale z-Koordinate bestimmen. Außerdem wird beim Aufruf des Services eine Vorschau des abgestellten Objekts erstellt.
 
@@ -2278,10 +2197,9 @@ Das push\_object-Paket berechnet zu einer vorgegebenen x- und y-Koordinate die p
         \caption{\label{fig:place} Architektur der place\_object-node}}
 \end{figure}
       
-\subsection{Beschreibung des Teilsystems}
+\subsubsection{Beschreibung des Teilsystems}
 \chapterauthor{Alexander Haar}
 
-\subsubsection*{create\_place\_query - Python}
 \begin{verbatim}
 def create_place_query(req)
 Beschreibung: Erzeugt eine Prologanfrage, um eine passende 
@@ -2291,7 +2209,6 @@ Beschreibung: Erzeugt eine Prologanfrage, um eine passende
 @return: Ein String, welcher die Prologanfrage enthält.
 \end{verbatim}
 
-\subsubsection*{create\_object\_height\_query - Python}
 \begin{verbatim}
 def create_object_height_query(object_label)
 Beschreibung: Erzeugt eine Prologanfrage, um die Höhe eines Objekts zu ermitteln.
@@ -2299,7 +2216,6 @@ Beschreibung: Erzeugt eine Prologanfrage, um die Höhe eines Objekts zu ermittel
 @return: Ein String, welcher die Prologanfrage enthält.
 \end{verbatim}
 
-\subsubsection*{spawn\_object\_mesh - Python}
 \begin{verbatim}
 def spawn_object_mesh(x, y, object_label)
 Beschreibung: Spawn das Objekt- Mesh als Vorschau des abgestellten 
@@ -2307,14 +2223,11 @@ Beschreibung: Spawn das Objekt- Mesh als Vorschau des abgestellten
 @param object_label: Der Name des Objekts, welches abgestellt werden soll.
 \end{verbatim}
 
-\subsubsection*{main - Python}
 \begin{verbatim}
 if __name__ == '__main__'
 Beschreibung: Startet den Knoten.
 \end{verbatim}
 
-
-\subsubsection*{get\_grasp\_pose\_individual - Prolog}
 \begin{verbatim}
 get_grasp_pose_individual(ObjectClass, [[X,Y,Z],[QX,QY,QZ,QW]], GraspPoseIndividual)
 Beschreibung: Gibt zu einer Objektklasse das GraspPoseIndividual zurück, 
@@ -2325,7 +2238,6 @@ Beschreibung: Gibt zu einer Objektklasse das GraspPoseIndividual zurück,
 @param: Das passende GraspPoseIndividual.
 \end{verbatim}
 
-\subsubsection*{object\_height - Prolog}
 \begin{verbatim}
 object_height(ObjectClass, Height)
 Beschreibung: Gibt zu einer Objektklasse die entsprechende Höhe zurück.
@@ -2333,7 +2245,6 @@ Beschreibung: Gibt zu einer Objektklasse die entsprechende Höhe zurück.
 @param Height: Die Objekthöhe.
 \end{verbatim}
 
-\subsubsection*{calculate\_place\_pose - Prolog}
 \begin{verbatim}
 calculate_place_pose(GripperIndividual, Z, [QX, QY, QZ, QW])
 Beschreibung:Berechnet zum Objekt, welches sich im angegebenen Gripper
@@ -2344,10 +2255,9 @@ Beschreibung:Berechnet zum Objekt, welches sich im angegebenen Gripper
 @param [QX, QY, QZ, QW]: Die Rotation des Grippers beim Abstellen.
 \end{verbatim}
 
-\subsection{Schnittstellen}
+\subsubsection{Schnittstellen}
 \chapterauthor{Alexander Haar}
 
-\subsubsection{Service Server /place\_object/place}
 \begin{verbatim}
 def place_object(req)
 Beschreibung: Service- Methode, welche eine Abstellpose für Objekte 
@@ -2358,7 +2268,6 @@ Beschreibung: Service- Methode, welche eine Abstellpose für Objekte
 
 \end{verbatim}
 
-\subsubsection{Subscriber /place\_object/despawn\_place\_preview}
 \begin{verbatim}
 def despawn_object_mesh(object_label)
 Beschreibung: Diese Methode lässt die Vorschau des 
@@ -2367,20 +2276,18 @@ Beschreibung: Diese Methode lässt die Vorschau des
 
 \end{verbatim}
 
-\subsection{Programmablauf}
+\subsubsection{Programmablauf}
 \chapterauthor{Alexander Haar}
-\subsubsection{Schritt 1: Anfrage an den Service- Server}
-Ein Gripper wird an den Service- Server übergeben.
-\subsubsection{Schritt 2: Erstellen der Prologanfrage}
-Anhand des Grippers wird eine Prologanfrage erstellt und an den json\_prolog- Server geschickt.
-\subsubsection{Schritt 3: Ermitteln der Abstellpose} 
-Es wird mithilfe von Prolog eine Abstellpose errechnet. Das genaue Vorgehen ist oben in den einleitenden Worten beschrieben.
-\subsubsection{Schritt 4: Zurückgeben der Antwort}
-Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zurückgegeben.
-\subsubsection{Schritt 5: Spawnen der Vorschau} 
-Es wird anschließend das Objekt-Mesh gespawnt, so wie das Objekt perfekt abgestellt aussehen sollte.
 
-\section{kitchen\_model\_export}
+\begin{itemize}
+\item[1.]Ein Gripper wird an den Service- Server übergeben.
+\item[2.]Anhand des Grippers wird eine Prologanfrage erstellt und an den json\_prolog- Server geschickt.
+\item[3.]Es wird mithilfe von Prolog eine Abstellpose errechnet. Das genaue Vorgehen ist oben in den einleitenden Worten beschrieben.
+\item[4.]Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zurückgegeben.
+\item[5.]Es wird anschließend das Objekt-Mesh gespawnt, so wie das Objekt perfekt abgestellt aussehen sollte.
+\end{itemize}
+
+\subsection{kitchen\_model\_export}
 \chapterauthor{Alexander Haar}
 Das Kitchen\_Model\_Export-Paket dient dazu der Manipulation die Umgebung bekannt zu machen, damit der PR2 nicht mit der Umgebung kollidiert.
 
@@ -2390,16 +2297,14 @@ Das Kitchen\_Model\_Export-Paket dient dazu der Manipulation die Umgebung bekann
         \caption{\label{fig:kitchen} Architektur der kitchen\_model\_export-node}}
 \end{figure}
       
-\subsection{Beschreibung des Teilsystems}
+\subsubsection{Beschreibung des Teilsystems}
 \chapterauthor{Alexander Haar}
 
-\subsubsection*{main - C++}
 \begin{verbatim}
 int main(int argc, char **argv)
 Beschreibung: Startet den Knoten und liest den Parameter sim ein.
 \end{verbatim}
 
-\subsubsection*{path\_to\_cad\_model - Prolog}
 \begin{verbatim}
 path_to_cad_model(IAIKitchenObjectClass, Path)
 Beschreibung: Ermittel zu einem Küchenobjekt den CAD-Model-Pfad.
@@ -2407,7 +2312,6 @@ Beschreibung: Ermittel zu einem Küchenobjekt den CAD-Model-Pfad.
 @param Path: Der Pfad zum CAD-Model des Küchenobjekts.
 \end{verbatim}
 
-\subsubsection*{get\_frame - Prolog}
 \begin{verbatim}
 get_frame(KitchenObjectIndividual, Frame)
 Beschreibung: Gibt zu einem Küchenobjekt den Frame in dem es 
@@ -2416,7 +2320,6 @@ Beschreibung: Gibt zu einem Küchenobjekt den Frame in dem es
 @param Frame: Der Frame in dem sich das Objekt befindet.
 \end{verbatim}
 
-\subsubsection*{get\_frame\_without\_prefix - Prolog}
 \begin{verbatim}
 get_frame_without_prefix(KitchenObjectIndividual, Frame)
 Beschreibung: Gibt zu einem Küchenobjekt den Frame in dem es 
@@ -2425,7 +2328,6 @@ Beschreibung: Gibt zu einem Küchenobjekt den Frame in dem es
 @param Frame: Der Frame in dem sich das Objekt befindet ohne Prefix.
 \end{verbatim}
 
-\subsubsection*{is\_iai\_kitchen\_object - Prolog}
 \begin{verbatim}
 is_iai_kitchen_object(IAIKitchenObjectClass)
 Beschreibung: Bestimmt, ob es sich bei einem Objekt um ein 
@@ -2433,7 +2335,6 @@ Beschreibung: Bestimmt, ob es sich bei einem Objekt um ein
 @param: IAIKitchenObjectClass: Das zu prüfende Objekt.
 \end{verbatim}
 
-\subsubsection*{get\_fixed\_kitchen\_objects - Prolog}
 \begin{verbatim}
 get_fixed_kitchen_objects(ObjectIndividual, Path, Frame)
 Beschreibung: Ermittelt alle Küchenobjekte, sowie deren 
@@ -2443,7 +2344,6 @@ Beschreibung: Ermittelt alle Küchenobjekte, sowie deren
 @param Frame: Der Frame des Küchenobjekts.
 \end{verbatim}
 
-\subsubsection*{get\_fixed\_kitchen\_objects\_without\_prefix - Prolog}
 \begin{verbatim}
 get_fixed_kitchen_objects_without_prefix(ObjectIndividual, Path, Frame) 
 Beschreibung: Ermittelt alle Küchenobjekte, sowie deren CAD-Model-Pfad 
@@ -2453,10 +2353,9 @@ Beschreibung: Ermittelt alle Küchenobjekte, sowie deren CAD-Model-Pfad
 @param Frame: Der Frame des Küchenobjekts ohne Prefix.
 \end{verbatim}
 
-\subsection{Schnittstellen}
+\subsubsection{Schnittstellen}
 \chapterauthor{Alexander Haar}
 
-\subsubsection{Service Server /kitchen\_model\_export/get\_fixed\_kitchen\_object}
 \begin{verbatim}
 bool get_fixed_kitchen_objects(knowledge_msgs::GetFixedKitchenObjects::Request  &req,
                                knowledge_msgs::GetFixedKitchenObjects::Response &res)
@@ -2469,18 +2368,14 @@ Beschreibung: Service- Methode, welche alle Küchenobjekte für die PlanningScen
 \end{verbatim}
 
 
-\subsection{Programmablauf}
+\subsubsection{Programmablauf}
 \chapterauthor{Alexander Haar}
-\subsubsection{Schritt 1: Anfrage an den Service- Server}
-Ein Gripper wird an den Service- Server übergeben.
-\subsubsection{Schritt 2: Erstellen der Prologanfrage}
-Anhand des Grippers wird eine Prologanfrage erstellt und an den json\_prolog- Server geschickt.
-\subsubsection{Schritt 3: Ermitteln aller Küchenobjekte} 
-Es wird mithilfe von Prolog werden alle Küchenobjekte ermittelt.
-\subsubsection{Schritt 4: Zurückgeben der Antwort}
-Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zurückgegeben.
-
-
+\begin{itemize}
+\item[1.]Es wird eine Anfrage an den Service- Server gestellt.
+\item[2.]Es wird eine Prologanfrage erstellt und an den json\_prolog- Server geschickt.
+\item[3.]Mithilfe von Prolog werden alle Küchenobjekte ermittelt.
+\item[4.]Die vom json\_prolog- Server erhaltene Antwort wird entsprechend geparst und zurückgegeben.
+\end{itemize}
 
 \newpage
 
