@@ -558,7 +558,7 @@ Point (x y z angle)}
 \begin{verbatim}
 move-Base-To-Point (x y z angle)
 
-Beschreibung: Anhand des Actionservice "nav\_pcontroller/move\_base" 
+Beschreibung: Anhand des Actionservice "nav_pcontroller_move_base" 
 wird die Basis bewegt. Der Punkt und die Rotation sind in dem Frame 
 "map" anzugeben.
 
@@ -637,7 +637,7 @@ Die Quellcode-Datei 'external-logic.lisp' im Paket 'planning\_logic' ist für re
 \&optional (endFrame '/base\_footprint')}
 \chapterauthor{Vanessa Hassouna}
 \begin{verbatim}
-transformation-Vision-Point (pose amount &optional (endFrame "/base\_footprint")
+transformation-Vision-Point (pose amount &optional (endFrame "/base_footprint")
 
 Beschreibung: Das gegebene Objekt wird von dem ausgehenden Frame
 in ein optionales Frame umgewandelt.
@@ -732,7 +732,7 @@ Quaternion  0 0 0 1.
 \begin{verbatim}
  transformation-Pose-Stamped (pose &optional (endFrame "/base_footprint")) 
 
-Beschreibung: Transformiert eine Pose-Stamped-msgs mit einem optional Frame,\\
+Beschreibung: Transformiert eine Pose-Stamped-msgs mit einem optional Frame,
  default ist base_footprint.
 
 @param: x y z startFrame &optional (endFrame '/base_footprint')
@@ -773,7 +773,9 @@ der mitzählt wie viele Objekte gesehen wurden.
 \begin{verbatim}
  percieve-Objects-And-Search (label)
 
-Beschreibung: Sucht nach einem Objekt, ob es noch gesehen wird.
+Beschreibung: Noch einmal wird vision_suturo Service aufgerufen. Nun werden
+alles Objekte mit dem übergebenem Label verglichen. 
+
 @param: label
 @return: T oder Nil
 \end{verbatim}
@@ -891,7 +893,7 @@ Beschreibung: Die Funktion lässt den Roboter
 anhand vorgegebener Positionen seine Drehung sowie seine
 Position ändern, wenn er ein Objekt nicht erreichen kann.
 Achtung die X-, Y-, Z- und W-Werte müssen in dem Frame "map" angegeben werden.
-Der Roboter selber bewegt sich in dem Map base_footprint.
+Der Roboter selber bewegt sich in dem Frame base_footprint.
 
 @param: x, y, z, w, label, command
 @return: T oder Nil
@@ -912,7 +914,7 @@ Beschreibung: Die Funktion versucht zu greifen oder abzustellen. Wenn der
 auch mit dem zweiten Arm versuchen zu greifen, wenn der Erste
 nicht funktioniert hat.
 
-@param: label x y angle arm-first arm-first-homeposi grab-string &optiona\\
+@param: label x y angle arm-first arm-first-homeposi grab-string &optiona
 arm-second arm-second-homeposi
 @return: T oder Nil
 \end{verbatim}
@@ -959,6 +961,14 @@ Pr2 und dem Objekt.
 @param: label
 @return: T oder Nil
 \end{verbatim}
+
+
+\begin{figure}[!htb]
+        \center{\includegraphics[width=0.8\textwidth]
+        {img/distance.png}
+        \caption{} Architektur der Quellcode-Datei movement.lisp}
+\end{figure}
+
 
 
 \subsubsection{distance (xa ya xb yb)}
@@ -1285,7 +1295,7 @@ Nutzt die Soundplay Action, des Sound\_Play Paketes um dem Pr2 eine Stimme zu sy
 \subsection{Beschreibung des Teilsystems}
 \subsubsection{\"Ubersicht}
 \chapterauthor{Kevin Störmer}
-Die Datei interaction.lisp ist zuständig dafür, Situationen aufzuloesen, die nicht vom Code abgedeckt werden, oder die für den Roboter physikalisch nicht möglich sind.\\
+Die Datei interaction.lisp ist zuständig dafür, Situationen aufzulösen, die nicht vom Code abgedeckt werden, oder die für den Roboter physikalisch nicht möglich sind.\\
 Dabei soll vorallem auf Sicherheit der Interaktion und Einfachheit in der Implementation geachtet werden. Fokus liegt dabei auch auf dem Feststellen von Handshake-Actions sodass dem Menschen eine Interaktionsschnittstelle gegeben wird.\\
 Wie in der folgenden Illustration gezeigt, werden Sicherheitskritische Aspekte dabei von den oeffentlichen Funktionen getrennt.
 \begin{figure}[!htb]
@@ -1298,8 +1308,10 @@ Wie in der folgenden Illustration gezeigt, werden Sicherheitskritische Aspekte d
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 init-interaction()
+
 Beschreibung: Initialisiert das Paket. Startet alle Subkomponenten, 
 und teilt dem Nutzer mit falls Abhängigkeiten fehlen.
+
 @return true wenn richtig initalisiert
 \end{verbatim}
 
@@ -1307,12 +1319,14 @@ und teilt dem Nutzer mit falls Abhängigkeiten fehlen.
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 ask-human-to-move-object()
+
 Beschreibung: Fehlerfallabdeckung für den Fall das der Pr2 ein Objekt
 nicht greifen kann. Pr2 zeigt dann auf das Objekt, und ruft 
 einen Menschen zu Hilfe.
 Dieser kann dann das Objekt in den Gripper des Pr2 legen 
 und ihm die Hand schütteln. Der Roboter nimmt dann seine Arbeit 
 wieder auf.
+
 @param pose label force moving command statement1 statement2
 @return Kein definierter Rückgabewert
 \end{verbatim}
@@ -1321,13 +1335,15 @@ wieder auf.
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 ask-human-to-take-object ()
+
 Beschreibung: Fehlerfallabdeckung für den Fall das der Pr2 ein Objekt 
 nicht ablegen kann. Der Pr2 fährt dann an einen Ort an dem er gut 
 mit dem Menschen interagieren kann. Dort streckt er seine Arme aus 
 und verweist auf den Gripper in dem das Objekt steckt, 
-welches er loswerden möchte. \\
+welches er loswerden möchte. 
 Nach einem Händeschütteln, wird das Objekt freigegeben 
 und als abgelegt behandelt. Der PR2 nimmt dann seine Arbeit wieder auf.
+
 @param label moving-command
 @return Kein definierter Rückgabewert
 \end{verbatim}
@@ -1336,12 +1352,14 @@ und als abgelegt behandelt. Der PR2 nimmt dann seine Arbeit wieder auf.
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 check-gripper()
+
 Beschreibung: Anpassbare Funktion für beliebige Fehlerfälle. Es kann 
 eine Funktion übergeben werden, welche dann in einer sicheren 
 Umgebung aufgerufen wird. Nebenbei werden die beiden Gripper gecheckt, 
 sodass nichts aus dem Gripper fallen kann währenddessen. Wenn kein 
 Fehlschlag passiert, läuft die mitgegebene Funktion normal durch.
-@param errormsg func args r l)
+
+@param errormsg func args r l
 @return Kein definierter Rückgabewert
 \end{verbatim}
 
@@ -1349,9 +1367,11 @@ Fehlschlag passiert, läuft die mitgegebene Funktion normal durch.
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 decide-gripper()
+
 Beschreibung: Da Motion merkwürdige Magic-Numbers für ihre Actions verwendet, 
 wird diese Funktion gebraucht um von der Einen auf die Andere schliessen zu 
 können.
+
 @param moving-command
 @return magic-number für die Gripper-Action
 \end{verbatim}
@@ -1360,7 +1380,9 @@ können.
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 drive-to-human ()
+
 Beschreibung: Fährt zu Ort für menschliche Interaction an der Iai Holz-Küche.
+
 @param -
 @return Kein definierter Rückgabewert
 \end{verbatim}
@@ -1369,8 +1391,10 @@ Beschreibung: Fährt zu Ort für menschliche Interaction an der Iai Holz-Küche.
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 say ()
-Beschreibung: Nutzt das sound\_play Paket um einen String in 
+
+Beschreibung: Nutzt das sound_play Paket um einen String in 
 gesprochene Sprache zu synthetisieren und auf dem Pr2 auszugeben.
+
 @param message
 @return Kein definierter Rückgabewert
 \end{verbatim}
@@ -1379,10 +1403,12 @@ gesprochene Sprache zu synthetisieren und auf dem Pr2 auszugeben.
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 wait-for-handshake ()
+
 Beschreibung: Anpassbare Funktion zur Konfiguration eigener Fehlerfälle. 
 Pr2 führt stoppt seine Aufgabe, und gibt mitgegebene Errormessage aus. 
 Danach wartet er auf einen Handshake und führt dann die mitgegebene 
 Funktion aus.
+
 @param func args errormsg
 @return Kein definierter Rückgabewert
 \end{verbatim}
@@ -1391,8 +1417,10 @@ Funktion aus.
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 build-pointing-pose ()
+
 Beschreibung: Baut die Pointing-Pose aus den einzelnen Berechnungen 
 zusammen. Diese Pose wird gebraucht um auf ein Objekt zu zeigen.
+
 @param pose
 @return Pose die auf das Objekt zeigt
 \end{verbatim}
@@ -1401,9 +1429,11 @@ zusammen. Diese Pose wird gebraucht um auf ein Objekt zu zeigen.
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 get-pointing-pose ()
+
 Beschreibung: Baut die Pointing-Pose zusammen, ohne Quaternion. 
 Verarbeitet die Daten aus 'get-vektor-pr2-reachable' 
 (beschrieben nachfolgend). 
+
 @param pose
 @return Pointing-Pose ohne Quaternion
 \end{verbatim}
@@ -1412,9 +1442,11 @@ Verarbeitet die Daten aus 'get-vektor-pr2-reachable'
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 get-vektor-pr2-reachable ()
+
 Beschreibung: Rechnet in Abhängigkeit von Arm und Gegebenem 
-Vektor den nähesten Punkt aus den der Pr2 erreichen kann
-@param vektor
+Vektor den nähesten Punkt aus den der Pr2 erreichen kann.
+
+@param Vektor
 @return erreichbarer Punkt
 \end{verbatim}
 
@@ -1422,18 +1454,22 @@ Vektor den nähesten Punkt aus den der Pr2 erreichen kann
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 calculate-pointing-quaternion ()
+
 Beschreibung: Berechnet aus einer gegebenen Object-Pose das 
 Quaternion was benötigt wird um auf ein Objekt zu zeigen. 
+
 @param object-pos
-@return quaternion, welches zum pointen gebraucht wird
+@return Quaternion, welches zum pointen gebraucht wird
 \end{verbatim}
 
 \subsubsection{get-directional-vector ()}
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 get-directional-vector ()
+
 Beschreibung: Berechnet aus 2 Punkten im Raum den Richtungsvektor in Richtung 
 des 2ten Punktes.
+
 @param Vektor1 Vektor2
 @return Richtungsvektor
 \end{verbatim}
@@ -1442,8 +1478,10 @@ des 2ten Punktes.
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 vectors-to-matrix ()
+
 Beschreibung: Baut und berechnet aus 3 Punkten oder Vektoren im Raum eine 
 Transformationsmatrix.
+
 @param Vektor-x Vector-y Vector-z
 @return 3x3 Tansformationsmatrix
 \end{verbatim}
@@ -1454,9 +1492,11 @@ Transformationsmatrix.
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 calculate-wrench-magnitude ()
+
 Beschreibung: Berechnet Betrag der Wrench-Force-Daten und published sie. 
 Ausserdem wird immer genau dann auf dem Handshake-detection gepublished, 
-wenn ein Handschlag festgestellt wird. (Callback-Funktion)
+wenn ein Handschlag festgestellt wird (Callback-Funktion).
+
 @param msg
 @return Kein definierter Rückgabewert
 \end{verbatim}
@@ -1472,8 +1512,10 @@ wenn ein Handschlag festgestellt wird. (Callback-Funktion)
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 put-object-in-hand ()
+
 Beschreibung: Simple Methode um Knowledge mitzuteilen, wenn ein Objekt 
 in den Gripper gelegt wird.
+
 @param gripper label
 @return Kein definierter Rückgabewert
 \end{verbatim}
@@ -1482,8 +1524,10 @@ in den Gripper gelegt wird.
 \chapterauthor{Kevin Störmer}
 \begin{verbatim}
 drop-object-in-hand ()
+
 Beschreibung: Simple Methode um Knowledge mitzuteilen, wenn ein Objekt 
 aus dem Gripper gelegt wird.
+
 @param label
 @return Kein definierter Rückgabewert
 \end{verbatim}
